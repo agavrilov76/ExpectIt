@@ -85,7 +85,7 @@ class MultiMatcher implements Matcher<MultiResult> {
         return Collections.max(successResults, new Comparator<Result>() {
             @Override
             public int compare(Result o1, Result o2) {
-                return Integer.compare(o1.end(), o2.end());
+                return Integer.valueOf(o1.end()).compareTo(o2.end());
             }
         });
     }

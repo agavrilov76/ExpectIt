@@ -48,7 +48,7 @@ class ExpectImpl implements Expect {
         this.charset = charset;
         this.echoOutput = echoOutput;
         this.errorOnTimeout = errorOnTimeout;
-        executor = Executors.newFixedThreadPool(inputs.length);
+        executor = Executors.newFixedThreadPool(inputs.length, new NamedExecutorThreadFactory("expect-"));
     }
 
     void start() {
@@ -78,7 +78,7 @@ class ExpectImpl implements Expect {
 
     @Override
     public Expect sendLine(String string) throws IOException {
-        return send(string + System.lineSeparator());
+        return send(string + System.getProperty("line.separator"));
     }
 
     @Override
@@ -114,4 +114,5 @@ class ExpectImpl implements Expect {
         }
         executor.shutdown();
     }
+
 }

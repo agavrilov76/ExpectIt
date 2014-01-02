@@ -20,6 +20,7 @@ package net.sf.expectit;
  * #L%
  */
 
+import com.google.common.io.Files;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -27,8 +28,6 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.UUID;
 
 import static net.sf.expectit.matcher.Matchers.*;
@@ -47,7 +46,7 @@ public class ProcessTest {
 
     @BeforeClass
     public static void ignoreOnWindows() {
-        assumeTrue(Files.isExecutable(Paths.get(BIN_SH)));
+        assumeTrue(new File(BIN_SH).canExecute());
     }
 
     @Before
@@ -102,7 +101,7 @@ public class ProcessTest {
         for (int i = 0; i < size; i++) {
             builder.append(UUID.randomUUID().toString());
         }
-        Files.write(f.toPath(), builder.toString().getBytes());
+        Files.write(builder.toString().getBytes(), f);
         f.deleteOnExit();
         expect.sendLine("cat " + f.getAbsolutePath());
         expect.sendLine("echo TEST_STRING");
