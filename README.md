@@ -127,3 +127,7 @@ License
 =======
 [Apache License, Version 2.0](LICENSE.txt)
 
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Alexey1Gavrilov/expectit/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
