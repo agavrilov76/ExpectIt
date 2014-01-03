@@ -85,6 +85,7 @@ public class ProcessTest {
     @Test
     public void testIOException() throws IOException, InterruptedException {
         expect.send("exit\n");
+        process.getInputStream().close();
         process.waitFor();
         try {
             expect.expect(200, contains("test"));
