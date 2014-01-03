@@ -2,7 +2,7 @@
  * Filters to modify input for expect operations.
  * @author Alexey Gavrilov
  */
-package net.java.expectit.filter;
+package net.sf.expectit.filter;
 
 /*
  * #%L

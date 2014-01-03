@@ -32,7 +32,7 @@ public interface Matcher<R extends Result> {
     /**
      * Matches the input string.
      *
-     * @param input the current state of the input buffer.
+     * @param input the current state of the input buffer
      * @return the match result
      */
     R matches(String input);

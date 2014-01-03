@@ -54,7 +54,7 @@ public class ProcessTest {
         ProcessBuilder builder = new ProcessBuilder(BIN_SH);
         process = builder.start();
         expect = new ExpectBuilder()
-                .withTimeout(1000)
+                .withTimeout(2000)
                 .withInputs(process.getInputStream(), process.getErrorStream())
                 .withOutput(process.getOutputStream())
                 .build();
@@ -116,6 +116,13 @@ public class ProcessTest {
         System.out.println(expect.expectIn(1, contains(string)).group());
     }
 
+    @Test
+    public void testEof() throws IOException {
+        expect.sendLine("echo Line1");
+        expect.sendLine("echo Line2");
+        expect.sendLine("sleep 1; echo Line3; exit");
+        assertEquals("Line1\n" +"Line2\n", expect.expect(contains("Line3")).getBefore());
+    }
 
     // for README
     public static void main(String[] args) throws IOException {

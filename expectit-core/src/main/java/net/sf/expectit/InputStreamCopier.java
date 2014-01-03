@@ -43,8 +43,12 @@ class InputStreamCopier implements Callable<Object> {
     public Object call() throws Exception {
         byte[] buffer = new byte[BUFFER_SIZE];
         int bytesRead;
-        while ((bytesRead = from.read(buffer)) != -1) {
-            to.write(ByteBuffer.wrap(buffer, 0, bytesRead));
+        try {
+            while ((bytesRead = from.read(buffer)) != -1) {
+                to.write(ByteBuffer.wrap(buffer, 0, bytesRead));
+            }
+        } finally {
+            to.close();
         }
         return null;
     }

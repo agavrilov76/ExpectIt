@@ -26,13 +26,13 @@ import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * The interface to access expect operations on input data.
+ * The interface to perform expect operations on input data.
  */
 public interface Expect extends Closeable {
     /**
      * Sends the string to the output stream and flushes the output.
      * <p/>
-     * The string is converted to bytes using {@code charset} set in the {@link net.java.expectit.ExpectBuilder}.
+     * The string is converted to bytes using {@code charset} set in the {@link net.sf.expectit.ExpectBuilder}.
      *
      * @param string the string to be sent
      * @return this
@@ -71,7 +71,7 @@ public interface Expect extends Closeable {
     /**
      * Awaits until the given matcher matches against the first input stream using the default timeout.
      * <p/>
-     * The method throws an {@link java.lang.AssertionError} if {@link net.java.expectit.ExpectBuilder#errorOnTimeout}
+     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
      *
      * @param <R>     the matcher type
@@ -84,7 +84,7 @@ public interface Expect extends Closeable {
     /**
      * Awaits until the given matcher matches the first input stream using the given timeout.
      * <p/>
-     * The method throws an {@link java.lang.AssertionError} if {@link net.java.expectit.ExpectBuilder#errorOnTimeout}
+     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
      *
      * @param <R>       the matcher type
@@ -98,7 +98,7 @@ public interface Expect extends Closeable {
     /**
      * Awaits until the given matcher matches against the given input stream using the default timeout.
      * <p/>
-     * The method throws an {@link java.lang.AssertionError} if {@link net.java.expectit.ExpectBuilder#errorOnTimeout}
+     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
      *
      * @param <R>     the matcher type
@@ -113,7 +113,7 @@ public interface Expect extends Closeable {
     /**
      * Awaits until the given matcher matches against the given input stream using the given timeout.
      * <p/>
-     * The method throws an {@link java.lang.AssertionError} if {@link net.java.expectit.ExpectBuilder#errorOnTimeout}
+     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
      *
      * @param <R>       the matcher type

@@ -80,6 +80,9 @@ class SingleInput {
             }
             selector.selectedKeys().clear();
             int len = pipe.source().read(byteBuffer);
+            if (len == -1) {
+                return matcher.matches(buffer.toString());
+            }
             String string = new String(byteBuffer.array(), 0, len, charset);
             processString(string);
             byteBuffer.clear();
@@ -87,9 +90,6 @@ class SingleInput {
         }
         if (result.isSuccessful()) {
             buffer.delete(0, result.end());
-        } else {
-            // double check if the input has been closed
-            checkInputClosed();
         }
         return result;
     }
