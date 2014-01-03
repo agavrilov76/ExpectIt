@@ -31,7 +31,6 @@ import java.nio.channels.Pipe;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.charset.Charset;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
@@ -65,7 +64,6 @@ class SingleInput {
     }
 
     public <R extends Result> R expect(long timeoutMs, Matcher<R> matcher) throws IOException {
-        checkInputClosed();
         long timeToStop = System.currentTimeMillis() + timeoutMs;
         long timeElapsed = timeoutMs;
         ByteBuffer byteBuffer = ByteBuffer.allocate(BUFFER_SIZE);
@@ -81,7 +79,7 @@ class SingleInput {
             selector.selectedKeys().clear();
             int len = pipe.source().read(byteBuffer);
             if (len == -1) {
-                return matcher.matches(buffer.toString());
+                throw new IOException("Input closed");
             }
             String string = new String(byteBuffer.array(), 0, len, charset);
             processString(string);
@@ -92,21 +90,6 @@ class SingleInput {
             buffer.delete(0, result.end());
         }
         return result;
-    }
-
-    private void checkInputClosed() throws IOException {
-        if (copierFuture.isDone()) {
-            Throwable cause = null;
-            try {
-                copierFuture.get();
-            } catch (InterruptedException ignore) {
-                // should never happen since future is done
-                throw new IllegalStateException(ignore);
-            } catch (ExecutionException e) {
-                cause = e.getCause();
-            }
-            throw new IOException("Input closed", cause);
-        }
     }
 
     private void processString(String string) throws IOException {

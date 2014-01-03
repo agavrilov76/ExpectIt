@@ -31,6 +31,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import static net.sf.expectit.TestConstants.SMALL_TIMEOUT;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -96,7 +97,7 @@ public class ExpectBuilderTest {
         ExpectBuilder builder = new ExpectBuilder();
         builder.withInputs(mock(InputStream.class));
         builder.withOutput(mock(OutputStream.class));
-        builder.withTimeout(100);
+        builder.withTimeout(SMALL_TIMEOUT);
         builder.withErrorOnTimeout(true);
         Expect expect = builder.build();
         Matcher<?> mock = mock(Matcher.class);
@@ -125,7 +126,7 @@ public class ExpectBuilderTest {
         expect.send(testString);
         verify(out).write(bytes);
         configureMockInputStream(in, bytes);
-        assertTrue(expect.expect(100, contains("hello")).isSuccessful());
+        assertTrue(expect.expect(SMALL_TIMEOUT, contains("hello")).isSuccessful());
     }
 
     private void configureMockInputStream(InputStream in, final byte[] bytes) throws IOException {
@@ -150,12 +151,27 @@ public class ExpectBuilderTest {
         when(filter.filter(anyString(), any(StringBuilder.class))).thenReturn("xxx");
         Expect expect = builder.build();
         configureMockInputStream(in, "test".getBytes());
-        assertTrue(expect.expect(100, contains("xxx")).isSuccessful());
+        assertTrue(expect.expect(SMALL_TIMEOUT, contains("xxx")).isSuccessful());
     }
 
     @Test
+    public void testIOException() throws IOException, InterruptedException {
+        ExpectBuilder builder = new ExpectBuilder();
+        InputStream in = mock(InputStream.class);
+        //noinspection unchecked
+        when(in.read(any(byte[].class))).thenThrow(IOException.class);
+        builder.withInputs(in);
+        builder.withOutput(mock(OutputStream.class));
+        Expect expect = builder.build();
+        try {
+            expect.expect(SMALL_TIMEOUT, contains("test"));
+            fail();
+        } catch (IOException ok) {
+        }
+    }
+    /*@Test
     public void expectEchoOutput() {
 
-    }
+    }*/
 
 }

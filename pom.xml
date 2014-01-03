@@ -54,7 +54,22 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <analysisPhase>verify</analysisPhase>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>skipAnalysis</id>
+            <activation>
+                <property>
+                    <name>skipAnalysis</name>
+                </property>
+            </activation>
+            <properties>
+                <analysisPhase>none</analysisPhase>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencyManagement>
         <dependencies>
@@ -88,7 +103,10 @@
         <pluginManagement>
             <plugins>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>2.16</version>
+                </plugin>
+                <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.1</version>
                     <configuration>
@@ -98,54 +116,54 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>2.11</version>
                     <executions>
                         <execution>
-                            <configuration>
-                                <configLocation>../checkstyle/checkstyle.xml</configLocation>
-                                <consoleOutput>true</consoleOutput>
-                                <failsOnError>true</failsOnError>
-                            </configuration>
+                            <phase>${analysisPhase}</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <configLocation>../checkstyle/checkstyle.xml</configLocation>
+                        <consoleOutput>true</consoleOutput>
+                        <failsOnError>true</failsOnError>
+                    </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-pmd-plugin</artifactId>
                     <version>3.0.1</version>
                     <executions>
                         <execution>
+                            <phase>${analysisPhase}</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
-                            <configuration>
-                                <printFailingErrors>true</printFailingErrors>
-                            </configuration>
                         </execution>
                     </executions>
+                    <configuration>
+                        <printFailingErrors>true</printFailingErrors>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>findbugs-maven-plugin</artifactId>
                     <version>2.5.3</version>
-                    <configuration>
-                        <effort>Max</effort>
-                        <threshold>Low</threshold>
-                        <xmlOutput>true</xmlOutput>
-                    </configuration>
                     <executions>
                         <execution>
-                            <phase>verify</phase>
+                            <phase>${analysisPhase}</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <effort>Max</effort>
+                        <threshold>Low</threshold>
+                        <xmlOutput>true</xmlOutput>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>

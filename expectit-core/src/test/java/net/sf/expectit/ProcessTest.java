@@ -30,6 +30,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import static net.sf.expectit.TestConstants.LONG_TIMEOUT;
+import static net.sf.expectit.TestConstants.SMALL_TIMEOUT;
 import static net.sf.expectit.matcher.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -54,7 +56,7 @@ public class ProcessTest {
         ProcessBuilder builder = new ProcessBuilder(BIN_SH);
         process = builder.start();
         expect = new ExpectBuilder()
-                .withTimeout(2000)
+                .withTimeout(LONG_TIMEOUT)
                 .withInputs(process.getInputStream(), process.getErrorStream())
                 .withOutput(process.getOutputStream())
                 .build();
@@ -73,25 +75,13 @@ public class ProcessTest {
         Result expect1 = expect.expect(regexp("(?m)^(.*)-123"));
 
         try {
-            expect.expect(100, allOf(contains("G"), regexp("g"))).getBefore();
+            expect.expect(SMALL_TIMEOUT, allOf(contains("G"), regexp("g"))).getBefore();
             fail();
         } catch (IllegalStateException ignore) {
         }
 
         String output = expect1.getBefore();
         assertEquals(output, "z\n");
-    }
-
-    @Test
-    public void testIOException() throws IOException, InterruptedException {
-        expect.send("exit\n");
-        process.getInputStream().close();
-        process.waitFor();
-        try {
-            expect.expect(200, contains("test"));
-            fail();
-        } catch (IOException ok) {
-        }
     }
 
     @Test
@@ -121,8 +111,9 @@ public class ProcessTest {
     public void testEof() throws IOException {
         expect.sendLine("echo Line1");
         expect.sendLine("echo Line2");
-        expect.sendLine("sleep 1; echo Line3; exit");
-        assertEquals("Line1\n" +"Line2\n", expect.expect(contains("Line3")).getBefore());
+        expect.sendLine("sleep " + LONG_TIMEOUT / 1000 +"; echo Line3; exit");
+        Result result = expect.expect(LONG_TIMEOUT + SMALL_TIMEOUT, contains("Line3"));
+        assertEquals("Line1\n" + "Line2\n", result.getBefore());
     }
 
     // for README
