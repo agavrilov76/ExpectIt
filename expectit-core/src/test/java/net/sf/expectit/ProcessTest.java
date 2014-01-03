@@ -21,10 +21,7 @@ package net.sf.expectit;
  */
 
 import com.google.common.io.Files;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,8 +60,10 @@ public class ProcessTest {
     }
 
     @After
-    public void cleanup() {
+    public void cleanup() throws IOException, InterruptedException {
         process.destroy();
+        process.waitFor();
+        expect.close();
     }
 
     @Test
@@ -88,7 +87,7 @@ public class ProcessTest {
     public void testHugeInput() throws IOException {
         File f = File.createTempFile("test", ".txt");
         StringBuilder builder = new StringBuilder();
-        int size = 40000;
+        int size = 10000;
         for (int i = 0; i < size; i++) {
             builder.append(UUID.randomUUID().toString());
         }
@@ -96,7 +95,7 @@ public class ProcessTest {
         f.deleteOnExit();
         expect.sendLine("cat " + f.getAbsolutePath());
         expect.sendLine("echo TEST_STRING");
-        int len = expect.expect(60000, contains("TEST_STRING")).getBefore().length();
+        int len = expect.expect(30000, contains("TEST_STRING")).getBefore().length();
         assertEquals(size * 36, len);
     }
 
