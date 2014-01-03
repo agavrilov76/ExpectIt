@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Alexey1Gavrilov/expectit.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/expectit)
 Overview
 ========
 Yet another pure Java(tm) implementation of the Unix Expect tool. It designed to be simple, easy to
