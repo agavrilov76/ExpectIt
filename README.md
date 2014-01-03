@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Alexey1Gavrilov/expectit.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/expectit)
 Overview
 ========
 Yet another pure Java(tm) implementation of the Unix Expect tool. It designed to be simple, easy to
@@ -13,13 +14,13 @@ use and extensible. Written from scratch. Here are the features:
 
 Quick start
 ===========
-The library is **going** to be available on the Maven central. To begin with you need to add the following Maven
+The library is available on the Maven central. To begin with you need to add the following Maven
 dependency to your project:
 
 ```xml
 <groupId>net.sf.expectit</groupId>
 <artifactId>expectit-core</artifactId>
-<version>TBD</version>
+<version>0.1.0</version>
 ```
 Then you can use create an instance of ``net.java.expect.Expect`` as follows:
 
