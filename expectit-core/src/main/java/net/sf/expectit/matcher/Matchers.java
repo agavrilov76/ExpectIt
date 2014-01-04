@@ -23,6 +23,7 @@ package net.sf.expectit.matcher;
 import net.sf.expectit.MultiResult;
 import net.sf.expectit.Result;
 
+import java.util.Arrays;
 import java.util.regex.Pattern;
 
 
@@ -142,7 +143,7 @@ public final class Matchers {
      * greatest end position is selected to implement the result {@link Result} instance returned by this method.
      * If the result is negative, then the one which fails first is returned.
      * <p/>
-     * If several matchers have same end position, then the result from the one with the smaller argument index is
+     * If several matchers the have same end position, then the result from the one with the smaller argument index is
      * returned.
      *
      * @param matchers the vararg array of the matchers
@@ -159,7 +160,7 @@ public final class Matchers {
      * The match result represents a combination of any match operations. If succeeded, the match result with the
      * greatest end position is selected to implement the result {@link Result} instance returned by this method.
      * <p/>
-     * If several matchers have same end position, then the result from the one with the smaller argument index is
+     * If several matchers have the same end position, then the result from the one with the smaller argument index is
      * returned.
      *
      * @param matchers the vararg array of the matchers
@@ -172,6 +173,9 @@ public final class Matchers {
 
     /**
      * Creates a matcher that matches if input reaches the end of stream.
+     * <p/>
+     * If succeeded, the {@link net.sf.expectit.Result#getBefore()} will return the entire input buffer.
+     *
      * @return the matcher
      */
     public static Matcher<?> eof() {
@@ -184,6 +188,42 @@ public final class Matchers {
             @Override
             public String toString() {
                 return "eof";
+            }
+        };
+    }
+
+    /**
+     * Creates a matcher that matches if the given {@code matcher} matches the {@code number} of times.
+     * <p/>
+     * The match result represents a combination of any match operations. If succeeded, the match result with the
+     * greatest end position is selected to implement the result {@link Result} instance returned by this method.
+     * <p/>
+     * If several matchers have the same end position, then the result from the one with the smaller argument index is
+     * returned.
+     *
+     * @param number the number of times which given {@code matcher} must match the input
+     * @param matcher the matcher
+     * @return the result
+     */
+    public static Matcher<MultiResult> times(final int number, final Matcher<?> matcher) {
+        return new Matcher<MultiResult>() {
+            private int matchCount = number;
+            private Result[] results = new Result[number];
+
+            @Override
+            public MultiResult matches(String input, boolean isEof) {
+                Result result = matcher.matches(input, isEof);
+                int index = number - matchCount;
+                if (result.isSuccessful()) {
+                    results[index] = result;
+                    if (--matchCount == 0) {
+                        return new MultiResultImpl(result, Arrays.asList(results));
+                    }
+                }
+                if (index < results.length - 1) {
+                    Arrays.fill(results, index + 1, number, SimpleResult.NEGATIVE);
+                }
+                return new MultiResultImpl(SimpleResult.NEGATIVE, Arrays.asList(results));
             }
         };
     }

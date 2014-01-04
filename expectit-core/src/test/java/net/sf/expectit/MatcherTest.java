@@ -41,6 +41,7 @@ import static net.sf.expectit.TestConstants.LONG_TIMEOUT;
 import static net.sf.expectit.TestConstants.SMALL_TIMEOUT;
 import static net.sf.expectit.matcher.Matchers.*;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -353,6 +354,23 @@ public class MatcherTest {
         assertTrue(result.isSuccessful());
         assertFalse(result.getBefore().isEmpty());
         assertTrue(input.expect(SMALL_TIMEOUT, eof()).isSuccessful());
+    }
+
+    @Test
+    public void testTimes() throws IOException {
+        MultiResult result = input.expect(SMALL_TIMEOUT, times(1, contains("b")));
+        assertEquals("a1", result.getBefore());
+        assertEquals(result.getBefore(), "a1");
+        result = input.expect(2 * SMALL_TIMEOUT, times(3, contains("_")));
+        for (Result r : result.getResults()) {
+            assertTrue(r.isSuccessful());
+            assertEquals("2c3", r.getBefore());
+        }
+        result = input.expect(SMALL_TIMEOUT, times(5, contains("c")));
+        assertTrue(result.getResults().get(0).isSuccessful());
+        assertFalse(result.getResults().get(3).isSuccessful());
+        assertFalse(result.getResults().get(4).isSuccessful());
+        assertFalse(result.isSuccessful());
     }
 
     /**
