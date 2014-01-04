@@ -201,7 +201,7 @@ public final class Matchers {
      * If several matchers have the same end position, then the result from the one with the smaller argument index is
      * returned.
      *
-     * @param number the number of times which given {@code matcher} must match the input
+     * @param number  the number of times which given {@code matcher} must match the input
      * @param matcher the matcher
      * @return the result
      */

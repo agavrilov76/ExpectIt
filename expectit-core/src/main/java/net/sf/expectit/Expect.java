@@ -82,6 +82,18 @@ public interface Expect extends Closeable {
     <R extends Result> R expect(Matcher<R> matcher) throws IOException;
 
     /**
+     * Awaits until all the given matchers match against the first input stream using the default timeout.
+     * <p/>
+     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
+     * is set.
+     *
+     * @param matchers the matchers
+     * @return the match result from all the matchers
+     * @throws java.io.IOException if I/O error occurs, for example, the input is closed
+     */
+    MultiResult expect(Matcher<?>... matchers) throws IOException;
+
+    /**
      * Awaits until the given matcher matches the first input stream using the given timeout.
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
@@ -96,6 +108,19 @@ public interface Expect extends Closeable {
     <R extends Result> R expect(long timeoutMs, Matcher<R> matcher) throws IOException;
 
     /**
+     * Awaits until all the given matchers match the first input stream using the given timeout.
+     * <p/>
+     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
+     * is set.
+     *
+     * @param timeoutMs the timeout for the expect operation in milliseconds
+     * @param matcher   the matchers
+     * @return the match result from all the matchers
+     * @throws java.io.IOException if I/O error occurs, for example, the input is closed
+     */
+    MultiResult expect(long timeoutMs, Matcher<?>... matcher) throws IOException;
+
+    /**
      * Awaits until the given matcher matches against the given input stream using the default timeout.
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
@@ -104,7 +129,7 @@ public interface Expect extends Closeable {
      * @param <R>     the matcher type
      * @param input   the index of the input. if the index is outside of the boundaries, a runtime exception will be
      *                thrown
-     * @param matcher the mather
+     * @param matcher the matcher
      * @return the match result
      * @throws java.io.IOException if I/O error occurs, for example, the input is closed
      */
@@ -125,4 +150,19 @@ public interface Expect extends Closeable {
      * @throws java.io.IOException if I/O error occurs, for example, the input is closed
      */
     <R extends Result> R expectIn(int input, long timeoutMs, Matcher<R> matcher) throws IOException;
+
+    /**
+     * Awaits until all the given matchers matche against the given input stream using the given timeout.
+     * <p/>
+     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
+     * is set.
+     *
+     * @param input     the index of the input. if the index is outside of the boundaries, a runtime exception will be
+     *                  thrown
+     * @param timeoutMs the timeout for the expect operation in milliseconds
+     * @param matchers  the matchers
+     * @return the match result from all the matchers
+     * @throws java.io.IOException if I/O error occurs, for example, the input is closed
+     */
+    MultiResult expectIn(int input, long timeoutMs, Matcher<?>... matchers) throws IOException;
 }

@@ -28,6 +28,8 @@ import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static net.sf.expectit.matcher.Matchers.allOf;
+
 /**
  * An implementation of the Expect interface which delegates actual work to SingleInput objects.
  */
@@ -67,6 +69,11 @@ class ExpectImpl implements Expect {
     }
 
     @Override
+    public MultiResult expectIn(int input, long timeoutMs, Matcher<?>... matchers) throws IOException {
+        return expectIn(input, timeoutMs, allOf(matchers));
+    }
+
+    @Override
     public Expect send(String string) throws IOException {
         return sendBytes(string.getBytes(charset));
     }
@@ -103,8 +110,18 @@ class ExpectImpl implements Expect {
     }
 
     @Override
+    public MultiResult expect(Matcher<?>... matchers) throws IOException {
+        return expect(0, matchers);
+    }
+
+    @Override
     public <R extends Result> R expect(long timeoutMs, Matcher<R> matcher) throws IOException {
         return expectIn(0, timeoutMs, matcher);
+    }
+
+    @Override
+    public MultiResult expect(long timeoutMs, Matcher<?>... matchers) throws IOException {
+        return expectIn(0, timeoutMs, matchers);
     }
 
     @Override

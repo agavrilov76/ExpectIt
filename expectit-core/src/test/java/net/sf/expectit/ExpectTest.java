@@ -24,6 +24,7 @@ import net.sf.expectit.filter.Filter;
 import net.sf.expectit.matcher.Matcher;
 import org.junit.After;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -33,9 +34,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
-import static net.sf.expectit.TestConstants.LONG_TIMEOUT;
-import static net.sf.expectit.TestConstants.SMALL_TIMEOUT;
+import static net.sf.expectit.Utils.LONG_TIMEOUT;
+import static net.sf.expectit.Utils.SMALL_TIMEOUT;
+import static net.sf.expectit.Utils.mockInputStream;
 import static net.sf.expectit.matcher.Matchers.contains;
+import static net.sf.expectit.matcher.Matchers.times;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -44,7 +47,7 @@ import static org.mockito.Mockito.*;
 /**
  * Tests for various expect builder parameters
  */
-public class ExpectBuilderTest {
+public class ExpectTest {
     private Expect expect;
 
     @After
@@ -181,9 +184,42 @@ public class ExpectBuilderTest {
         } catch (IOException ok) {
         }
     }
-    /*@Test
-    public void expectEchoOutput() {
 
-    }*/
+    @Test
+    public void expectEchoOutput() throws IOException {
+        ExpectBuilder builder = new ExpectBuilder();
+        OutputStream echo = mock(OutputStream.class);
+        String inputText = "input";
+        InputStream input = mockInputStream(SMALL_TIMEOUT, inputText);
+        builder.withInputs(input);
+        builder.withEchoOutput(echo);
+        builder.withOutput(mock(OutputStream.class));
+        expect = builder.build();
+        String sentText = "sentText";
+        expect.sendLine(sentText);
+        verify(echo).write((sentText + System.getProperty("line.separator")).getBytes());
+        reset(echo);
+        assertTrue(expect.expect(LONG_TIMEOUT, times(2, contains(inputText))).isSuccessful());
+        verify(echo, Mockito.times(2)).write(inputText.getBytes());
+    }
+
+    @Test (timeout = 5000)
+    public void testExpectMethods() throws IOException {
+        ExpectBuilder builder = new ExpectBuilder();
+        String inputText1 = "input1";
+        String inputText2 = "input2";
+        InputStream input1 = mockInputStream(SMALL_TIMEOUT, inputText1);
+        InputStream input2 = mockInputStream(SMALL_TIMEOUT, inputText2);
+        builder.withInputs(input1, input2);
+        builder.withOutput(mock(OutputStream.class));
+        expect = builder.build();
+
+        assertFalse(expect.expectIn(1, SMALL_TIMEOUT, contains("input1")).isSuccessful());
+        assertFalse(expect.expectIn(0, SMALL_TIMEOUT, contains("input2")).isSuccessful());
+        assertTrue(expect.expect(SMALL_TIMEOUT, contains("input1")).isSuccessful());
+        assertTrue(expect.expectIn(1, SMALL_TIMEOUT, contains("input2")).isSuccessful());
+        assertFalse(expect.expect(SMALL_TIMEOUT, contains("input2"), contains("input1")).isSuccessful());
+        assertTrue(expect.expect(SMALL_TIMEOUT, contains("input"), contains("input")).isSuccessful());
+    }
 
 }

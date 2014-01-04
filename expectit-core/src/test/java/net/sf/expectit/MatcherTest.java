@@ -25,8 +25,6 @@ import net.sf.expectit.matcher.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -37,13 +35,11 @@ import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
-import static net.sf.expectit.TestConstants.LONG_TIMEOUT;
-import static net.sf.expectit.TestConstants.SMALL_TIMEOUT;
+import static net.sf.expectit.Utils.LONG_TIMEOUT;
+import static net.sf.expectit.Utils.SMALL_TIMEOUT;
 import static net.sf.expectit.matcher.Matchers.*;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
@@ -61,25 +57,10 @@ public class MatcherTest {
      */
     @Before
     public void setup() throws IOException {
-        mock = mock(InputStream.class);
+        mock = Utils.mockInputStream(SMALL_TIMEOUT / 2, "a1b2c3_");
         input = new SingleInput(mock, Charset.defaultCharset(), null, null);
         executor = Executors.newSingleThreadExecutor();
         input.start(executor);
-        // overriding read(byte[]) method since it is used in the SingleInput
-        when(mock.read(any(byte[].class))).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                Thread.sleep(SMALL_TIMEOUT / 2);
-                byte[] bytes = "a1b2c3_".getBytes();
-                //noinspection MismatchedReadAndWriteOfArray
-                byte[] dest = (byte[]) invocation.getArguments()[0];
-                if (dest == null) {
-                    return -1;
-                }
-                System.arraycopy(bytes, 0, dest, 0, bytes.length);
-                return bytes.length;
-            }
-        });
     }
 
     @After

@@ -26,6 +26,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,6 +40,7 @@ import static net.sf.expectit.matcher.Matchers.regexp;
  * A test for ssh connection.
  * TODO: convert to integration test
  */
+@Ignore
 public class SshTest {
     private Expect expect;
     private Session session;

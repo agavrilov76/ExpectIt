@@ -21,14 +21,17 @@ package net.sf.expectit;
  */
 
 import com.google.common.io.Files;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
-import static net.sf.expectit.TestConstants.LONG_TIMEOUT;
-import static net.sf.expectit.TestConstants.SMALL_TIMEOUT;
+import static net.sf.expectit.Utils.LONG_TIMEOUT;
+import static net.sf.expectit.Utils.SMALL_TIMEOUT;
 import static net.sf.expectit.matcher.Matchers.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -110,7 +113,7 @@ public class ProcessTest {
     public void testEof() throws IOException {
         expect.sendLine("echo Line1");
         expect.sendLine("echo Line2");
-        expect.sendLine("sleep " + LONG_TIMEOUT / 1000 +"; echo Line3; exit");
+        expect.sendLine("sleep " + LONG_TIMEOUT / 1000 + "; echo Line3; exit");
         Result result = expect.expect(LONG_TIMEOUT + SMALL_TIMEOUT, eof());
         assertEquals("Line1\nLine2\nLine3\n", result.getBefore());
     }
