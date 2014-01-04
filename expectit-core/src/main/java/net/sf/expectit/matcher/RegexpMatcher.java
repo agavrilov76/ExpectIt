@@ -48,7 +48,7 @@ class RegexpMatcher implements Matcher<Result> {
     }
 
     @Override
-    public Result matches(String input) {
+    public Result matches(String input, boolean isEof) {
         java.util.regex.Matcher matcher = pattern.matcher(input);
         boolean result;
         if (useFind) {

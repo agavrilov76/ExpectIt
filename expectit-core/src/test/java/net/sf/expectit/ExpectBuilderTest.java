@@ -27,11 +27,13 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
+import static net.sf.expectit.TestConstants.LONG_TIMEOUT;
 import static net.sf.expectit.TestConstants.SMALL_TIMEOUT;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static org.junit.Assert.*;
@@ -91,7 +93,7 @@ public class ExpectBuilderTest {
         Matcher<?> mock = mock(Matcher.class);
         Result result = mock(Result.class);
         when(result.isSuccessful()).thenReturn(true);
-        when(mock.matches(anyString())).thenReturn(result);
+        when(mock.matches(anyString(), eq(false))).thenReturn(result);
         expect = builder.build();
         assertTrue(expect.expectIn(0, mock).isSuccessful());
         assertTrue(expect.expectIn(1, mock).isSuccessful());
@@ -113,7 +115,7 @@ public class ExpectBuilderTest {
         Matcher<?> mock = mock(Matcher.class);
         Result result = mock(Result.class);
         when(result.isSuccessful()).thenReturn(false);
-        when(mock.matches(anyString())).thenReturn(result);
+        when(mock.matches(anyString(), eq(false))).thenReturn(result);
         try {
             expect.expect(mock);
             fail();
@@ -168,12 +170,12 @@ public class ExpectBuilderTest {
     public void testIOException() throws IOException, InterruptedException {
         ExpectBuilder builder = new ExpectBuilder();
         InputStream in = mock(InputStream.class);
-        //noinspection unchecked
-        when(in.read(any(byte[].class))).thenThrow(IOException.class);
+        when(in.read(any(byte[].class))).thenThrow(new EOFException(""));
         builder.withInputs(in);
         builder.withOutput(mock(OutputStream.class));
         expect = builder.build();
         try {
+            expect.expect(LONG_TIMEOUT, contains("test"));
             expect.expect(SMALL_TIMEOUT, contains("test"));
             fail();
         } catch (IOException ok) {

@@ -33,7 +33,8 @@ public interface Matcher<R extends Result> {
      * Matches the input string.
      *
      * @param input the current state of the input buffer
+     * @param isEof indicates the input has reached the end, or closed.
      * @return the match result
      */
-    R matches(String input);
+    R matches(String input, boolean isEof);
 }

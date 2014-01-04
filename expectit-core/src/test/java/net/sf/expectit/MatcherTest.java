@@ -21,12 +21,14 @@ package net.sf.expectit;
  */
 
 import net.sf.expectit.matcher.Matcher;
+import net.sf.expectit.matcher.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -51,13 +53,14 @@ import static org.mockito.Mockito.when;
 public class MatcherTest {
     private SingleInput input;
     private ExecutorService executor;
+    private InputStream mock;
 
     /**
      * Creates a mock input stream which send some data every SMALL_TIMEOUT ms.
      */
     @Before
     public void setup() throws IOException {
-        InputStream mock = mock(InputStream.class);
+        mock = mock(InputStream.class);
         input = new SingleInput(mock, Charset.defaultCharset(), null, null);
         executor = Executors.newSingleThreadExecutor();
         input.start(executor);
@@ -67,8 +70,12 @@ public class MatcherTest {
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 Thread.sleep(SMALL_TIMEOUT / 2);
                 byte[] bytes = "a1b2c3_".getBytes();
-                //noinspection SuspiciousSystemArraycopy
-                System.arraycopy(bytes, 0, invocation.getArguments()[0], 0, bytes.length);
+                //noinspection MismatchedReadAndWriteOfArray
+                byte[] dest = (byte[]) invocation.getArguments()[0];
+                if (dest == null) {
+                    return -1;
+                }
+                System.arraycopy(bytes, 0, dest, 0, bytes.length);
                 return bytes.length;
             }
         });
@@ -309,6 +316,23 @@ public class MatcherTest {
         assertEquals(m.toString(), "matches('xyz')");
         assertEquals(anyOf(c, r, m).toString(), "anyOf(contains('xyz'),regexp('xyz'),matches('xyz'))");
         assertEquals(allOf(c).toString(), "allOf(contains('xyz'))");
+        Matcher<?> e = Matchers.eof();
+        assertEquals(allOf(c, e).toString(), "allOf(contains('xyz'),eof)");
+    }
+
+    @Test
+    public void testTestEofMatcher() throws IOException, InterruptedException {
+        Thread.sleep(SMALL_TIMEOUT);
+        when(mock.read(any(byte[].class))).thenThrow(new EOFException(""));
+        Thread.sleep(SMALL_TIMEOUT);
+        try {
+            input.expect(SMALL_TIMEOUT, contains("XX"));
+            fail();
+        } catch (EOFException ok) {
+        }
+        assertTrue(input.expect(SMALL_TIMEOUT, contains("a")).isSuccessful());
+        String actual = input.getBuffer().toString();
+        assertEquals(input.expect(SMALL_TIMEOUT, eof()).getBefore(), actual);
     }
 
     /**

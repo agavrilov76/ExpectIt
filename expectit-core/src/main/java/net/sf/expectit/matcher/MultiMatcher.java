@@ -41,12 +41,12 @@ class MultiMatcher implements Matcher<MultiResult> {
     }
 
     @Override
-    public MultiResult matches(String input) {
+    public MultiResult matches(String input, boolean isEof) {
         List<Result> results = new ArrayList<Result>();
         List<Result> successResults = new ArrayList<Result>();
         Result firstFailResult = null;
         for (Matcher<?> matcher : matchers) {
-            Result result = matcher.matches(input);
+            Result result = matcher.matches(input, isEof);
             if (result.isSuccessful()) {
                 successResults.add(result);
             } else if (firstFailResult == null) {

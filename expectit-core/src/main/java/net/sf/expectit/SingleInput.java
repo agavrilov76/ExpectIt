@@ -23,6 +23,7 @@ package net.sf.expectit;
 import net.sf.expectit.filter.Filter;
 import net.sf.expectit.matcher.Matcher;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,12 +42,13 @@ class SingleInput {
     public static final int BUFFER_SIZE = 1024;
 
     private final InputStream input;
-    private final Pipe pipe;
     private final StringBuilder buffer;
     private final Charset charset;
     private final OutputStream echoOutput;
     private final Filter filter;
     private Future<Object> copierFuture;
+    private final Pipe.SourceChannel source;
+    private final Pipe.SinkChannel sink;
 
     protected SingleInput(InputStream input, Charset charset,
                           OutputStream echoOutput, Filter filter) throws IOException {
@@ -54,22 +56,27 @@ class SingleInput {
         this.charset = charset;
         this.echoOutput = echoOutput;
         this.filter = filter;
-        this.pipe = Pipe.open();
-        pipe.source().configureBlocking(false);
+        Pipe pipe = Pipe.open();
+        source = pipe.source();
+        sink = pipe.sink();
+        source.configureBlocking(false);
         buffer = new StringBuilder();
     }
 
     public void start(ExecutorService executor) {
-        copierFuture = executor.submit(new InputStreamCopier(input, pipe.sink()));
+        copierFuture = executor.submit(new InputStreamCopier(input, sink));
     }
 
     public <R extends Result> R expect(long timeoutMs, Matcher<R> matcher) throws IOException {
+        if (copierFuture == null) {
+            throw new IllegalStateException("Not started");
+        }
         long timeToStop = System.currentTimeMillis() + timeoutMs;
         long timeElapsed = timeoutMs;
         ByteBuffer byteBuffer = ByteBuffer.allocate(BUFFER_SIZE);
         Selector selector = Selector.open();
-        pipe.source().register(selector, SelectionKey.OP_READ);
-        R result = matcher.matches(buffer.toString());
+        source.register(selector, SelectionKey.OP_READ);
+        R result = matcher.matches(buffer.toString(), copierFuture.isDone());
         while (!result.isSuccessful() && timeElapsed > 0) {
             int keys = selector.select(timeElapsed);
             timeElapsed = timeToStop - System.currentTimeMillis();
@@ -77,17 +84,18 @@ class SingleInput {
                 continue;
             }
             selector.selectedKeys().clear();
-            int len = pipe.source().read(byteBuffer);
-            if (len == -1) {
-                throw new IOException("Input closed");
+            int len = source.read(byteBuffer);
+            if (len != -1) {
+                String string = new String(byteBuffer.array(), 0, len, charset);
+                processString(string);
+                byteBuffer.clear();
             }
-            String string = new String(byteBuffer.array(), 0, len, charset);
-            processString(string);
-            byteBuffer.clear();
-            result = matcher.matches(buffer.toString());
+            result = matcher.matches(buffer.toString(), len == -1);
         }
         if (result.isSuccessful()) {
             buffer.delete(0, result.end());
+        } else if (copierFuture.isDone()) {
+            throw new EOFException("Input closed");
         }
         return result;
     }
@@ -106,7 +114,9 @@ class SingleInput {
     }
 
     public void stop() {
-        copierFuture.cancel(true);
+        if (copierFuture != null) {
+            copierFuture.cancel(true);
+        }
     }
 
     StringBuilder getBuffer() {

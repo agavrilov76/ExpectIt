@@ -118,7 +118,7 @@ public final class Matchers {
     public static Matcher<Result> contains(final String string) {
         return new Matcher<Result>() {
             @Override
-            public Result matches(String input) {
+            public Result matches(String input, boolean isEof) {
                 int pos = input.indexOf(string);
                 if (pos != -1) {
                     return new SimpleResult(true, input.substring(0, pos), string);
@@ -168,6 +168,24 @@ public final class Matchers {
     public static Matcher<MultiResult> anyOf(final Matcher<?>... matchers) {
         checkNotEmpty(matchers);
         return new MultiMatcher(false, matchers);
+    }
+
+    /**
+     * Creates a matcher that matches if input reaches the end of stream.
+     * @return the matcher
+     */
+    public static Matcher<?> eof() {
+        return new Matcher<Result>() {
+            @Override
+            public Result matches(String input, boolean isEof) {
+                return new SimpleResult(isEof, input, "");
+            }
+
+            @Override
+            public String toString() {
+                return "eof";
+            }
+        };
     }
 
     private static void checkNotEmpty(Matcher<?>[] matchers) {
