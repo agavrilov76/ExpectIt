@@ -335,6 +335,26 @@ public class MatcherTest {
         assertEquals(input.expect(SMALL_TIMEOUT, eof()).getBefore(), actual);
     }
 
+    @Test
+    public void testTestEofMultiMatcher1() throws IOException, InterruptedException {
+        Thread.sleep(SMALL_TIMEOUT);
+        when(mock.read(any(byte[].class))).thenThrow(new EOFException(""));
+        MultiResult result = input.expect(SMALL_TIMEOUT, allOf(contains("a"), eof()));
+        assertTrue(result.isSuccessful());
+        assertFalse(result.getBefore().isEmpty());
+        assertTrue(input.expect(SMALL_TIMEOUT, eof()).isSuccessful());
+    }
+
+    @Test
+    public void testTestEofMultiMatcher2() throws IOException, InterruptedException {
+        Thread.sleep(SMALL_TIMEOUT);
+        when(mock.read(any(byte[].class))).thenThrow(new EOFException(""));
+        MultiResult result = input.expect(SMALL_TIMEOUT, anyOf(contains("wrong"), eof()));
+        assertTrue(result.isSuccessful());
+        assertFalse(result.getBefore().isEmpty());
+        assertTrue(input.expect(SMALL_TIMEOUT, eof()).isSuccessful());
+    }
+
     /**
      * Verifies that all the result methods throw IllegalStateException.
      */
