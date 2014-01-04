@@ -40,6 +40,7 @@ import static net.sf.expectit.Utils.SMALL_TIMEOUT;
 import static net.sf.expectit.matcher.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 /**
@@ -304,17 +305,20 @@ public class MatcherTest {
 
     @Test
     public void testTestEofMatcher() throws IOException, InterruptedException {
-        Thread.sleep(SMALL_TIMEOUT);
+        assertTrue(input.expect(SMALL_TIMEOUT, contains("a1")).isSuccessful());
+        reset(mock);
         when(mock.read(any(byte[].class))).thenThrow(new EOFException(""));
-        Thread.sleep(SMALL_TIMEOUT);
+        assertTrue(input.expect(SMALL_TIMEOUT, contains("b2")).isSuccessful());
+        assertEquals(input.expect(SMALL_TIMEOUT, matches(".*_a1.*_$")).group(), "c3_a1b2c3_");
         try {
-            input.expect(SMALL_TIMEOUT, contains("XX"));
+            // now the buffer is empty
+            input.expect(SMALL_TIMEOUT, contains("xxx"));
             fail();
         } catch (EOFException ok) {
         }
-        assertTrue(input.expect(SMALL_TIMEOUT, contains("a")).isSuccessful());
-        String actual = input.getBuffer().toString();
-        assertEquals(input.expect(SMALL_TIMEOUT, eof()).getBefore(), actual);
+        // should pass on successful match
+        assertTrue(input.expect(SMALL_TIMEOUT, contains("")).isSuccessful());
+        assertTrue(input.expect(SMALL_TIMEOUT, eof()).isSuccessful());
     }
 
     @Test

@@ -26,7 +26,11 @@ import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * The interface to perform expect operations on input data.
+ * The methods to perform expect operations on input data. The input data is stored in the internal buffer growing
+ * while new data is being received from the input stream.
+ * <p/>
+ * A success match operation updates the buffer by removing a part from the begging until the end position of the
+ * match.
  */
 public interface Expect extends Closeable {
     /**
@@ -73,11 +77,14 @@ public interface Expect extends Closeable {
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
+     * <p/>
+     * An instance of {@link java.io.EOFException} will be thrown if the underlying input steam, the internal buffer
+     * is empty and the match operation is not successful.
      *
      * @param <R>     the matcher type
      * @param matcher the mather
      * @return the match result
-     * @throws java.io.IOException if I/O error occurs, for example, the input is closed
+     * @throws java.io.IOException if I/O error occurs
      */
     <R extends Result> R expect(Matcher<R> matcher) throws IOException;
 
@@ -86,10 +93,13 @@ public interface Expect extends Closeable {
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
+     * <p/>
+     * An instance of {@link java.io.EOFException} will be thrown if the underlying input steam, the internal buffer
+     * is empty and the match operation is not successful.
      *
      * @param matchers the matchers
      * @return the match result from all the matchers
-     * @throws java.io.IOException if I/O error occurs, for example, the input is closed
+     * @throws java.io.IOException if I/O error occurs
      */
     MultiResult expect(Matcher<?>... matchers) throws IOException;
 
@@ -98,12 +108,15 @@ public interface Expect extends Closeable {
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
+     * <p/>
+     * An instance of {@link java.io.EOFException} will be thrown if the underlying input steam, the internal buffer
+     * is empty and the match operation is not successful.
      *
      * @param <R>       the matcher type
      * @param timeoutMs the timeout for the expect operation in milliseconds
      * @param matcher   the mather
      * @return the match result
-     * @throws java.io.IOException if I/O error occurs, for example, the input is closed
+     * @throws java.io.IOException if I/O error occurs
      */
     <R extends Result> R expect(long timeoutMs, Matcher<R> matcher) throws IOException;
 
@@ -112,11 +125,14 @@ public interface Expect extends Closeable {
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
+     * <p/>
+     * An instance of {@link java.io.EOFException} will be thrown if the underlying input steam, the internal buffer
+     * is empty and the match operation is not successful.
      *
      * @param timeoutMs the timeout for the expect operation in milliseconds
      * @param matcher   the matchers
      * @return the match result from all the matchers
-     * @throws java.io.IOException if I/O error occurs, for example, the input is closed
+     * @throws java.io.IOException if I/O error occurs
      */
     MultiResult expect(long timeoutMs, Matcher<?>... matcher) throws IOException;
 
@@ -125,13 +141,16 @@ public interface Expect extends Closeable {
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
+     * <p/>
+     * An instance of {@link java.io.EOFException} will be thrown if the underlying input steam, the internal buffer
+     * is empty and the match operation is not successful.
      *
      * @param <R>     the matcher type
      * @param input   the index of the input. if the index is outside of the boundaries, a runtime exception will be
      *                thrown
      * @param matcher the matcher
      * @return the match result
-     * @throws java.io.IOException if I/O error occurs, for example, the input is closed
+     * @throws java.io.IOException if I/O error occurs
      */
     <R extends Result> R expectIn(int input, Matcher<R> matcher) throws IOException;
 
@@ -147,7 +166,7 @@ public interface Expect extends Closeable {
      * @param timeoutMs the timeout for the expect operation in milliseconds
      * @param matcher   the mather
      * @return the match result
-     * @throws java.io.IOException if I/O error occurs, for example, the input is closed
+     * @throws java.io.IOException if I/O error occurs
      */
     <R extends Result> R expectIn(int input, long timeoutMs, Matcher<R> matcher) throws IOException;
 
@@ -156,13 +175,16 @@ public interface Expect extends Closeable {
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
+     * <p/>
+     * An instance of {@link java.io.EOFException} will be thrown if the underlying input steam, the internal buffer
+     * is empty and the match operation is not successful.
      *
      * @param input     the index of the input. if the index is outside of the boundaries, a runtime exception will be
      *                  thrown
      * @param timeoutMs the timeout for the expect operation in milliseconds
      * @param matchers  the matchers
      * @return the match result from all the matchers
-     * @throws java.io.IOException if I/O error occurs, for example, the input is closed
+     * @throws java.io.IOException if I/O error occurs
      */
     MultiResult expectIn(int input, long timeoutMs, Matcher<?>... matchers) throws IOException;
 }

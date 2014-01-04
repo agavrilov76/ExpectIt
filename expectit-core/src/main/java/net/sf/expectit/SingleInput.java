@@ -94,7 +94,7 @@ class SingleInput {
         }
         if (result.isSuccessful()) {
             buffer.delete(0, result.end());
-        } else if (copierFuture.isDone()) {
+        } else if (copierFuture.isDone() && buffer.length() == 0) {
             throw new EOFException("Input closed");
         }
         return result;
