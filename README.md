@@ -17,9 +17,11 @@ Quick start
 The library is available on the Maven central. Add the following Maven dependency to your project:
 
 ```xml
-<groupId>net.sf.expectit</groupId>
-<artifactId>expectit-core</artifactId>
-<version>0.2.0</version>
+    <dependency>
+        <groupId>net.sf.expectit</groupId>
+        <artifactId>expectit-core</artifactId>
+        <version>0.2.0</version>
+    </dependency>
 ```
 Create an instance of ``net.java.expect.Expect`` as follows:
 
