@@ -24,6 +24,7 @@ import net.sf.expectit.matcher.Matcher;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -38,13 +39,13 @@ class ExpectImpl implements Expect {
     private final OutputStream output;
     private final SingleInput[] inputs;
     private final Charset charset;
-    private final OutputStream echoOutput;
+    private final Writer echoOutput;
     private final boolean errorOnTimeout;
     private final ExecutorService executor;
     private final String lineSeparator;
 
     ExpectImpl(long timeout, OutputStream output, SingleInput[] inputs,
-               Charset charset, OutputStream echoOutput, boolean errorOnTimeout, String lineSeparator) {
+               Charset charset, Writer echoOutput, boolean errorOnTimeout, String lineSeparator) {
         this.timeout = timeout;
         this.output = output;
         this.inputs = inputs;
@@ -77,7 +78,10 @@ class ExpectImpl implements Expect {
 
     @Override
     public Expect send(String string) throws IOException {
-        return sendBytes(string.getBytes(charset));
+        byte[] bytes = string.getBytes(charset);
+        writeBytes(bytes);
+        echoString(string);
+        return this;
     }
 
     @Override
@@ -92,13 +96,21 @@ class ExpectImpl implements Expect {
 
     @Override
     public Expect sendBytes(byte[] bytes) throws IOException {
+        writeBytes(bytes);
+        echoString(new String(bytes, charset));
+        return this;
+    }
+
+    private void writeBytes(byte[] bytes) throws IOException {
         output.write(bytes);
         output.flush();
+    }
+
+    private void echoString(String string) throws IOException {
         if (echoOutput != null) {
-            echoOutput.write(bytes);
+            echoOutput.write(string);
             echoOutput.flush();
         }
-        return this;
     }
 
     @Override

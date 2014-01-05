@@ -28,10 +28,7 @@ import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.Charset;
 
 import static net.sf.expectit.Utils.*;
@@ -198,7 +195,7 @@ public class ExpectTest {
     @Test
     public void expectEchoOutput() throws IOException {
         ExpectBuilder builder = new ExpectBuilder();
-        OutputStream echo = mock(OutputStream.class);
+        Writer echo = mock(Writer.class);
         String inputText = "input";
         InputStream input = mockInputStream(SMALL_TIMEOUT, inputText);
         builder.withInputs(input);
@@ -207,10 +204,10 @@ public class ExpectTest {
         expect = builder.build();
         String sentText = "sentText";
         expect.sendLine(sentText);
-        verify(echo).write((sentText + System.getProperty("line.separator")).getBytes());
+        verify(echo).write(sentText + System.getProperty("line.separator"));
         reset(echo);
         assertTrue(expect.expect(LONG_TIMEOUT, times(2, contains(inputText))).isSuccessful());
-        verify(echo, Mockito.times(2)).write(inputText.getBytes());
+        verify(echo, Mockito.times(2)).write(inputText);
     }
 
     @Test(timeout = 5000)

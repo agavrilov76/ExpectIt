@@ -26,6 +26,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Properties;
 
 import static net.sf.expectit.filter.Filters.printableOnly;
@@ -48,7 +49,7 @@ public class SshExample {
         Expect expect = new ExpectBuilder()
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
-                .withEchoOutput(System.out)
+                .withEchoOutput(new PrintWriter(System.out))
                 .withInputFilters(removeColors(), printableOnly())
                 .withErrorOnTimeout(true)
                 .build();

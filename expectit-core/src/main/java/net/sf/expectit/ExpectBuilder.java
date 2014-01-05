@@ -25,6 +25,7 @@ import net.sf.expectit.filter.Filter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Writer;
 import java.nio.charset.Charset;
 
 /**
@@ -40,7 +41,7 @@ public class ExpectBuilder {
     private Filter[] filters;
     private OutputStream output;
     private long timeout = DEFAULT_TIMEOUT_MS;
-    private OutputStream echoOutput;
+    private Writer echoOutput;
     private Charset charset = Charset.defaultCharset();
     private boolean errorOnTimeout;
     private String lineSeparator = System.getProperty("line.separator");
@@ -89,13 +90,13 @@ public class ExpectBuilder {
     }
 
     /**
-     * Sets the echo output stream to print all sent and received data. Useful for debugging to monitor I/O activity.
+     * Sets the echo output to print all the sent and received data. Useful for debugging to monitor I/O activity.
      * Optional, default is unset.
      *
      * @param echoOutput the output stream
      * @return this
      */
-    public final ExpectBuilder withEchoOutput(OutputStream echoOutput) {
+    public final ExpectBuilder withEchoOutput(Writer echoOutput) {
         this.echoOutput = echoOutput;
         return this;
     }
