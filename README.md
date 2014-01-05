@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/Alexey1Gavrilov/expectit.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/expectit)
 Overview
 ========
-Yet another pure Java(tm) implementation of the Unix Expect tool. It designed to be simple, easy to
+Yet another pure Java 1.6+ implementation of the Unix Expect tool. It designed to be simple, easy to
 use and extensible. Written from scratch. Here are the features:
 
 * Fluent-style API.
@@ -14,15 +14,14 @@ use and extensible. Written from scratch. Here are the features:
 
 Quick start
 ===========
-The library is available on the Maven central. To begin with you need to add the following Maven
-dependency to your project:
+The library is available on the Maven central. Add the following Maven dependency to your project:
 
 ```xml
 <groupId>net.sf.expectit</groupId>
 <artifactId>expectit-core</artifactId>
 <version>0.1.0</version>
 ```
-Then you can use create an instance of ``net.java.expect.Expect`` as follows:
+Create an instance of ``net.java.expect.Expect`` as follows:
 
 ```java
     // the stream from where you read your input data
@@ -38,22 +37,20 @@ Then you can use create an instance of ``net.java.expect.Expect`` as follows:
     // accessing the matching group
     String group = result.group(2);
 ```
-Manual
-======
-
-Under the hood
---------------
+How it works
+============
 Once an Expect object is created the library starts background threads for every input stream. The threads read
-bytes from the streams and copy them to NIO pipes. The pipe is configured to use non-blocking source channel.
+bytes from the streams and copy them into NIO pipes. The pipes are configured to use non-blocking source channel.
 
 The expect object holds a String buffer for each input. The user calls one of the expect methods to wait until the
-given matcher object matches the corresponding buffer. If the input buffer doesn't satisfy the matcher criteria, then
-the method blocks for configurable timeout of milliseconds until new data is available on the input stream NIO pipe.
+given matcher object matches the corresponding buffer contents. If the input buffer doesn't satisfy the matcher
+criteria, then the method blocks for configurable a timeout of milliseconds until new data is available on the
+input stream NIO pipe.
 
-The result object indicates whether the match operation was successful or not. It holds the context of the match, for
-example, it implement the ``java.util.regexp.MatchResult`` interface which provides access to the result of regular
-expression. If the match was successful, then the corresponding input buffer is update, all characters before the
-the match including the match are removed.
+The result object indicates whether the match operation was successful or not. It holds the context of the match. It
+implement the ``java.util.regexp.MatchResult`` interface which provides access to the result of regular
+expression matching results. If the match was successful, then the corresponding input buffer is update, all
+characters before the match including the match are removed.
 
 Interacting with OS process
 ---------------------------
@@ -73,15 +70,10 @@ Here is an example of interacting with a spawn process:
         expect.sendLine("exit");
         expect.close();
 ```
-Here is a sample output:
-```
-Before: Hello
-Match: World
-```
 Interacting via SSH
 --------------------
-Here is an example how to talk to a public SSH service on sdf.org using the JSch library. Note: you will to add the
-library to your project dependencies.
+Here is an example how to talk to a public SSH service on http://sdf.org using the JSch library.
+Note: you will to add the jsch library to your project dependencies.
 ```java
         JSch jSch = new JSch();
         Session session = jSch.getSession("new", "sdf.org");
@@ -107,28 +99,22 @@ library to your project dependencies.
         session.disconnect();
         expect.close();
 ```
-Here is sample output:
-```
-You will now be connected to NEWUSER mkacct server.
-Please login as 'new' when prompted.
-
-[RETURN]
-
-THIS MAY TAKE A MOMENT .. Trying 192.94.73.20...
-Captured IP: 192.94.73.20
-```
 Using composition of matchers
 -----------------------------
-In the following example you can see how combine different matcher in one expect call:
+In the following example you can see how to combine different matchers:
 ```java
+    // match any of predicates
     expect.expect(anyOf(contains("string"), regexp("abc.*def")));
+    // match all
     expect.expect(allOf(regexp("xyz"), regexp("abc.*def")));
+    // varargs method arguments are equivalent to 'allOf'
+    expect.expect(contains("string1"), contains("string2");
+    // three timed
+    expect.expect(times(3, contains("string"));
 ```
 License
 =======
 [Apache License, Version 2.0](LICENSE.txt)
-
-
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Alexey1Gavrilov/expectit/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
