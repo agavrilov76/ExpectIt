@@ -89,9 +89,9 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
                 // trace all the input and output activity to the standard output stream
-                .withEchoOutput(System.out)
+                .withEchoOutput(new PrintWriter(System.out))
                 // filter the input: remove ANSI color escape sequences and non-printable chars
-                .withInputFilter(chain(removeColors(), printableOnly()))
+                .withInputFilter(removeColors(), printableOnly())
                 .build();
         channel.connect();
         expect.expect(contains("[RETURN]"));
