@@ -306,10 +306,12 @@ public class MatcherTest {
     @Test
     public void testTestEofMatcher() throws IOException, InterruptedException {
         assertTrue(input.expect(SMALL_TIMEOUT, contains("a1")).isSuccessful());
-        reset(mock);
         when(mock.read(any(byte[].class))).thenThrow(new EOFException(""));
-        assertTrue(input.expect(SMALL_TIMEOUT, contains("b2")).isSuccessful());
-        assertEquals(input.expect(SMALL_TIMEOUT, matches(".*_a1.*_$")).group(), "c3_a1b2c3_");
+        assertTrue(input.expect(SMALL_TIMEOUT, contains("_")).isSuccessful());
+        // make sure that all the data received
+        input.expect(SMALL_TIMEOUT, times(3, contains("_")));
+        // make sure the buffer is cleaned
+        assertTrue(input.expect(SMALL_TIMEOUT, matches(".*")).isSuccessful());
         try {
             // now the buffer is empty
             input.expect(SMALL_TIMEOUT, contains("xxx"));
@@ -323,9 +325,9 @@ public class MatcherTest {
 
     @Test
     public void testTestEofMultiMatcher1() throws IOException, InterruptedException {
-        Thread.sleep(SMALL_TIMEOUT);
+        assertTrue(input.expect(SMALL_TIMEOUT, contains("a1")).isSuccessful());
         when(mock.read(any(byte[].class))).thenThrow(new EOFException(""));
-        MultiResult result = input.expect(SMALL_TIMEOUT, allOf(contains("a"), eof()));
+        MultiResult result = input.expect(SMALL_TIMEOUT, allOf(contains("b"), eof()));
         assertTrue(result.isSuccessful());
         assertFalse(result.getBefore().isEmpty());
         assertTrue(input.expect(SMALL_TIMEOUT, eof()).isSuccessful());
@@ -333,7 +335,7 @@ public class MatcherTest {
 
     @Test
     public void testTestEofMultiMatcher2() throws IOException, InterruptedException {
-        Thread.sleep(SMALL_TIMEOUT);
+        assertTrue(input.expect(SMALL_TIMEOUT, contains("a1")).isSuccessful());
         when(mock.read(any(byte[].class))).thenThrow(new EOFException(""));
         MultiResult result = input.expect(SMALL_TIMEOUT, anyOf(contains("wrong"), eof()));
         assertTrue(result.isSuccessful());

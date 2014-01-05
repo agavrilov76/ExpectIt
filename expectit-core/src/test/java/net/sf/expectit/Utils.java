@@ -48,9 +48,14 @@ public final class Utils {
     public static InputStream mockInputStream(final long period, final String text) throws IOException {
         InputStream mock = mock(InputStream.class);
         when(mock.read(any(byte[].class))).then(new Answer<Object>() {
+            private boolean firstTime = true;
+
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                Thread.sleep(period);
+                if (!firstTime) {
+                    Thread.sleep(period);
+                }
+                firstTime = false;
                 byte[] bytes = text.getBytes();
                 //noinspection MismatchedReadAndWriteOfArray
                 byte[] dest = (byte[]) invocation.getArguments()[0];
