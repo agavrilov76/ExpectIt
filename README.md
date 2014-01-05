@@ -112,6 +112,11 @@ In the following example you can see how to combine different matchers:
     // expect to match three times in a row
     expect.expect(times(3, contains("string")));
 ```
+More examples
+=============
+* [Complete SSH example](expectit-core/src/test/java/net/sf/expectit/SshExample.java)
+* [Interacting with Apache Karaf remove shell](expectit-core/src/test/java/net/sf/expectit/KarafExample.java)
+
 License
 =======
 [Apache License, Version 2.0](LICENSE.txt)

@@ -23,7 +23,7 @@ package net.sf.expectit;
 import java.util.List;
 
 /**
- * The result of multiple match operations on input data.
+ * A representation of the result of multiple match operations.
  * <p>The result of the one operation is selected by implementation to represent all the other operations
  * and fulfill the contract of the {@code Result} super interface.
  * <p/>

@@ -33,6 +33,9 @@ import static net.sf.expectit.filter.Filters.removeColors;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.regexp;
 
+/**
+ * An example of interacting with SSH server
+ */
 public class SshExample {
     public static void main(String[] args) throws JSchException, IOException {
         JSch jSch = new JSch();

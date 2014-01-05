@@ -23,7 +23,7 @@ package net.sf.expectit;
 import java.util.regex.MatchResult;
 
 /**
- * The result of a match operation on input data.
+ * A representation of the result of a single match operation.
  * <p/>
  * The interface contains methods to query the results of the match against an expression.
  */

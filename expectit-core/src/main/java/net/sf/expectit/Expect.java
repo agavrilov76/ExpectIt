@@ -46,12 +46,13 @@ public interface Expect extends Closeable {
     Expect send(String string) throws IOException;
 
     /**
-     * Appends a new line character and calls {@link #send(String)} method.
+     * Appends the line separator character to the string and calls {@link #send(String)} method.
      *
      * @param string the string to be sent
      * @return this
      * @throws IOException if I/O error occurs
      * @see #send(String)
+     * @see net.sf.expectit.ExpectBuilder#withLineSeparator(String)
      */
     Expect sendLine(String string) throws IOException;
 
@@ -74,7 +75,7 @@ public interface Expect extends Closeable {
     Expect sendBytes(byte[] bytes) throws IOException;
 
     /**
-     * Awaits until the given matcher matches against the first input stream using the default timeout.
+     * Blocks until the given matcher matches against the first input stream using the default timeout.
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
@@ -90,7 +91,7 @@ public interface Expect extends Closeable {
     <R extends Result> R expect(Matcher<R> matcher) throws IOException;
 
     /**
-     * Awaits until all the given matchers match against the first input stream using the default timeout.
+     * Blocks until all the given matchers match against the first input stream using the default timeout.
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
@@ -105,7 +106,7 @@ public interface Expect extends Closeable {
     MultiResult expect(Matcher<?>... matchers) throws IOException;
 
     /**
-     * Awaits until the given matcher matches the first input stream using the given timeout.
+     * Blocks until the given matcher matches the first input stream using the given timeout.
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
@@ -122,7 +123,7 @@ public interface Expect extends Closeable {
     <R extends Result> R expect(long timeoutMs, Matcher<R> matcher) throws IOException;
 
     /**
-     * Awaits until all the given matchers match the first input stream using the given timeout.
+     * Blocks until all the given matchers match the first input stream using the given timeout.
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
@@ -138,7 +139,7 @@ public interface Expect extends Closeable {
     MultiResult expect(long timeoutMs, Matcher<?>... matcher) throws IOException;
 
     /**
-     * Awaits until the given matcher matches against the given input stream using the default timeout.
+     * Blocks until the given matcher matches against the given input stream using the default timeout.
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
@@ -156,7 +157,7 @@ public interface Expect extends Closeable {
     <R extends Result> R expectIn(int input, Matcher<R> matcher) throws IOException;
 
     /**
-     * Awaits until the given matcher matches against the given input stream using the given timeout.
+     * Blocks until the given matcher matches against the given input stream using the given timeout.
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
@@ -172,7 +173,7 @@ public interface Expect extends Closeable {
     <R extends Result> R expectIn(int input, long timeoutMs, Matcher<R> matcher) throws IOException;
 
     /**
-     * Awaits until all the given matchers matche against the given input stream using the given timeout.
+     * Blocks until all the given matchers matche against the given input stream using the given timeout.
      * <p/>
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
@@ -188,4 +189,11 @@ public interface Expect extends Closeable {
      * @throws java.io.IOException if I/O error occurs
      */
     MultiResult expectIn(int input, long timeoutMs, Matcher<?>... matchers) throws IOException;
+
+    /**
+     * Closes all resources associated with this instance.
+     * @throws IOException
+     */
+    @Override
+    void close() throws IOException;
 }
