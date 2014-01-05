@@ -73,7 +73,7 @@ Here is an example of interacting with a spawn process:
 Interacting via SSH
 --------------------
 Here is an example how to talk to a public SSH service on http://sdf.org using the JSch library.
-Note: you will to add the jsch library to your project dependencies.
+Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your project dependencies.
 ```java
         JSch jSch = new JSch();
         Session session = jSch.getSession("new", "sdf.org");
@@ -108,9 +108,9 @@ In the following example you can see how to combine different matchers:
     // match all
     expect.expect(allOf(regexp("xyz"), regexp("abc.*def")));
     // varargs method arguments are equivalent to 'allOf'
-    expect.expect(contains("string1"), contains("string2");
-    // three timed
-    expect.expect(times(3, contains("string"));
+    expect.expect(contains("string1"), contains("string2"));
+    // expect to match three times in a row
+    expect.expect(times(3, contains("string")));
 ```
 License
 =======
