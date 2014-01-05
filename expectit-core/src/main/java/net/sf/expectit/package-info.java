@@ -1,9 +1,5 @@
 /**
- * A library which implements expect-like functionality for input data.
- *
- * <p/>
- *
- *
+ * Classes for implementing expect-like functionality.
  * <p/>
  * All the methods are expected to throw {@code NullPointerException} if any of the arguments is null, unless
  * different behavior explicitly specified in the method description.

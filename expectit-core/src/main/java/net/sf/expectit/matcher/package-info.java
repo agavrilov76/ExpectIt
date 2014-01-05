@@ -1,5 +1,5 @@
 /**
- * Matchers for expect operations.
+ * Classes for different types of match operations.
  */
 package net.sf.expectit.matcher;
 

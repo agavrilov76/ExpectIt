@@ -26,10 +26,11 @@ import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * The methods to perform expect operations on input data. The input data is stored in the internal buffer growing
- * while new data is being received from the input stream.
+ * The main interface providing access to the expect operations.
  * <p/>
- * A success match operation updates the buffer by removing a part from the begging until the end position of the
+ * Input data for the operations is stored in the internal buffer growing while new data is being received from
+ * the underlying input stream.
+ * A successful match operation updates the buffer by removing a part from the begging until the end position of the
  * match.
  */
 public interface Expect extends Closeable {

@@ -1,5 +1,6 @@
 /**
- * Filters to modify input for expect operations.
+ * Classes for filtering input before passing it to perform matching.
+ *
  * @author Alexey Gavrilov
  */
 package net.sf.expectit.filter;
