@@ -19,7 +19,7 @@ The library is available on the Maven central. Add the following Maven dependenc
 ```xml
 <groupId>net.sf.expectit</groupId>
 <artifactId>expectit-core</artifactId>
-<version>0.1.0</version>
+<version>0.2.0</version>
 ```
 Create an instance of ``net.java.expect.Expect`` as follows:
 
@@ -113,9 +113,9 @@ In the following example you can see how to combine different matchers:
     expect.expect(times(3, contains("string")));
 ```
 More examples
-=============
+-------------
 * [Complete SSH example](expectit-core/src/test/java/net/sf/expectit/SshExample.java)
-* [Interacting with Apache Karaf remove shell](expectit-core/src/test/java/net/sf/expectit/KarafExample.java)
+* [Interacting with Apache Karaf remote shell](expectit-core/src/test/java/net/sf/expectit/KarafExample.java)
 
 License
 =======
