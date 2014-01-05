@@ -34,9 +34,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 
-import static net.sf.expectit.Utils.LONG_TIMEOUT;
-import static net.sf.expectit.Utils.SMALL_TIMEOUT;
-import static net.sf.expectit.Utils.mockInputStream;
+import static net.sf.expectit.Utils.*;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.times;
 import static org.junit.Assert.*;
@@ -49,6 +47,7 @@ import static org.mockito.Mockito.*;
  */
 public class ExpectTest {
     private Expect expect;
+    private boolean mockInputReadCalled;
 
     @After
     public void cleanup() throws IOException {
@@ -148,25 +147,36 @@ public class ExpectTest {
         when(in.read(any(byte[].class))).then(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
+                if (mockInputReadCalled) {
+                    return -1;
+                }
                 //noinspection SuspiciousSystemArraycopy
                 System.arraycopy(bytes, 0, invocation.getArguments()[0], 0, bytes.length);
+                mockInputReadCalled = true;
                 return bytes.length;
             }
         });
     }
 
     @Test
-    public void testFilter() throws IOException {
+    public void testFilters() throws IOException {
         ExpectBuilder builder = new ExpectBuilder();
         InputStream in = mock(InputStream.class);
         builder.withInputs(in);
         builder.withOutput(mock(OutputStream.class));
-        Filter filter = mock(Filter.class);
-        builder.withInputFilter(filter);
-        when(filter.filter(anyString(), any(StringBuilder.class))).thenReturn("xxx");
+        Filter filter1 = mock(Filter.class);
+        Filter filter2 = mock(Filter.class);
+        Filter filter3 = mock(Filter.class);
+        builder.withInputFilters(filter1, filter2, filter3);
+        when(filter1.filter(anyString(), any(StringBuilder.class))).thenReturn("xxx");
+        when(filter2.filter(eq("xxx"), any(StringBuilder.class))).thenReturn("yyy");
         expect = builder.build();
-        configureMockInputStream(in, "test".getBytes());
-        assertTrue(expect.expect(SMALL_TIMEOUT, contains("xxx")).isSuccessful());
+        String inputStr = "testFilter";
+        configureMockInputStream(in, inputStr.getBytes());
+        assertTrue(expect.expect(SMALL_TIMEOUT, contains("yyy")).isSuccessful());
+        verify(filter1).filter(eq(inputStr), any(StringBuilder.class));
+        verify(filter2).filter(eq("xxx"), any(StringBuilder.class));
+        verify(filter3).filter(eq("yyy"), any(StringBuilder.class));
     }
 
     @Test
@@ -203,7 +213,7 @@ public class ExpectTest {
         verify(echo, Mockito.times(2)).write(inputText.getBytes());
     }
 
-    @Test (timeout = 5000)
+    @Test(timeout = 5000)
     public void testExpectMethods() throws IOException {
         ExpectBuilder builder = new ExpectBuilder();
         String inputText1 = "input1";
@@ -222,4 +232,32 @@ public class ExpectTest {
         assertTrue(expect.expect(SMALL_TIMEOUT, contains("input"), contains("input")).isSuccessful());
     }
 
+    @Test
+    public void testCustomLineSeparator() throws IOException {
+        ExpectBuilder builder = new ExpectBuilder();
+        builder.withLineSeparator("XYZ");
+        builder.withInputs(mock(InputStream.class));
+        OutputStream mock = mock(OutputStream.class);
+        builder.withOutput(mock);
+        expect = builder.build();
+        expect.sendLine("ABZ");
+        verify(mock).write(("ABZ" + "XYZ").getBytes());
+        expect.sendLine();
+        verify(mock).write("XYZ".getBytes());
+        expect.send("XXx");
+        verify(mock).write(("XXx").getBytes());
+        expect.sendBytes("fff".getBytes());
+        verify(mock).write(("fff").getBytes());
+    }
+
+    @Test
+    public void testLineSeparator() throws IOException {
+        ExpectBuilder builder = new ExpectBuilder();
+        builder.withInputs(mock(InputStream.class));
+        OutputStream mock = mock(OutputStream.class);
+        builder.withOutput(mock);
+        expect = builder.build();
+        expect.sendLine();
+        verify(mock).write((System.getProperty("line.separator")).getBytes());
+    }
 }

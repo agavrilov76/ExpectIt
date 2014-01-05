@@ -45,17 +45,17 @@ class SingleInput {
     private final StringBuilder buffer;
     private final Charset charset;
     private final OutputStream echoOutput;
-    private final Filter filter;
+    private final Filter[] filters;
     private Future<Object> copierFuture;
     private final Pipe.SourceChannel source;
     private final Pipe.SinkChannel sink;
 
     protected SingleInput(InputStream input, Charset charset,
-                          OutputStream echoOutput, Filter filter) throws IOException {
+                          OutputStream echoOutput, Filter[] filter) throws IOException {
         this.input = input;
         this.charset = charset;
         this.echoOutput = echoOutput;
-        this.filter = filter;
+        this.filters = filter;
         Pipe pipe = Pipe.open();
         source = pipe.source();
         sink = pipe.sink();
@@ -101,8 +101,15 @@ class SingleInput {
     }
 
     private void processString(String string) throws IOException {
-        if (filter != null) {
-            string = filter.filter(string, buffer);
+        if (filters != null) {
+            String previousResult = null;
+             for (Filter filter : filters) {
+                string = filter.filter(string, buffer);
+                if (string == null) {
+                    string = previousResult;
+                }
+                previousResult = string;
+            }
         }
         if (string != null) {
             if (echoOutput != null) {

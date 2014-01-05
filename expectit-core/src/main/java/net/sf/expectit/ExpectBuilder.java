@@ -37,12 +37,13 @@ public class ExpectBuilder {
     public static final int DEFAULT_TIMEOUT_MS = 30000;
 
     private InputStream[] inputs;
-    private Filter filter;
+    private Filter[] filters;
     private OutputStream output;
     private long timeout = DEFAULT_TIMEOUT_MS;
     private OutputStream echoOutput;
     private Charset charset = Charset.defaultCharset();
     private boolean errorOnTimeout;
+    private String lineSeparator = System.getProperty("line.separator");
 
     /**
      * Default constructor.
@@ -116,12 +117,17 @@ public class ExpectBuilder {
      * <p/>
      * Filters can be used to modify the input before performing expect operations. For example, to remove
      * non-printable characters.
+     * <p/>
+     * The given filters are applied one by one. The string returns by the
+     * {@link net.sf.expectit.filter.Filter#filter(String, StringBuilder)} method of one filter is passed a parameter
+     * to next one if not {@code null}. If it is {@code null}, then the filtering process stops and the latest
+     * non-null result is appended to the expect internal buffer.
      *
-     * @param filter the filter instance.
+     * @param filters the filters
      * @return this
      */
-    public final ExpectBuilder withInputFilter(Filter filter) {
-        this.filter = filter;
+    public final ExpectBuilder withInputFilters(Filter... filters) {
+        this.filters = filters;
         return this;
     }
 
@@ -138,7 +144,18 @@ public class ExpectBuilder {
     }
 
     /**
-     * Creates a read to use {@link Expect} instance.
+     * Sets the line separator used by the {@link Expect#sendLine()} method. Optional, default is the system default.
+     *
+     * @param lineSeparator the line separator
+     * @return this
+     */
+    public final ExpectBuilder withLineSeparator(String lineSeparator) {
+        this.lineSeparator = lineSeparator;
+        return this;
+    }
+
+    /**
+     * Creates a ready to use {@link Expect} instance.
      * <p/>
      * This method creates an instance and starts background threads that receive input data through NIO pipes. The
      * instance is not thread safe and intended to be used in a single thread.
@@ -150,9 +167,10 @@ public class ExpectBuilder {
         checkArguments();
         SingleInput[] inputs = new SingleInput[this.inputs.length];
         for (int i = 0; i < inputs.length; i++) {
-            inputs[i] = new SingleInput(this.inputs[i], charset, echoOutput, filter);
+            inputs[i] = new SingleInput(this.inputs[i], charset, echoOutput, filters);
         }
-        ExpectImpl instance = new ExpectImpl(timeout, output, inputs, charset, echoOutput, errorOnTimeout);
+        ExpectImpl instance = new ExpectImpl(timeout, output, inputs, charset, echoOutput,
+                errorOnTimeout, lineSeparator);
         instance.start();
         return instance;
     }

@@ -41,15 +41,17 @@ class ExpectImpl implements Expect {
     private final OutputStream echoOutput;
     private final boolean errorOnTimeout;
     private final ExecutorService executor;
+    private final String lineSeparator;
 
     ExpectImpl(long timeout, OutputStream output, SingleInput[] inputs,
-               Charset charset, OutputStream echoOutput, boolean errorOnTimeout) {
+               Charset charset, OutputStream echoOutput, boolean errorOnTimeout, String lineSeparator) {
         this.timeout = timeout;
         this.output = output;
         this.inputs = inputs;
         this.charset = charset;
         this.echoOutput = echoOutput;
         this.errorOnTimeout = errorOnTimeout;
+        this.lineSeparator = lineSeparator;
         executor = Executors.newFixedThreadPool(inputs.length, new NamedExecutorThreadFactory("expect-"));
     }
 
@@ -85,7 +87,7 @@ class ExpectImpl implements Expect {
 
     @Override
     public Expect sendLine(String string) throws IOException {
-        return send(string + System.getProperty("line.separator"));
+        return send(string + lineSeparator);
     }
 
     @Override

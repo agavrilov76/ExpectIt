@@ -31,30 +31,6 @@ public final class Filters {
     }
 
     /**
-     * Creates a composite filter which applies the given filters one by one. The sequence stops when the
-     * {@link Filter#filter(String, StringBuilder)} returns {@code null}. Then the latest non-null result is returned.
-     *
-     * @param filters the filter chain
-     * @return the composite filter
-     */
-    public static Filter chain(final Filter... filters) {
-        return new Filter() {
-            @Override
-            public String filter(String string, StringBuilder buffer) {
-                String previousResult = null;
-                for (Filter filter : filters) {
-                    string = filter.filter(string, buffer);
-                    if (string == null) {
-                        return previousResult;
-                    }
-                    previousResult = string;
-                }
-                return string;
-            }
-        };
-    }
-
-    /**
      * Removes non-printable characters. Check the method source code for details.
      *
      * @return the filter

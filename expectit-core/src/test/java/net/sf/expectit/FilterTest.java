@@ -20,32 +20,17 @@ package net.sf.expectit;
  * #L%
  */
 
-import net.sf.expectit.filter.Filter;
 import org.junit.Test;
 
-import static net.sf.expectit.filter.Filters.*;
+import static net.sf.expectit.filter.Filters.printableOnly;
+import static net.sf.expectit.filter.Filters.removeColors;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
- * @author Alexey Gavrilov
+ * Filter tests.
  */
 public class FilterTest {
-
-    @Test
-    public void testFilterChain() {
-        StringBuilder buffer = new StringBuilder();
-        Filter f1 = mock(Filter.class);
-        when(f1.filter("x", buffer)).thenReturn("X");
-        Filter f2 = mock(Filter.class);
-        when(f2.filter("X", buffer)).thenReturn("Y");
-        assertEquals(chain(f1, f2).filter("x", buffer), "Y");
-        Filter f3 = mock(Filter.class);
-        when(f3.filter("x", buffer)).thenReturn(null);
-        assertEquals(chain(f1, f3, f2).filter("x", buffer), "X");
-    }
 
     @Test
     public void testNonPrintable() {
