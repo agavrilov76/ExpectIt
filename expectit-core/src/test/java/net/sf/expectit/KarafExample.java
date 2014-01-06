@@ -46,6 +46,7 @@ public class KarafExample {
         session.setConfig(config);
         session.connect();
         Channel channel = session.openChannel("shell");
+
         Expect expect = new ExpectBuilder()
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())

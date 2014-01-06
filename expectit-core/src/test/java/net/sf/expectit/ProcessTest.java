@@ -29,6 +29,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static net.sf.expectit.Utils.LONG_TIMEOUT;
 import static net.sf.expectit.Utils.SMALL_TIMEOUT;
@@ -56,7 +57,7 @@ public class ProcessTest {
         ProcessBuilder builder = new ProcessBuilder(BIN_SH);
         process = builder.start();
         expect = new ExpectBuilder()
-                .withTimeout(LONG_TIMEOUT)
+                .withTimeout(LONG_TIMEOUT, TimeUnit.MILLISECONDS)
                 .withInputs(process.getInputStream(), process.getErrorStream())
                 .withOutput(process.getOutputStream())
                 .build();
@@ -123,10 +124,11 @@ public class ProcessTest {
         ProcessBuilder builder = new ProcessBuilder("/bin/sh");
         Process process = builder.start();
         Expect expect = new ExpectBuilder()
-                .withTimeout(1000)
+                .withTimeout(1, TimeUnit.SECONDS)
                 .withInputs(process.getInputStream(), process.getErrorStream())
                 .withOutput(process.getOutputStream())
                 .build();
+
         expect.sendLine("echo Hello World!");
         Result result = expect.expect(regexp("Wor.."));
         System.out.println("Before: " + result.getBefore());

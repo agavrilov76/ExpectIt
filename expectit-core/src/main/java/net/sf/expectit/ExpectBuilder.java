@@ -27,13 +27,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A class used to construct {@link Expect} instances.
  */
 public class ExpectBuilder {
     /**
-     * The default expect timeout in milliseconds.
+     * The default timeout value of 30000 milliseconds.
      */
     public static final int DEFAULT_TIMEOUT_MS = 30000;
 
@@ -53,7 +54,8 @@ public class ExpectBuilder {
     }
 
     /**
-     * Sets the output stream where {@link Expect} sends command to. Required.
+     * Sets the output stream where {@link Expect} sends command to. Optional, if not set then all the
+     * send method are expected to throw {@link NullPointerException}.
      *
      * @param output the output stream
      * @return this
@@ -75,17 +77,18 @@ public class ExpectBuilder {
     }
 
     /**
-     * Sets timeout in milliseconds for expect operations. Optional, the default value is {@link #DEFAULT_TIMEOUT_MS}.
+     * Sets the default timeout in the given unit for expect operations. Optional, the default value is 30 seconds.
      *
-     * @param timeoutMs the timeout
+     * @param duration the timeout value
+     * @param unit the time unit
      * @return this
      * @throws java.lang.IllegalArgumentException if the timeout {@code <= 0}
      */
-    public final ExpectBuilder withTimeout(long timeoutMs) {
-        if (timeoutMs <= 0) {
-            throw new IllegalArgumentException("Timeout <= 0");
+    public final ExpectBuilder withTimeout(long duration, TimeUnit unit) {
+        if (duration <= 0) {
+            throw new IllegalArgumentException("Duration <= 0");
         }
-        this.timeout = timeoutMs;
+        this.timeout = unit.toMillis(duration);
         return this;
     }
 
@@ -114,7 +117,7 @@ public class ExpectBuilder {
     }
 
     /**
-     * Sets a filter for the input.
+     * Sets a filter for the input. Optional, by default no filters are applied.
      * <p/>
      * Filters can be used to modify the input before performing expect operations. For example, to remove
      * non-printable characters.
@@ -163,27 +166,22 @@ public class ExpectBuilder {
      *
      * @return the instance
      * @throws IOException if I/O error occurs
+     * @throws java.lang.IllegalStateException if the {@code inputs} are incorrect
      */
     public final Expect build() throws IOException {
-        checkArguments();
-        SingleInput[] inputs = new SingleInput[this.inputs.length];
-        for (int i = 0; i < inputs.length; i++) {
-            inputs[i] = new SingleInput(this.inputs[i], charset, echoOutput, filters);
+        if (inputs == null || inputs.length == 0) {
+            throw new IllegalStateException("Inputs are null or empty");
         }
+
+        SingleInputExpect[] inputs = new SingleInputExpect[this.inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            inputs[i] = new SingleInputExpect(this.inputs[i], charset, echoOutput, filters);
+        }
+
         ExpectImpl instance = new ExpectImpl(timeout, output, inputs, charset, echoOutput,
                 errorOnTimeout, lineSeparator);
         instance.start();
         return instance;
     }
-
-    private void checkArguments() {
-        if (output == null) {
-            throw new IllegalArgumentException("Output is null");
-        }
-        if (inputs == null || inputs.length == 0) {
-            throw new IllegalArgumentException("Inputs are null or empty");
-        }
-    }
-
 
 }

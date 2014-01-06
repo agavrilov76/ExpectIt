@@ -26,8 +26,6 @@ import java.util.regex.MatchResult;
  * A result of matching a regular expression.
  */
 class RegexpResult extends SimpleResult {
-    public static final RegexpResult NEGATIVE = new RegexpResult(false, null, null);
-
     private final MatchResult delegate;
 
     public RegexpResult(boolean succeeded, String before, MatchResult regexpResult) {

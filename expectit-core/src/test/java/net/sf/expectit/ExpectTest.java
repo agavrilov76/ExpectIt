@@ -30,6 +30,7 @@ import org.mockito.stubbing.Answer;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 
 import static net.sf.expectit.Utils.*;
 import static net.sf.expectit.matcher.Matchers.contains;
@@ -57,28 +58,39 @@ public class ExpectTest {
     @Test
     public void testRequiredParameters() throws IOException {
         ExpectBuilder builder = new ExpectBuilder();
-        assertIllegalArgumentException(builder);
-        InputStream mock = mock(InputStream.class);
-        builder.withInputs(mock);
-        assertIllegalArgumentException(builder);
-        builder.withOutput(mock(OutputStream.class));
+        expectIllegalState(builder);
+
+        builder.withInputs(mock(InputStream.class));
         expect = builder.build();
-        assertNotNull(expect);
-        builder.withInputs();
-        assertIllegalArgumentException(builder);
+        assertEquals(((ExpectImpl) expect).getTimeout(), 30000);
+
         try {
-            builder.withTimeout(-1);
+            expect.sendBytes("".getBytes());
+            fail();
+        } catch (NullPointerException ok) {
+        }
+        builder.withInputs();
+        expectIllegalState(builder);
+
+        try {
+            builder.withTimeout(-1, TimeUnit.SECONDS);
             fail();
         } catch (IllegalArgumentException ok) {
-
         }
     }
 
-    private void assertIllegalArgumentException(ExpectBuilder builder) throws IOException {
+    @Test
+    public void testTimeUnit() throws IOException {
+        expect = new ExpectBuilder().withInputs(mock(InputStream.class))
+                .withTimeout(3, TimeUnit.DAYS).build();
+        assertEquals(((ExpectImpl) expect).getTimeout(), 259200000);
+    }
+
+    private void expectIllegalState(ExpectBuilder builder) throws IOException {
         try {
             builder.build();
             fail();
-        } catch (IllegalArgumentException ok) {
+        } catch (IllegalStateException ok) {
         }
     }
 
@@ -88,12 +100,12 @@ public class ExpectTest {
         InputStream mock1 = mock(InputStream.class);
         InputStream mock2 = mock(InputStream.class);
         builder.withInputs(mock1, mock2);
-        builder.withOutput(mock(OutputStream.class));
         Matcher<?> mock = mock(Matcher.class);
         Result result = mock(Result.class);
         when(result.isSuccessful()).thenReturn(true);
         when(mock.matches(anyString(), eq(false))).thenReturn(result);
         expect = builder.build();
+
         assertTrue(expect.expectIn(0, mock).isSuccessful());
         assertTrue(expect.expectIn(1, mock).isSuccessful());
         try {
@@ -108,9 +120,10 @@ public class ExpectTest {
         ExpectBuilder builder = new ExpectBuilder();
         builder.withInputs(mock(InputStream.class));
         builder.withOutput(mock(OutputStream.class));
-        builder.withTimeout(SMALL_TIMEOUT);
+        builder.withTimeout(SMALL_TIMEOUT, TimeUnit.MILLISECONDS);
         builder.withErrorOnTimeout(true);
         expect = builder.build();
+
         Matcher<?> mock = mock(Matcher.class);
         Result result = mock(Result.class);
         when(result.isSuccessful()).thenReturn(false);
@@ -131,9 +144,10 @@ public class ExpectTest {
         builder.withOutput(out);
         Charset charset = Charset.forName("UTF-16");
         builder.withCharset(charset);
+        expect = builder.build();
+
         String testString = "hello";
         final byte[] bytes = testString.getBytes(charset);
-        expect = builder.build();
         expect.send(testString);
         verify(out).write(bytes);
         configureMockInputStream(in, bytes);
@@ -160,7 +174,6 @@ public class ExpectTest {
         ExpectBuilder builder = new ExpectBuilder();
         InputStream in = mock(InputStream.class);
         builder.withInputs(in);
-        builder.withOutput(mock(OutputStream.class));
         Filter filter1 = mock(Filter.class);
         Filter filter2 = mock(Filter.class);
         Filter filter3 = mock(Filter.class);
@@ -168,6 +181,7 @@ public class ExpectTest {
         when(filter1.filter(anyString(), any(StringBuilder.class))).thenReturn("xxx");
         when(filter2.filter(eq("xxx"), any(StringBuilder.class))).thenReturn("yyy");
         expect = builder.build();
+
         String inputStr = "testFilter";
         configureMockInputStream(in, inputStr.getBytes());
         assertTrue(expect.expect(SMALL_TIMEOUT, contains("yyy")).isSuccessful());
@@ -182,8 +196,8 @@ public class ExpectTest {
         InputStream in = mock(InputStream.class);
         when(in.read(any(byte[].class))).thenThrow(new EOFException(""));
         builder.withInputs(in);
-        builder.withOutput(mock(OutputStream.class));
         expect = builder.build();
+
         try {
             expect.expect(LONG_TIMEOUT, contains("test"));
             expect.expect(SMALL_TIMEOUT, contains("test"));
@@ -202,6 +216,7 @@ public class ExpectTest {
         builder.withEchoOutput(echo);
         builder.withOutput(mock(OutputStream.class));
         expect = builder.build();
+
         String sentText = "sentText";
         expect.sendLine(sentText);
         verify(echo).write(sentText + System.getProperty("line.separator"));
@@ -218,7 +233,6 @@ public class ExpectTest {
         InputStream input1 = mockInputStream(SMALL_TIMEOUT, inputText1);
         InputStream input2 = mockInputStream(SMALL_TIMEOUT, inputText2);
         builder.withInputs(input1, input2);
-        builder.withOutput(mock(OutputStream.class));
         expect = builder.build();
 
         assertFalse(expect.expectIn(1, SMALL_TIMEOUT, contains("input1")).isSuccessful());
@@ -237,6 +251,7 @@ public class ExpectTest {
         OutputStream mock = mock(OutputStream.class);
         builder.withOutput(mock);
         expect = builder.build();
+
         expect.sendLine("ABZ");
         verify(mock).write(("ABZ" + "XYZ").getBytes());
         expect.sendLine();

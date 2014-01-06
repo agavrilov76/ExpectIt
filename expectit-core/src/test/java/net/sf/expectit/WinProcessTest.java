@@ -29,6 +29,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 
 import static net.sf.expectit.Utils.LONG_TIMEOUT;
 import static net.sf.expectit.filter.Filters.printableOnly;
@@ -56,12 +57,12 @@ public class WinProcessTest {
         ProcessBuilder builder = new ProcessBuilder(WIN_CMD);
         process = builder.start();
         expect = new ExpectBuilder()
-                .withTimeout(LONG_TIMEOUT)
+                .withTimeout(LONG_TIMEOUT, TimeUnit.MILLISECONDS)
                 .withInputs(process.getInputStream(), process.getErrorStream())
                 .withOutput(process.getOutputStream())
                 .withInputFilters(printableOnly())
                 .withEchoOutput(new PrintWriter(System.err))
-                // sets cyrillic DOS encoding to verify that
+                        // sets cyrillic DOS encoding to verify that
                 .withCharset(Charset.forName("cp866"))
                 .build();
     }
@@ -79,6 +80,7 @@ public class WinProcessTest {
         expect.sendLine("echo test-123");
         assertTrue(expect.expect(contains("test-123")).isSuccessful());
         assertTrue(expect.expect(contains(">")).isSuccessful());
+
         expect.sendLine("exit");
         assertTrue(expect.expect(eof()).isSuccessful());
     }

@@ -54,6 +54,7 @@ class MultiMatcher implements Matcher<MultiResult> {
             }
             results.add(result);
         }
+
         Result delegate;
         if (allOperation) {
             delegate = getAllOfResult(successResults, firstFailResult);

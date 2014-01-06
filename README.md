@@ -1,8 +1,10 @@
 [![Build Status](https://travis-ci.org/Alexey1Gavrilov/expectit.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/expectit)
+Expectit: Yet Another Expect for Java
+=====================================
 Overview
-========
-Yet another pure Java 1.6+ implementation of the [Expect](http://en.wikipedia.org/wiki/Expect) tool. It designed to be simple, easy to
-use and extensible. Written from scratch. Here are the features:
+--------
+Yet another pure Java 1.6+ implementation of the [Expect](http://en.wikipedia.org/wiki/Expect) tool. It is designed to
+be simple, easy to use and extensible. Written from scratch. Here are the features:
 
 * Fluent-style API.
 * No third-party dependencies.
@@ -10,10 +12,10 @@ use and extensible. Written from scratch. Here are the features:
 * Extensible matcher framework. Support regular expressions and group operations.
 * Support multiple input streams.
 * Extensible filter framework to modify input, for example, to remove non-printable ANSI terminal characters.
-* Apache license.
+* Apache License.
 
 Quick start
-===========
+-----------
 The library is available on the Maven central. Add the following Maven dependency to your project:
 
 ```xml
@@ -23,7 +25,7 @@ The library is available on the Maven central. Add the following Maven dependenc
         <version>0.2.1</version>
     </dependency>
 ```
-Create an instance of ``net.sf.expectit.Expect`` as follows:
+Create an instance of ``net.sf.expectit.Expect`` and work with it as follows:
 
 ```java
     // the stream from where you read your input data
@@ -40,7 +42,7 @@ Create an instance of ``net.sf.expectit.Expect`` as follows:
     String group = result.group(2);
 ```
 How it works
-============
+------------
 Once an Expect object is created the library starts background threads for every input stream. The threads read
 bytes from the streams and copy them into NIO pipes. The pipes are configured to use non-blocking source channel.
 
@@ -51,7 +53,7 @@ input stream NIO pipe.
 
 The result object indicates whether the match operation was successful or not. It holds the context of the match. It
 implements the ``java.util.regexp.MatchResult`` interface which provides access to the result of regular
-expression matching results. If the match was successful, then the corresponding input buffer is update, all
+expression matching results. If t,he match was successful, then the corresponding input buffer is update, all
 characters before the match including the match are removed.
 
 Interacting with OS process
@@ -61,7 +63,7 @@ Here is an example of interacting with a spawn process:
         ProcessBuilder builder = new ProcessBuilder("/bin/sh");
         Process process = builder.start();
         Expect expect = new ExpectBuilder()
-                .withTimeout(1000)
+                .withTimeout(1, TimeUnit.SECONDS);
                 .withInputs(process.getInputStream(), process.getErrorStream())
                 .withOutput(process.getOutputStream())
                 .build();
@@ -120,7 +122,7 @@ More examples
 * [Interacting with the Apache Karaf remote shell](expectit-core/src/test/java/net/sf/expectit/KarafExample.java)
 
 License
-=======
+-------
 [Apache License, Version 2.0](LICENSE.txt)
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Alexey1Gavrilov/expectit/trend.png)](https://bitdeli.com/free "Bitdeli Badge")

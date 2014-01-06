@@ -32,19 +32,19 @@ import java.util.concurrent.Executors;
 import static net.sf.expectit.matcher.Matchers.allOf;
 
 /**
- * An implementation of the Expect interface which delegates actual work to SingleInput objects.
+ * An implementation of the Expect interface which delegates actual work to SingleInputExpect objects.
  */
 class ExpectImpl implements Expect {
     private final long timeout;
     private final OutputStream output;
-    private final SingleInput[] inputs;
+    private final SingleInputExpect[] inputs;
     private final Charset charset;
     private final Writer echoOutput;
     private final boolean errorOnTimeout;
     private final ExecutorService executor;
     private final String lineSeparator;
 
-    ExpectImpl(long timeout, OutputStream output, SingleInput[] inputs,
+    ExpectImpl(long timeout, OutputStream output, SingleInputExpect[] inputs,
                Charset charset, Writer echoOutput, boolean errorOnTimeout, String lineSeparator) {
         this.timeout = timeout;
         this.output = output;
@@ -57,7 +57,7 @@ class ExpectImpl implements Expect {
     }
 
     void start() {
-        for (SingleInput input : inputs) {
+        for (SingleInputExpect input : inputs) {
             input.start(executor);
         }
     }
@@ -140,10 +140,13 @@ class ExpectImpl implements Expect {
 
     @Override
     public void close() throws IOException {
-        for (SingleInput input : inputs) {
+        for (SingleInputExpect input : inputs) {
             input.stop();
         }
         executor.shutdown();
     }
 
+    long getTimeout() {
+        return timeout;
+    }
 }

@@ -36,9 +36,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
 /**
- * Represents a single output.
+ * Represents a single inputs.
  */
-class SingleInput {
+class SingleInputExpect {
     public static final int BUFFER_SIZE = 1024;
 
     private final InputStream input;
@@ -50,8 +50,8 @@ class SingleInput {
     private final Pipe.SourceChannel source;
     private final Pipe.SinkChannel sink;
 
-    protected SingleInput(InputStream input, Charset charset,
-                          Writer echoOutput, Filter[] filter) throws IOException {
+    protected SingleInputExpect(InputStream input, Charset charset,
+                                Writer echoOutput, Filter[] filter) throws IOException {
         this.input = input;
         this.charset = charset;
         this.echoOutput = echoOutput;
@@ -76,6 +76,7 @@ class SingleInput {
         ByteBuffer byteBuffer = ByteBuffer.allocate(BUFFER_SIZE);
         Selector selector = Selector.open();
         source.register(selector, SelectionKey.OP_READ);
+
         R result = matcher.matches(buffer.toString(), copierFuture.isDone());
         while (!result.isSuccessful() && timeElapsed > 0) {
             int keys = selector.select(timeElapsed);
@@ -84,14 +85,17 @@ class SingleInput {
                 continue;
             }
             selector.selectedKeys().clear();
+
             int len = source.read(byteBuffer);
             if (len != -1) {
                 String string = new String(byteBuffer.array(), 0, len, charset);
                 processString(string);
                 byteBuffer.clear();
             }
+
             result = matcher.matches(buffer.toString(), len == -1);
         }
+
         if (result.isSuccessful()) {
             buffer.delete(0, result.end());
         } else if (copierFuture.isDone() && buffer.length() == 0) {
@@ -111,6 +115,7 @@ class SingleInput {
                 previousResult = string;
             }
         }
+
         if (string != null) {
             if (echoOutput != null) {
                 echoOutput.write(string);

@@ -46,6 +46,7 @@ public class SshExample {
         session.setConfig(config);
         session.connect();
         Channel channel = session.openChannel("shell");
+
         Expect expect = new ExpectBuilder()
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
@@ -53,6 +54,7 @@ public class SshExample {
                 .withInputFilters(removeColors(), printableOnly())
                 .withErrorOnTimeout(true)
                 .build();
+
         channel.connect();
         expect.expect(contains("[RETURN]"));
         expect.sendLine();
