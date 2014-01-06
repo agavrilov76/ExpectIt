@@ -23,7 +23,7 @@ The library is available on the Maven central. Add the following Maven dependenc
         <version>0.2.1</version>
     </dependency>
 ```
-Create an instance of ``net.java.expect.Expect`` as follows:
+Create an instance of ``net.sf.expectit.Expect`` as follows:
 
 ```java
     // the stream from where you read your input data
@@ -50,7 +50,7 @@ criteria, then the method blocks for configurable a timeout of milliseconds unti
 input stream NIO pipe.
 
 The result object indicates whether the match operation was successful or not. It holds the context of the match. It
-implement the ``java.util.regexp.MatchResult`` interface which provides access to the result of regular
+implements the ``java.util.regexp.MatchResult`` interface which provides access to the result of regular
 expression matching results. If the match was successful, then the corresponding input buffer is update, all
 characters before the match including the match are removed.
 
@@ -74,7 +74,7 @@ Here is an example of interacting with a spawn process:
 ```
 Interacting via SSH
 --------------------
-Here is an example how to talk to a public SSH service on http://sdf.org using the JSch library.
+Here is an example on how to talk to a public SSH service on http://sdf.org using the JSch library.
 Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your project dependencies.
 ```java
         JSch jSch = new JSch();
@@ -117,7 +117,7 @@ In the following example you can see how to combine different matchers:
 More examples
 -------------
 * [Complete SSH example](expectit-core/src/test/java/net/sf/expectit/SshExample.java)
-* [Interacting with Apache Karaf remote shell](expectit-core/src/test/java/net/sf/expectit/KarafExample.java)
+* [Interacting with the Apache Karaf remote shell](expectit-core/src/test/java/net/sf/expectit/KarafExample.java)
 
 License
 =======
