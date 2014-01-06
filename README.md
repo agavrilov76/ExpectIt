@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/Alexey1Gavrilov/expectit.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/expectit)
 Overview
 ========
-Yet another pure Java 1.6+ implementation of the Unix Expect tool. It designed to be simple, easy to
+Yet another pure Java 1.6+ implementation of the [Expect](http://en.wikipedia.org/wiki/Expect) tool. It designed to be simple, easy to
 use and extensible. Written from scratch. Here are the features:
 
 * Fluent-style API.
