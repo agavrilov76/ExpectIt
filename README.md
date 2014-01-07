@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/Alexey1Gavrilov/expectit.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/expectit)
-net.sf.expectit - Yet Another Expect for Java
-=====================================
+Yet Another Expect for Java
+===========================
 Overview
 --------
 Yet another pure Java 1.6+ implementation of the [Expect](http://en.wikipedia.org/wiki/Expect) tool. It is designed to
@@ -36,8 +36,8 @@ Create an instance of ``net.sf.expectit.Expect`` and work with it as follows:
         .withInputs(inputStream)
         .withOutput(outputStream)
         .build();
-    expect.sendLine("ls -l").expect(contains("string"));
-    Result result = expect.expect(regexp("(.*)----(.*)"));
+    expect.sendLine("command").expect(contains("string"));
+    Result result = expect.expect(regexp("(.*)--?--(.*)"));
     // accessing the matching group
     String group = result.group(2);
 ```
@@ -60,18 +60,28 @@ Interacting with OS process
 ---------------------------
 Here is an example of interacting with a spawn process:
 ```java
-        ProcessBuilder builder = new ProcessBuilder("/bin/sh");
-        Process process = builder.start();
+        Process process = Runtime.getRuntime().exec("/bin/sh");
+
         Expect expect = new ExpectBuilder()
-                .withTimeout(1, TimeUnit.SECONDS);
-                .withInputs(process.getInputStream(), process.getErrorStream())
+                .withInputs(process.getInputStream())
                 .withOutput(process.getOutputStream())
+                .withTimeout(1, TimeUnit.SECONDS)
+                .withErrorOnTimeout(true)
                 .build();
-        expect.sendLine("echo Hello World!");
-        Result result = expect.expect(regexp("Wor.."));
-        System.out.println("Before: " + result.getBefore());
-        System.out.println("Match: " + result.group());
+        // try-with-resources is omitted for simplicity
+        expect.sendLine("ls -lh");
+        // capture the total
+        String total = expect.expect(regexp("^total (.*)")).group(1);
+        System.out.println("Size: " + total);
+        // capture file list
+        String list = expect.expect(regexp("\n$")).getBefore();
+        // print the result
+        System.out.println("List: " + list);
         expect.sendLine("exit");
+        // expect the process to finish
+        expect.expect(eof());
+        // finally is omitted
+        process.waitFor();
         expect.close();
 ```
 Interacting via SSH
@@ -86,20 +96,34 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
         session.setConfig(config);
         session.connect();
         Channel channel = session.openChannel("shell");
-        // jsch is ready
+
         Expect expect = new ExpectBuilder()
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
-                // trace all the input and output activity to the standard output stream
                 .withEchoOutput(new PrintWriter(System.out))
-                // filter the input: remove ANSI color escape sequences and non-printable chars
-                .withInputFilter(removeColors(), printableOnly())
+                .withInputFilters(removeColors(), printableOnly())
+                .withErrorOnTimeout(true)
                 .build();
+        // try-with-resources is omitted for simplicity
         channel.connect();
         expect.expect(contains("[RETURN]"));
         expect.sendLine();
         String ipAddress = expect.expect(regexp("Trying (.*)\\.\\.\\.")).group(1);
         System.out.println("Captured IP: " + ipAddress);
+        expect.expect(contains("login:"));
+        expect.sendLine("new");
+        expect.expect(contains("(Y/N)"));
+        expect.send("N");
+        expect.expect(regexp(": $"));
+        expect.send("\b");
+        expect.expect(regexp("\\(y\\/n\\)"));
+        expect.sendLine("y");
+        expect.expect(contains("Would you like to sign the guestbook?"));
+        expect.send("n");
+        expect.expect(contains("[RETURN]"));
+        expect.sendLine();
+        // finally is omitted
+        channel.disconnect();
         session.disconnect();
         expect.close();
 ```
@@ -107,14 +131,14 @@ Using composition of matchers
 -----------------------------
 In the following example you can see how to combine different matchers:
 ```java
-    // match any of predicates
-    expect.expect(anyOf(contains("string"), regexp("abc.*def")));
-    // match all
-    expect.expect(allOf(regexp("xyz"), regexp("abc.*def")));
-    // varargs method arguments are equivalent to 'allOf'
-    expect.expect(contains("string1"), contains("string2"));
-    // expect to match three times in a row
-    expect.expect(times(3, contains("string")));
+        // match any of predicates
+        expect.expect(anyOf(contains("string"), regexp("abc.*def")));
+        // match all
+        expect.expect(allOf(regexp("xyz"), regexp("abc.*def")));
+        // varargs method arguments are equivalent to 'allOf'
+        expect.expect(contains("string1"), contains("string2"));
+        // expect to match three times in a row
+        expect.expect(times(3, contains("string")));
 ```
 More examples
 -------------
