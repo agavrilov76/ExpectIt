@@ -162,7 +162,9 @@ public class ExpectBuilder {
      * Creates a ready to use {@link Expect} instance.
      * <p/>
      * This method creates an instance and starts background threads that receive input data through NIO pipes. The
-     * instance is not thread safe and intended to be used in a single thread.
+     * created instance must be disposed after use by calling the {@link net.sf.expectit.Expect#close()}  method,
+     * <p/>
+     * The instance is not thread safe and intended to be used in a single thread.
      *
      * @return the instance
      * @throws IOException if I/O error occurs
