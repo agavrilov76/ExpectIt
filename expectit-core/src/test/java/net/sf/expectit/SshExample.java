@@ -54,7 +54,7 @@ public class SshExample {
                 .withInputFilters(removeColors(), printableOnly())
                 .withErrorOnTimeout(true)
                 .build();
-
+        // try-with-resources is omitted for simplicity
         channel.connect();
         expect.expect(contains("[RETURN]"));
         expect.sendLine();
@@ -72,6 +72,7 @@ public class SshExample {
         expect.send("n");
         expect.expect(contains("[RETURN]"));
         expect.sendLine();
+        // finally is omitted
         channel.disconnect();
         session.disconnect();
         expect.close();

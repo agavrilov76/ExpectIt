@@ -19,24 +19,21 @@ public class ProcessExample {
                 .withTimeout(1, TimeUnit.SECONDS)
                 .withErrorOnTimeout(true)
                 .build();
-        try {
-            expect.sendLine("ls -lh");
-            // capture the total
-            String total = expect.expect(regexp("^total (.*)")).group(1);
-            System.out.println("Size: " + total);
-            // capture file list
-            String list = expect.expect(regexp("\n$")).getBefore();
-            // print the result
-            System.out.println("List: " + list);
-            expect.sendLine("exit");
-            // expect the process to finish
-            expect.expect(eof());
-        } finally {
-            // just in case
-            process.destroy();
-            process.waitFor();
-            expect.close();
-        }
+        // try-with-resources is omitted for simplicity
+        expect.sendLine("ls -lh");
+        // capture the total
+        String total = expect.expect(regexp("^total (.*)")).group(1);
+        System.out.println("Size: " + total);
+        // capture file list
+        String list = expect.expect(regexp("\n$")).getBefore();
+        // print the result
+        System.out.println("List: " + list);
+        expect.sendLine("exit");
+        // expect the process to finish
+        expect.expect(eof());
+        // finally is omitted
+        process.waitFor();
+        expect.close();
     }
 
 }
