@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/Alexey1Gavrilov/expectit.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/expectit)
-Expectit: Yet Another Expect for Java
+net.sf.expectit - Yet Another Expect for Java
 =====================================
 Overview
 --------
