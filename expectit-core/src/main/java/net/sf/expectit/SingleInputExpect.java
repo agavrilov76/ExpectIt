@@ -86,7 +86,7 @@ class SingleInputExpect {
             selector.selectedKeys().clear();
 
             int len = source.read(byteBuffer);
-            if (len != -1) {
+            if (len > 0) {
                 String string = new String(byteBuffer.array(), 0, len, charset);
                 processString(string);
                 byteBuffer.clear();

@@ -40,6 +40,7 @@ import static net.sf.expectit.Utils.SMALL_TIMEOUT;
 import static net.sf.expectit.matcher.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 
 /**
@@ -380,17 +381,23 @@ public class MatcherTest {
     }
 
     @Test
-    public void testAnything() throws IOException {
+    public void testAnything() throws IOException, InterruptedException {
         Result result = input.expect(SMALL_TIMEOUT, anyThing());
         assertTrue(result.group().startsWith("a1"));
         assertTrue(result.group().endsWith("_"));
         assertEquals(result.getBefore(), "");
+        assertTrue(input.expect(SMALL_TIMEOUT, contains("a1b2")).getBefore().isEmpty());
 
         // stop producing new input
+        reset(mock);
         when(mock.read(any(byte[].class))).thenReturn(0);
+
         // just to make sure that the buffer is clean
         input.expect(SMALL_TIMEOUT, anyThing());
-        assertFalse(input.expect(SMALL_TIMEOUT, anyThing()).isSuccessful());
+        input.expect(SMALL_TIMEOUT, anyThing()).group();
+        assertTrue(input.getBuffer().length() == 0);
+        result = input.expect(SMALL_TIMEOUT, anyThing());
+        assertFalse(result.isSuccessful());
     }
 
     /**
