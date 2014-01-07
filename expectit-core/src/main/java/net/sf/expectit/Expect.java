@@ -192,6 +192,7 @@ public interface Expect extends Closeable {
 
     /**
      * Closes all resources associated with this instance.
+     *
      * @throws IOException if I/O error occurs
      */
     @Override

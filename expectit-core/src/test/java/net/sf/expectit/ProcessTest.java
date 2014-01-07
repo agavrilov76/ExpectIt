@@ -118,22 +118,4 @@ public class ProcessTest {
         Result result = expect.expect(LONG_TIMEOUT + SMALL_TIMEOUT, eof());
         assertEquals("Line1\nLine2\nLine3\n", result.getBefore());
     }
-
-    // for README
-    public static void main(String[] args) throws IOException {
-        ProcessBuilder builder = new ProcessBuilder("/bin/sh");
-        Process process = builder.start();
-        Expect expect = new ExpectBuilder()
-                .withTimeout(1, TimeUnit.SECONDS)
-                .withInputs(process.getInputStream(), process.getErrorStream())
-                .withOutput(process.getOutputStream())
-                .build();
-
-        expect.sendLine("echo Hello World!");
-        Result result = expect.expect(regexp("Wor.."));
-        System.out.println("Before: " + result.getBefore());
-        System.out.println("Match: " + result.group());
-        expect.sendLine("exit");
-        expect.close();
-    }
 }

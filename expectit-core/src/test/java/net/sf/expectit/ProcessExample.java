@@ -1,6 +1,7 @@
 package net.sf.expectit;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
 import static net.sf.expectit.matcher.Matchers.eof;
@@ -17,6 +18,7 @@ public class ProcessExample {
                 .withInputs(process.getInputStream())
                 .withOutput(process.getOutputStream())
                 .withTimeout(1, TimeUnit.SECONDS)
+                .withEchoOutput(new PrintWriter(System.out))
                 .withErrorOnTimeout(true)
                 .build();
         // try-with-resources is omitted for simplicity

@@ -26,7 +26,6 @@ import net.sf.expectit.matcher.Matcher;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Writer;
 import java.nio.ByteBuffer;
 import java.nio.channels.Pipe;
 import java.nio.channels.SelectionKey;
@@ -44,14 +43,14 @@ class SingleInputExpect {
     private final InputStream input;
     private final StringBuilder buffer;
     private final Charset charset;
-    private final Writer echoOutput;
+    private final Appendable echoOutput;
     private final Filter[] filters;
     private Future<Object> copierFuture;
     private final Pipe.SourceChannel source;
     private final Pipe.SinkChannel sink;
 
     protected SingleInputExpect(InputStream input, Charset charset,
-                                Writer echoOutput, Filter[] filter) throws IOException {
+                                Appendable echoOutput, Filter[] filter) throws IOException {
         this.input = input;
         this.charset = charset;
         this.echoOutput = echoOutput;
@@ -107,7 +106,7 @@ class SingleInputExpect {
     private void processString(String string) throws IOException {
         if (filters != null) {
             String previousResult = null;
-             for (Filter filter : filters) {
+            for (Filter filter : filters) {
                 string = filter.filter(string, buffer);
                 if (string == null) {
                     string = previousResult;
@@ -118,8 +117,7 @@ class SingleInputExpect {
 
         if (string != null) {
             if (echoOutput != null) {
-                echoOutput.write(string);
-                echoOutput.flush();
+                echoOutput.append(string);
             }
             buffer.append(string);
         }

@@ -24,7 +24,6 @@ import net.sf.expectit.matcher.Matcher;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -39,13 +38,13 @@ class ExpectImpl implements Expect {
     private final OutputStream output;
     private final SingleInputExpect[] inputs;
     private final Charset charset;
-    private final Writer echoOutput;
+    private final Appendable echoOutput;
     private final boolean errorOnTimeout;
     private final ExecutorService executor;
     private final String lineSeparator;
 
     ExpectImpl(long timeout, OutputStream output, SingleInputExpect[] inputs,
-               Charset charset, Writer echoOutput, boolean errorOnTimeout, String lineSeparator) {
+               Charset charset, Appendable echoOutput, boolean errorOnTimeout, String lineSeparator) {
         this.timeout = timeout;
         this.output = output;
         this.inputs = inputs;
@@ -108,8 +107,7 @@ class ExpectImpl implements Expect {
 
     private void echoString(String string) throws IOException {
         if (echoOutput != null) {
-            echoOutput.write(string);
-            echoOutput.flush();
+            echoOutput.append(string);
         }
     }
 

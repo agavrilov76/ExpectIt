@@ -228,6 +228,33 @@ public final class Matchers {
         };
     }
 
+    /**
+     * Creates a matcher that matches when at least one character exists in the input buffer.
+     * <p/>
+     * If the result is successful, the {@link net.sf.expectit.Result#getBefore()} returns an empty string, the
+     * {@link net.sf.expectit.Result#group()} returns the entire input buffer.
+     * s
+     *
+     * @return the result
+     */
+    public static Matcher<Result> anyThing() {
+        return new Matcher<Result>() {
+            @Override
+            public Result matches(String input, boolean isEof) {
+                if (input.length() > 0) {
+                    return new SimpleResult(true, "", input);
+                }
+                return SimpleResult.NEGATIVE;
+            }
+
+            @Override
+            public String toString() {
+                return "anyThing";
+            }
+        };
+    }
+
+
     private static void checkNotEmpty(Matcher<?>[] matchers) {
         if (matchers.length == 0) {
             throw new IllegalArgumentException("Matchers cannot be empty");

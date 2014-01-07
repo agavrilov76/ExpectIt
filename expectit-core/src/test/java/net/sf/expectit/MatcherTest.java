@@ -318,7 +318,7 @@ public class MatcherTest {
     }
 
     @Test
-    public void testTestEofMatcher() throws IOException, InterruptedException {
+    public void testEofMatcher() throws IOException, InterruptedException {
         assertTrue(input.expect(SMALL_TIMEOUT, contains("a1")).isSuccessful());
         when(mock.read(any(byte[].class))).thenThrow(new EOFException(""));
         assertTrue(input.expect(SMALL_TIMEOUT, contains("_")).isSuccessful());
@@ -338,7 +338,7 @@ public class MatcherTest {
     }
 
     @Test
-    public void testTestEofMultiMatcher1() throws IOException, InterruptedException {
+    public void testEofMultiMatcher1() throws IOException, InterruptedException {
         assertTrue(input.expect(SMALL_TIMEOUT, contains("a1")).isSuccessful());
         when(mock.read(any(byte[].class))).thenThrow(new EOFException(""));
 
@@ -349,7 +349,7 @@ public class MatcherTest {
     }
 
     @Test
-    public void testTestEofMultiMatcher2() throws IOException, InterruptedException {
+    public void testEofMultiMatcher2() throws IOException, InterruptedException {
         assertTrue(input.expect(SMALL_TIMEOUT, contains("a1")).isSuccessful());
         when(mock.read(any(byte[].class))).thenThrow(new EOFException(""));
 
@@ -377,6 +377,20 @@ public class MatcherTest {
         assertFalse(result.getResults().get(3).isSuccessful());
         assertFalse(result.getResults().get(4).isSuccessful());
         assertFalse(result.isSuccessful());
+    }
+
+    @Test
+    public void testAnything() throws IOException {
+        Result result = input.expect(SMALL_TIMEOUT, anyThing());
+        assertTrue(result.group().startsWith("a1"));
+        assertTrue(result.group().endsWith("_"));
+        assertEquals(result.getBefore(), "");
+
+        // stop producing new input
+        when(mock.read(any(byte[].class))).thenReturn(0);
+        // just to make sure that the buffer is clean
+        input.expect(SMALL_TIMEOUT, anyThing());
+        assertFalse(input.expect(SMALL_TIMEOUT, anyThing()).isSuccessful());
     }
 
     /**

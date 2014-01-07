@@ -25,7 +25,6 @@ import net.sf.expectit.filter.Filter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
@@ -42,7 +41,7 @@ public class ExpectBuilder {
     private Filter[] filters;
     private OutputStream output;
     private long timeout = DEFAULT_TIMEOUT_MS;
-    private Writer echoOutput;
+    private Appendable echoOutput;
     private Charset charset = Charset.defaultCharset();
     private boolean errorOnTimeout;
     private String lineSeparator = System.getProperty("line.separator");
@@ -80,7 +79,7 @@ public class ExpectBuilder {
      * Sets the default timeout in the given unit for expect operations. Optional, the default value is 30 seconds.
      *
      * @param duration the timeout value
-     * @param unit the time unit
+     * @param unit     the time unit
      * @return this
      * @throws java.lang.IllegalArgumentException if the timeout {@code <= 0}
      */
@@ -99,7 +98,7 @@ public class ExpectBuilder {
      * @param echoOutput the output stream
      * @return this
      */
-    public final ExpectBuilder withEchoOutput(Writer echoOutput) {
+    public final ExpectBuilder withEchoOutput(Appendable echoOutput) {
         this.echoOutput = echoOutput;
         return this;
     }
@@ -167,7 +166,7 @@ public class ExpectBuilder {
      * The instance is not thread safe and intended to be used in a single thread.
      *
      * @return the instance
-     * @throws IOException if I/O error occurs
+     * @throws IOException                     if I/O error occurs
      * @throws java.lang.IllegalStateException if the {@code inputs} are incorrect
      */
     public final Expect build() throws IOException {
