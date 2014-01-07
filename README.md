@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/Alexey1Gavrilov/expectit.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/expectit)
-net.sf.expectit - Yet Another Expect for Java
-=====================================
+Yet Another Expect for Java
+===========================
 Overview
 --------
 Yet another pure Java 1.6+ implementation of the [Expect](http://en.wikipedia.org/wiki/Expect) tool. It is designed to
@@ -60,19 +60,32 @@ Interacting with OS process
 ---------------------------
 Here is an example of interacting with a spawn process:
 ```java
-        ProcessBuilder builder = new ProcessBuilder("/bin/sh");
-        Process process = builder.start();
+        Process process = Runtime.getRuntime().exec("/bin/sh");
+
         Expect expect = new ExpectBuilder()
-                .withTimeout(1, TimeUnit.SECONDS);
-                .withInputs(process.getInputStream(), process.getErrorStream())
+                .withInputs(process.getInputStream())
                 .withOutput(process.getOutputStream())
+                .withTimeout(1, TimeUnit.SECONDS)
+                .withErrorOnTimeout(true)
                 .build();
-        expect.sendLine("echo Hello World!");
-        Result result = expect.expect(regexp("Wor.."));
-        System.out.println("Before: " + result.getBefore());
-        System.out.println("Match: " + result.group());
-        expect.sendLine("exit");
-        expect.close();
+        try {
+            expect.sendLine("ls -lh");
+            // capture the total
+            String total = expect.expect(regexp("^total (.*)")).group(1);
+            System.out.println("Size: " + total);
+            // capture file list
+            String list = expect.expect(regexp("\n$")).getBefore();
+            // print the result
+            System.out.println("List: " + list);
+            expect.sendLine("exit");
+            // expect the process to finish
+            expect.expect(eof());
+        } finally {
+            // just in case
+            process.destroy();
+            process.waitFor();
+            expect.close();
+        }
 ```
 Interacting via SSH
 --------------------
