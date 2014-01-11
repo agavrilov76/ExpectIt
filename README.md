@@ -48,13 +48,13 @@ bytes from the streams and copy them into NIO pipes. The pipes are configured to
 
 The expect object holds a String buffer for each input. The user calls one of the expect methods to wait until the
 given matcher object matches the corresponding buffer contents. If the input buffer doesn't satisfy the matcher
-criteria, then the method blocks for configurable a timeout of milliseconds until new data is available on the
+criteria, then the method blocks for a configurable timeout of milliseconds until new data is available on the
 input stream NIO pipe.
 
 The result object indicates whether the match operation was successful or not. It holds the context of the match. It
 implements the ``java.util.regexp.MatchResult`` interface which provides access to the result of regular
-expression matching results. If t,he match was successful, then the corresponding input buffer is update, all
-characters before the match including the match are removed.
+expression matching results. If the match was successful, then the corresponding input buffer is update, all
+characters before the match including the match are removed. The next match is performed for the updated buffer.
 
 Interacting with OS process
 ---------------------------
@@ -135,6 +135,7 @@ In the following example you can see how to combine different matchers:
 ```
 More examples
 -------------
+* [Socket Example: parsing HTTP response](expectit-core/src/test/java/net/sf/expectit/SocketExample.java)
 * [Complete SSH example](expectit-core/src/test/java/net/sf/expectit/SshExample.java)
 * [Interacting with the Apache Karaf remote shell](expectit-core/src/test/java/net/sf/expectit/KarafExample.java)
  
