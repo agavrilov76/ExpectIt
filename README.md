@@ -22,7 +22,7 @@ The library is available on the Maven central. Add the following Maven dependenc
     <dependency>
         <groupId>net.sf.expectit</groupId>
         <artifactId>expectit-core</artifactId>
-        <version>0.2.1</version>
+        <version>0.2.2</version>
     </dependency>
 ```
 Create an instance of ``net.sf.expectit.Expect`` and work with it as follows:
