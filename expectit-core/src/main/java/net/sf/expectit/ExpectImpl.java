@@ -20,6 +20,7 @@ package net.sf.expectit;
  * #L%
  */
 
+import net.sf.expectit.echo.EchoOutput;
 import net.sf.expectit.matcher.Matcher;
 
 import java.io.IOException;
@@ -38,13 +39,13 @@ class ExpectImpl implements Expect {
     private final OutputStream output;
     private final SingleInputExpect[] inputs;
     private final Charset charset;
-    private final Appendable echoOutput;
+    private final EchoOutput echoOutput;
     private final boolean errorOnTimeout;
     private final ExecutorService executor;
     private final String lineSeparator;
 
     ExpectImpl(long timeout, OutputStream output, SingleInputExpect[] inputs,
-               Charset charset, Appendable echoOutput, boolean errorOnTimeout, String lineSeparator) {
+               Charset charset, EchoOutput echoOutput, boolean errorOnTimeout, String lineSeparator) {
         this.timeout = timeout;
         this.output = output;
         this.inputs = inputs;
@@ -107,7 +108,7 @@ class ExpectImpl implements Expect {
 
     private void echoString(String string) throws IOException {
         if (echoOutput != null) {
-            echoOutput.append(string);
+            echoOutput.onSend(string);
         }
     }
 

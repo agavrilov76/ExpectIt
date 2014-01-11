@@ -20,6 +20,7 @@ package net.sf.expectit;
  * #L%
  */
 
+import net.sf.expectit.echo.EchoOutput;
 import net.sf.expectit.filter.Filter;
 
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class ExpectBuilder {
     private Filter[] filters;
     private OutputStream output;
     private long timeout = DEFAULT_TIMEOUT_MS;
-    private Appendable echoOutput;
+    private EchoOutput echoOutput;
     private Charset charset = Charset.defaultCharset();
     private boolean errorOnTimeout;
     private String lineSeparator = System.getProperty("line.separator");
@@ -93,12 +94,13 @@ public class ExpectBuilder {
 
     /**
      * Sets the echo output to print all the sent and received data. Useful for debugging to monitor I/O activity.
-     * Optional, default is unset.
+     * Optional, by default is unset.
      *
-     * @param echoOutput the output stream
+     * @param echoOutput an instance of echo output. Refer to {@link net.sf.expectit.echo.EchoAdapters} for adapter
+     *                   static methods for common use cases.
      * @return this
      */
-    public final ExpectBuilder withEchoOutput(Appendable echoOutput) {
+    public final ExpectBuilder withEchoOutput(EchoOutput echoOutput) {
         this.echoOutput = echoOutput;
         return this;
     }
@@ -176,7 +178,7 @@ public class ExpectBuilder {
 
         SingleInputExpect[] inputs = new SingleInputExpect[this.inputs.length];
         for (int i = 0; i < inputs.length; i++) {
-            inputs[i] = new SingleInputExpect(this.inputs[i], charset, echoOutput, filters);
+            inputs[i] = new SingleInputExpect(i, this.inputs[i], charset, echoOutput, filters);
         }
 
         ExpectImpl instance = new ExpectImpl(timeout, output, inputs, charset, echoOutput,

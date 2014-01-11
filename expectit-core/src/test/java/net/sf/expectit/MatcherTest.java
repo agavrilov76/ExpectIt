@@ -59,7 +59,7 @@ public class MatcherTest {
     @Before
     public void setup() throws IOException {
         mock = Utils.mockInputStream(SMALL_TIMEOUT / 2, "a1b2c3_");
-        input = new SingleInputExpect(mock, Charset.defaultCharset(), null, null);
+        input = new SingleInputExpect(0, mock, Charset.defaultCharset(), null, null);
         executor = Executors.newSingleThreadExecutor();
         input.start(executor);
     }
@@ -381,8 +381,8 @@ public class MatcherTest {
     }
 
     @Test
-    public void testAnything() throws IOException, InterruptedException {
-        Result result = input.expect(SMALL_TIMEOUT, anyThing());
+    public void testAnyString() throws IOException, InterruptedException {
+        Result result = input.expect(SMALL_TIMEOUT, anyString());
         assertTrue(result.group().startsWith("a1"));
         assertTrue(result.group().endsWith("_"));
         assertEquals(result.getBefore(), "");
@@ -393,10 +393,10 @@ public class MatcherTest {
         when(mock.read(any(byte[].class))).thenReturn(0);
 
         // just to make sure that the buffer is clean
-        input.expect(SMALL_TIMEOUT, anyThing());
-        input.expect(SMALL_TIMEOUT, anyThing()).group();
+        input.expect(SMALL_TIMEOUT, anyString());
+        input.expect(SMALL_TIMEOUT, anyString());
         assertTrue(input.getBuffer().length() == 0);
-        result = input.expect(SMALL_TIMEOUT, anyThing());
+        result = input.expect(SMALL_TIMEOUT, anyString());
         assertFalse(result.isSuccessful());
     }
 

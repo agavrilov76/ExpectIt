@@ -233,11 +233,10 @@ public final class Matchers {
      * <p/>
      * If the result is successful, the {@link net.sf.expectit.Result#getBefore()} returns an empty string, the
      * {@link net.sf.expectit.Result#group()} returns the entire input buffer.
-     * s
      *
      * @return the result
      */
-    public static Matcher<Result> anyThing() {
+    public static Matcher<Result> anyString() {
         return new Matcher<Result>() {
             @Override
             public Result matches(String input, boolean isEof) {
@@ -249,7 +248,7 @@ public final class Matchers {
 
             @Override
             public String toString() {
-                return "anyThing";
+                return "anyString";
             }
         };
     }

@@ -20,6 +20,7 @@ package net.sf.expectit;
  * #L%
  */
 
+import net.sf.expectit.echo.EchoOutput;
 import net.sf.expectit.filter.Filter;
 import net.sf.expectit.matcher.Matcher;
 import org.junit.After;
@@ -212,10 +213,12 @@ public class ExpectTest {
     @Test
     public void expectEchoOutput() throws IOException {
         ExpectBuilder builder = new ExpectBuilder();
-        Appendable echo = mock(Appendable.class);
+        EchoOutput echo = mock(EchoOutput.class);
         String inputText = "input";
         InputStream input = mockInputStream(SMALL_TIMEOUT, inputText);
-        builder.withInputs(input);
+        String inputText2 = "number2";
+        InputStream input2 = mockInputStream(SMALL_TIMEOUT, inputText2);
+        builder.withInputs(input, input2);
         builder.withEchoOutput(echo);
         builder.withOutput(mock(OutputStream.class));
         expect = builder.build();
@@ -223,10 +226,13 @@ public class ExpectTest {
         String sentText = "sentText";
         expect.sendLine(sentText);
         String sentTextLine = sentText + System.getProperty("line.separator");
-        verify(echo).append(sentTextLine);
+        verify(echo).onSend(sentTextLine);
+
         reset(echo);
         assertTrue(expect.expect(LONG_TIMEOUT, times(2, contains(inputText))).isSuccessful());
-        verify(echo, Mockito.times(2)).append(inputText);
+        assertTrue(expect.expectIn(1, SMALL_TIMEOUT, contains(inputText2)).isSuccessful());
+        verify(echo, Mockito.times(2)).onReceive(0, inputText);
+        verify(echo).onReceive(eq(1), anyString());
     }
 
     @Test(timeout = 5000)

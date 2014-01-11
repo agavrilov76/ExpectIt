@@ -27,10 +27,10 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
+import static net.sf.expectit.echo.EchoAdapters.adapt;
 import static net.sf.expectit.Utils.LONG_TIMEOUT;
 import static net.sf.expectit.filter.Filters.printableOnly;
 import static net.sf.expectit.matcher.Matchers.contains;
@@ -61,7 +61,7 @@ public class WinProcessTest {
                 .withInputs(process.getInputStream(), process.getErrorStream())
                 .withOutput(process.getOutputStream())
                 .withInputFilters(printableOnly())
-                .withEchoOutput(new PrintWriter(System.err))
+                .withEchoOutput(adapt(System.err))
                         // sets cyrillic DOS encoding to verify that
                 .withCharset(Charset.forName("cp866"))
                 .build();
