@@ -100,7 +100,7 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
         Expect expect = new ExpectBuilder()
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
-                .withEchoOutput(new PrintWriter(System.out))
+                .withEchoOutput(adapt(System.out))
                 .withInputFilters(removeColors(), printableOnly())
                 .withErrorOnTimeout(true)
                 .build();
