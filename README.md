@@ -115,13 +115,6 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
         expect.expect(contains("(Y/N)"));
         expect.send("N");
         expect.expect(regexp(": $"));
-        expect.send("\b");
-        expect.expect(regexp("\\(y\\/n\\)"));
-        expect.sendLine("y");
-        expect.expect(contains("Would you like to sign the guestbook?"));
-        expect.send("n");
-        expect.expect(contains("[RETURN]"));
-        expect.sendLine();
         // finally is omitted
         channel.disconnect();
         session.disconnect();
@@ -144,6 +137,10 @@ More examples
 -------------
 * [Complete SSH example](expectit-core/src/test/java/net/sf/expectit/SshExample.java)
 * [Interacting with the Apache Karaf remote shell](expectit-core/src/test/java/net/sf/expectit/KarafExample.java)
+ 
+Questions
+---------
+If you have any questions about the library please post your message to this [Google group](https://groups.google.com/forum/#!forum/java-expectit).
 
 License
 -------
