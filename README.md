@@ -25,6 +25,8 @@ The library is available on the Maven central. Add the following Maven dependenc
         <version>0.2.2</version>
     </dependency>
 ```
+You can also download the .jar files from [the sourceforge project page](https://sourceforge.net/projects/expectit/files/releases/).
+
 Create an instance of ``net.sf.expectit.Expect`` and work with it as follows:
 
 ```java
