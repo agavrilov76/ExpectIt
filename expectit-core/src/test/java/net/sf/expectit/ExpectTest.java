@@ -25,6 +25,7 @@ import net.sf.expectit.filter.Filter;
 import net.sf.expectit.matcher.Matcher;
 import org.junit.After;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -37,6 +38,7 @@ import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 import static net.sf.expectit.Utils.*;
+import static net.sf.expectit.echo.EchoAdapters.adapt;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.times;
 import static org.junit.Assert.*;
@@ -177,21 +179,35 @@ public class ExpectTest {
     public void testFilters() throws IOException {
         ExpectBuilder builder = new ExpectBuilder();
         InputStream in = mock(InputStream.class);
-        builder.withInputs(in);
+        StringBuilder echo = new StringBuilder();
+        builder.withInputs(in).withEchoOutput(adapt(echo));
         Filter filter1 = mock(Filter.class);
         Filter filter2 = mock(Filter.class);
         Filter filter3 = mock(Filter.class);
         builder.withInputFilters(filter1, filter2, filter3);
-        when(filter1.filter(anyString(), any(StringBuilder.class))).thenReturn("xxx");
-        when(filter2.filter(eq("xxx"), any(StringBuilder.class))).thenReturn("yyy");
+        when(filter1.beforeAppend(anyString(), any(StringBuilder.class))).thenReturn("xxx");
+        when(filter2.beforeAppend(eq("xxx"), any(StringBuilder.class))).thenReturn("yyy");
+
+        when(filter2.afterAppend(any(StringBuilder.class))).then(new Answer<Object>() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                ((StringBuilder) invocation.getArguments()[0]).append("01234");
+                return true;
+            }
+        });
         expect = builder.build();
 
         String inputStr = "testFilter";
         configureMockInputStream(in, inputStr.getBytes());
-        assertTrue(expect.expect(SMALL_TIMEOUT, contains("yyy")).isSuccessful());
-        verify(filter1).filter(eq(inputStr), any(StringBuilder.class));
-        verify(filter2).filter(eq("xxx"), any(StringBuilder.class));
-        verify(filter3).filter(eq("yyy"), any(StringBuilder.class));
+        assertTrue(expect.expect(SMALL_TIMEOUT, contains("y")).isSuccessful());
+        verify(filter1).beforeAppend(eq(inputStr), any(StringBuilder.class));
+        verify(filter2).beforeAppend(eq("xxx"), any(StringBuilder.class));
+        verify(filter3).beforeAppend(eq("yyy"), any(StringBuilder.class));
+
+        verify(filter1).afterAppend(argThat(new StringBuilderArgumentMatcher("yy01234")));
+        verify(filter2).afterAppend(any(StringBuilder.class));
+        verify(filter3, never()).afterAppend(any(StringBuilder.class));
+        assertEquals("yyy", echo.toString());
     }
 
     @Test
@@ -281,5 +297,18 @@ public class ExpectTest {
         expect = builder.build();
         expect.sendLine();
         verify(mock).write((System.getProperty("line.separator")).getBytes());
+    }
+
+    private static class StringBuilderArgumentMatcher extends ArgumentMatcher<StringBuilder> {
+        private final String contents;
+
+        private StringBuilderArgumentMatcher(String contents) {
+            this.contents = contents;
+        }
+
+        @Override
+        public boolean matches(Object argument) {
+            return argument.toString().equals(contents);
+        }
     }
 }

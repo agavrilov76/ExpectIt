@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 import static net.sf.expectit.echo.EchoAdapters.adapt;
 import static net.sf.expectit.Utils.LONG_TIMEOUT;
-import static net.sf.expectit.filter.Filters.printableOnly;
+import static net.sf.expectit.filter.Filters.removeNonPrintable;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.eof;
 import static org.junit.Assert.assertTrue;
@@ -60,7 +60,7 @@ public class WinProcessTest {
                 .withTimeout(LONG_TIMEOUT, TimeUnit.MILLISECONDS)
                 .withInputs(process.getInputStream(), process.getErrorStream())
                 .withOutput(process.getOutputStream())
-                .withInputFilters(printableOnly())
+                .withInputFilters(removeNonPrintable())
                 .withEchoOutput(adapt(System.err))
                         // sets cyrillic DOS encoding to verify that
                 .withCharset(Charset.forName("cp866"))

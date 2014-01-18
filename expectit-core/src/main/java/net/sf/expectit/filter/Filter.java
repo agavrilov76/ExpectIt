@@ -36,7 +36,18 @@ public interface Filter {
      * @param string a chunk of input data read from the input stream. Can be {@code null} if the filter is run in a
      *               with in a filter chain, and preceding filter returns {@code null}
      * @param buffer the reference to the input buffer. Can be used to modify the entire buffer contents.
-     * @return the string to be appended to the input buffers, or {@code null} to ignore all the following operations.
+     * @return the string to be appended to the input buffers, or {@code null} to ignore all the consequent filters.
      */
-    String filter(String string, StringBuilder buffer);
+    String beforeAppend(String string, StringBuilder buffer);
+
+    /**
+     * Invoked when the input string has just been appended to the input buffer.
+     * <p/>
+     * The method is invoked on the thread that performs an expect operation.
+     *
+     * @param buffer the reference to the input buffer. Can be used to modify the entire buffer contents.
+     * @return a boolean flag indicating whether the filtering process should be stopped or not. {@code true} if all the
+     *                  consequent filters must not be executed, or {@code false} otherwise.
+     */
+    boolean afterAppend(StringBuilder buffer);
 }

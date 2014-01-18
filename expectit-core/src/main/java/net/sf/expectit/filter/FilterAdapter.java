@@ -1,7 +1,4 @@
-/**
- * Classes for echo data processed by the {@link net.sf.expectit.Expect} implementtion.
- */
-package net.sf.expectit.echo;
+package net.sf.expectit.filter;
 
 /*
  * #%L
@@ -22,3 +19,24 @@ package net.sf.expectit.echo;
  * limitations under the License.
  * #L%
  */
+
+/**
+ * A default filter implementation which does not modify the input. It is intended to be used for creating subclasses.
+ */
+public class FilterAdapter implements Filter {
+    /**
+     * The protected default constructor.
+     */
+    protected FilterAdapter() {
+    }
+
+    @Override
+    public String beforeAppend(String string, StringBuilder buffer) {
+        return string;
+    }
+
+    @Override
+    public boolean afterAppend(StringBuilder buffer) {
+        return false;
+    }
+}

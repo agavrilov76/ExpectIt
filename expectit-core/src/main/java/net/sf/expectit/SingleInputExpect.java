@@ -110,7 +110,7 @@ class SingleInputExpect {
         if (filters != null) {
             String previousResult = null;
             for (Filter filter : filters) {
-                string = filter.filter(string, buffer);
+                string = filter.beforeAppend(string, buffer);
                 if (string == null) {
                     string = previousResult;
                 }
@@ -123,6 +123,13 @@ class SingleInputExpect {
                 echoOutput.onReceive(number, string);
             }
             buffer.append(string);
+            if (filters != null) {
+                for (Filter filter : filters) {
+                    if (filter.afterAppend(buffer)) {
+                        break;
+                    }
+                }
+            }
         }
     }
 

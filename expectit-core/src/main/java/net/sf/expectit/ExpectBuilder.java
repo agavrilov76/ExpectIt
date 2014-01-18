@@ -124,9 +124,9 @@ public class ExpectBuilder {
      * non-printable characters.
      * <p/>
      * The given filters are applied one by one. The string returns by the
-     * {@link net.sf.expectit.filter.Filter#filter(String, StringBuilder)} method of one filter is passed a parameter
-     * to next one if not {@code null}. If it is {@code null}, then the filtering process stops and the latest
-     * non-null result is appended to the expect internal buffer.
+     * {@link net.sf.expectit.filter.Filter#beforeAppend(String, StringBuilder)} method of one filter is passed a
+     * parameter sto next one if not {@code null}. If it is {@code null}, then the filtering process stops and the
+     * latest non-null result is appended to the expect internal buffer.
      *
      * @param filters the filters
      * @return this

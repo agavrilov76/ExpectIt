@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static net.sf.expectit.echo.EchoAdapters.adapt;
-import static net.sf.expectit.filter.Filters.printableOnly;
+import static net.sf.expectit.filter.Filters.removeNonPrintable;
 import static net.sf.expectit.filter.Filters.removeColors;
 import static net.sf.expectit.matcher.Matchers.*;
 
@@ -51,7 +51,7 @@ public class KarafExample {
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
                 .withEchoOutput(adapt(System.out))
-                .withInputFilters(removeColors(), printableOnly())
+                .withInputFilters(removeColors(), removeNonPrintable())
                 .withErrorOnTimeout(true)
                 .build();
         channel.connect();

@@ -20,11 +20,14 @@ package net.sf.expectit;
  * #L%
  */
 
+import net.sf.expectit.filter.Filter;
 import org.junit.Test;
 
-import static net.sf.expectit.filter.Filters.printableOnly;
-import static net.sf.expectit.filter.Filters.removeColors;
+import java.util.regex.Pattern;
+
+import static net.sf.expectit.filter.Filters.*;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -34,11 +37,42 @@ public class FilterTest {
 
     @Test
     public void testNonPrintable() {
-        assertTrue(printableOnly().filter("\u0000\u0008", new StringBuilder()).isEmpty());
+        assertTrue(removeNonPrintable().beforeAppend("\u0000\u0008", new StringBuilder()).isEmpty());
     }
 
     @Test
     public void testNoColors() {
-        assertEquals(removeColors().filter("\u001b[31m\u001B[7m", new StringBuilder()), "");
+        String str = "abc\u001b[31m\u001B[7mdef";
+        StringBuilder buffer = new StringBuilder(str);
+        assertFalse(removeColors().afterAppend(buffer));
+        assertEquals(buffer.toString(), str);
+        assertEquals("abcdef", removeColors().beforeAppend(str, new StringBuilder()));
+    }
+
+    @Test
+    public void testReplaceInString() {
+        Filter filter = replaceInString("Z(.)f", "X$1x");
+        assertEquals(filter.beforeAppend("aaZdfhhh", null), "aaXdxhhh");
+        filter = replaceInString(Pattern.compile("[a]"), "");
+        assertEquals(filter.beforeAppend("aad", null), "d");
+    }
+
+    @Test
+    public void testReplaceInBuffer() {
+        Filter filter = replaceInBuffer("ab(.)d(.)f", "3$2$1E");
+        StringBuilder b = new StringBuilder("dabedzf");
+        filter.afterAppend(b);
+        assertEquals(b.toString(), "d3zeE");
+        StringBuilder b2 = new StringBuilder();
+        filter.afterAppend(b2);
+        assertTrue(b2.length() == 0);
+        b2.append("12345");
+        filter.afterAppend(b2);
+        assertEquals(b2.toString(), "12345");
+        Filter filter2 = replaceInBuffer(Pattern.compile("12.4"), "");
+        filter2.beforeAppend("", b2);
+        assertEquals(b2.toString(), "12345");
+        filter2.afterAppend(b2);
+        assertEquals(b2.toString(), "5");
     }
 }

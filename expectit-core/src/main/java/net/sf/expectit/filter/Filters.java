@@ -20,41 +20,115 @@ package net.sf.expectit.filter;
  * #L%
  */
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
- * Filter factory.
+ * The filter factory.
  *
  * @author Alexey Gavrilov
  */
 public final class Filters {
 
+    private static final String COLORS_REGEXP_STRING = "\\x1b[^m]*m";
+    /**
+     * The regular expression which matches <a href="http://en.wikipedia.org/wiki/ANSI_escape_code#Colors">ANSI escape
+     * sequences for colors</a>.
+     */
+    public static final Pattern COLORS_PATTERN = Pattern.compile(COLORS_REGEXP_STRING);
+
+    /**
+     * The regular expression matches non printable characters: {@code [\x00\x08\x0B\x0C\x0E-\x1F]}.
+     */
+    public static final Pattern NON_PRINTABLE_PATTERN = Pattern.compile("[\\x00\\x08\\x0B\\x0C\\x0E-\\x1F]");
+
     private Filters() {
     }
 
     /**
-     * Removes non-printable characters. Check the method source code for details.
+     * Creates a filter which removes all non-printable characters matching {@link #NON_PRINTABLE_PATTERN} in the input
+     * string.
      *
      * @return the filter
      */
-    public static Filter printableOnly() {
-        return new Filter() {
+    public static Filter removeNonPrintable() {
+        return replaceInString(NON_PRINTABLE_PATTERN, "");
+    }
+
+    /**
+     * Creates a filter which replaces every substring in the input string that matches the given regular expression
+     * and replaces it with given replacement.
+     * <p/>
+     * The method just calls {@link String#replaceAll(String, String)} for the input string.
+     *
+     * @param  regexp the regular expression
+     * @param  replacement the string to be substituted for each match
+     * @return the filter
+     */
+    public static Filter replaceInString(final Pattern regexp, final String replacement) {
+        return new FilterAdapter() {
             @Override
-            public String filter(String string, StringBuilder result) {
-                return string.replaceAll("[\\x00\\x08\\x0B\\x0C\\x0E-\\x1F]", "");
+            public String beforeAppend(String string, StringBuilder buffer) {
+                return regexp.matcher(string).replaceAll(replacement);
             }
         };
     }
 
     /**
-     * Removes <a href="http://en.wikipedia.org/wiki/ANSI_escape_code#Colors">ANSI escape sequences for colors</a>.
+     * Equivalent to {@link #replaceInString(java.util.regex.Pattern, String)} but takes the regular expression
+     * as string.
+     *
+     * @param regexp the regular expression
+     * @param replacement the string to be substituted for each match
+     * @return the filter
+     */
+    public static Filter replaceInString(final String regexp, final String replacement) {
+        return replaceInString(Pattern.compile(regexp), replacement);
+    }
+
+    /**
+     * Creates a filter which removes <a href="http://en.wikipedia.org/wiki/ANSI_escape_code#Colors">ANSI
+     * escape sequences for colors</a> in the input.
      *
      * @return the filter
      */
     public static Filter removeColors() {
-        return new Filter() {
+        return replaceInString(COLORS_PATTERN, "");
+    }
+
+    /**
+     * Equivalent to {@link #replaceInBuffer(java.util.regex.Pattern, String)} but takes the regular expression
+     * as string.
+     *
+     * @param regexp the regular expression
+     * @param replacement the string to be substituted for each match
+     * @return the filter
+     */
+    public static Filter replaceInBuffer(final String regexp, final String replacement) {
+        return replaceInBuffer(Pattern.compile(regexp), replacement);
+    }
+
+    /**
+     * Creates a filter which replaces every substring in the input buffer that matches the given regular expression
+     * and replaces it with given replacement.
+     * <p/>
+     * The method just calls {@link String#replaceAll(String, String)} for the entire buffer contents every time new
+     * data arrives,
+     *
+     * @param  regexp the regular expression
+     * @param  replacement the string to be substituted for each match
+     * @return the filter
+     */
+    public static Filter replaceInBuffer(final Pattern regexp, final String replacement) {
+        return new FilterAdapter() {
             @Override
-            public String filter(String string, StringBuilder result) {
-                return string.replaceAll("\\x1b[^m]*m", "");
+            public boolean afterAppend(StringBuilder buffer) {
+                Matcher matcher = regexp.matcher(buffer);
+                String str = matcher.replaceAll(replacement);
+                buffer.replace(0, buffer.length(), str);
+                return false;
             }
         };
     }
+
 }
