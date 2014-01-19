@@ -103,7 +103,7 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
                 .withEchoOutput(adapt(System.out))
-                .withInputFilters(removeColors(), printableOnly())
+                .withInputFilters(removeColors(), removeNonPrintable())
                 .withErrorOnTimeout(true)
                 .build();
         // try-with-resources is omitted for simplicity
