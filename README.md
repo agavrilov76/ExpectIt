@@ -32,7 +32,7 @@ Add the following Maven dependency to your project:
     <dependency>
         <groupId>net.sf.expectit</groupId>
         <artifactId>expectit-core</artifactId>
-        <version>0.2.2</version>
+        <version>0.2.3</version>
     </dependency>
 ```
 You can also download the ``expectit-core.jar`` file from the release project page at
@@ -169,7 +169,7 @@ The library comes with the filters for removing ANSI escape terminal and non-pri
 There are also more general ``replaceInString`` and ``replaceInBuffer`` filters used to modify the input buffer using
 regular expressions. Here is an example:
 
- ```java
+```java
      Expect expect = new ExpectBuilder()
             .withOutput(...)
             .withInputs(...)
@@ -179,11 +179,12 @@ regular expressions. Here is an example:
                 removeColors(),
                 // set the filter to remove non-printable characters
                 removeNonPrintable(),
-                // set the filter to replace a substring that matches tshe regular expression
+                // set the filter to replace a substring that matches 
+                // the regular expression
                 replaceInString("a(.)c", "x$1z"))
             .build();
 
- ```
+```
 Note that you may need to add static import of the filter factory methods in your code.
 
 More examples
