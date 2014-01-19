@@ -22,6 +22,7 @@ package net.sf.expectit;
 
 import net.sf.expectit.echo.EchoOutput;
 import net.sf.expectit.filter.Filter;
+import net.sf.expectit.filter.Filters;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,7 +40,7 @@ public class ExpectBuilder {
     public static final int DEFAULT_TIMEOUT_MS = 30000;
 
     private InputStream[] inputs;
-    private Filter[] filters;
+    private Filter filter;
     private OutputStream output;
     private long timeout = DEFAULT_TIMEOUT_MS;
     private EchoOutput echoOutput;
@@ -118,21 +119,25 @@ public class ExpectBuilder {
     }
 
     /**
-     * Sets a filter for the input. Optional, by default no filters are applied.
+     * Sets a filter for the input. Optional, by default no filter is applied.
      * <p/>
      * Filters can be used to modify the input before performing expect operations. For example, to remove
-     * non-printable characters.
-     * <p/>
-     * The given filters are applied one by one. The string returns by the
-     * {@link net.sf.expectit.filter.Filter#beforeAppend(String, StringBuilder)} method of one filter is passed a
-     * parameter sto next one if not {@code null}. If it is {@code null}, then the filtering process stops and the
-     * latest non-null result is appended to the expect internal buffer.
+     * non-printable characters. Filters can be switched on and off while working with the expect instance.
      *
-     * @param filters the filters
+     * @param filter the filter
+     * @param moreFilters more filter to apply. if specified then all the filters are combined using the
+     * {@link Filters#chain(Filter...)} method.s
      * @return this
      */
-    public final ExpectBuilder withInputFilters(Filter... filters) {
-        this.filters = filters;
+    public final ExpectBuilder withInputFilters(Filter filter, Filter... moreFilters) {
+        if (moreFilters.length == 0) {
+            this.filter = filter;
+        } else {
+            Filter[] filters = new Filter[moreFilters.length + 1];
+            filters[0] = filter;
+            System.arraycopy(moreFilters, 0, filters, 1, moreFilters.length);
+            this.filter = Filters.chain(filters);
+        }
         return this;
     }
 
@@ -178,7 +183,7 @@ public class ExpectBuilder {
 
         SingleInputExpect[] inputs = new SingleInputExpect[this.inputs.length];
         for (int i = 0; i < inputs.length; i++) {
-            inputs[i] = new SingleInputExpect(i, this.inputs[i], charset, echoOutput, filters);
+            inputs[i] = new SingleInputExpect(i, this.inputs[i], charset, echoOutput, filter);
         }
 
         ExpectImpl instance = new ExpectImpl(timeout, output, inputs, charset, echoOutput,

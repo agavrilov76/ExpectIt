@@ -50,4 +50,18 @@ public interface Filter {
      *                  consequent filters must not be executed, or {@code false} otherwise.
      */
     boolean afterAppend(StringBuilder buffer);
+
+    /**
+     * Indicates if the filter is switched off.
+     *
+     * @return the filter off flag.
+     */
+    boolean isOff();
+
+    /**
+     * Switches the filter on and off for the consequent match operations.
+     *
+     * @param off if {@code true} then the filter will be switched off, {@code false} otherwise.
+     */
+    void setOff(boolean off);
 }

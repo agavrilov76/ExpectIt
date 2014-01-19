@@ -24,11 +24,13 @@ import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import net.sf.expectit.filter.Filter;
 
 import java.io.IOException;
 import java.util.Properties;
 
 import static net.sf.expectit.echo.EchoAdapters.adapt;
+import static net.sf.expectit.filter.Filters.chain;
 import static net.sf.expectit.filter.Filters.removeNonPrintable;
 import static net.sf.expectit.filter.Filters.removeColors;
 import static net.sf.expectit.matcher.Matchers.*;
@@ -47,11 +49,12 @@ public class KarafExample {
         session.connect();
         Channel channel = session.openChannel("shell");
 
+        Filter filter = chain(removeColors(), removeNonPrintable());
         Expect expect = new ExpectBuilder()
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
                 .withEchoOutput(adapt(System.out))
-                .withInputFilters(removeColors(), removeNonPrintable())
+                .withInputFilters(filter)
                 .withErrorOnTimeout(true)
                 .build();
         channel.connect();
@@ -63,6 +66,8 @@ public class KarafExample {
         System.err.println(list);
         expect.sendLine("list");
         System.err.println(expect.expect(regexp("karaf@root\\(\\)> ")).getBefore());
+        filter.setOff(true);
+        expect.sendLine("bundle:info --help");
         expect.sendLine("logout");
         expect.expect(eof());
         channel.disconnect();

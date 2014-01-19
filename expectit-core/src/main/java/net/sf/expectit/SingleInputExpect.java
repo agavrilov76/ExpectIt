@@ -45,19 +45,19 @@ class SingleInputExpect {
     private final StringBuilder buffer;
     private final Charset charset;
     private final EchoOutput echoOutput;
-    private final Filter[] filters;
+    private final Filter filter;
     private Future<Object> copierFuture;
     private final Pipe.SourceChannel source;
     private final Pipe.SinkChannel sink;
     private final int number;
 
     protected SingleInputExpect(int number, InputStream input, Charset charset,
-                                EchoOutput echoOutput, Filter[] filter) throws IOException {
+                                EchoOutput echoOutput, Filter filter) throws IOException {
         this.number = number;
         this.input = input;
         this.charset = charset;
         this.echoOutput = echoOutput;
-        this.filters = filter;
+        this.filter = filter;
         Pipe pipe = Pipe.open();
         source = pipe.source();
         sink = pipe.sink();
@@ -107,15 +107,8 @@ class SingleInputExpect {
     }
 
     private void processString(String string) throws IOException {
-        if (filters != null) {
-            String previousResult = null;
-            for (Filter filter : filters) {
-                string = filter.beforeAppend(string, buffer);
-                if (string == null) {
-                    string = previousResult;
-                }
-                previousResult = string;
-            }
+        if (filter != null) {
+            string = filter.beforeAppend(string, buffer);
         }
 
         if (string != null) {
@@ -123,12 +116,8 @@ class SingleInputExpect {
                 echoOutput.onReceive(number, string);
             }
             buffer.append(string);
-            if (filters != null) {
-                for (Filter filter : filters) {
-                    if (filter.afterAppend(buffer)) {
-                        break;
-                    }
-                }
+            if (filter != null) {
+                filter.afterAppend(buffer);
             }
         }
     }

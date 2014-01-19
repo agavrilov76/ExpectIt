@@ -24,6 +24,7 @@ package net.sf.expectit.filter;
  * A default filter implementation which does not modify the input. It is intended to be used for creating subclasses.
  */
 public class FilterAdapter implements Filter {
+    private boolean off;
     /**
      * The protected default constructor.
      */
@@ -31,12 +32,47 @@ public class FilterAdapter implements Filter {
     }
 
     @Override
-    public String beforeAppend(String string, StringBuilder buffer) {
+    public final String beforeAppend(String string, StringBuilder buffer) {
+        if (off) {
+            return string;
+        }
+        return doBeforeAppend(string, buffer);
+    }
+
+    /**
+     * Called if the filter is ON. Follows the contract of the {@link #beforeAppend(String, StringBuilder)}
+     * method.
+     *
+     * @param string the input string
+     * @param buffer the input buffer
+     * @return the result
+     */
+    protected String doBeforeAppend(String string, StringBuilder buffer) {
         return string;
     }
 
     @Override
-    public boolean afterAppend(StringBuilder buffer) {
+    public final boolean afterAppend(StringBuilder buffer) {
+        return !off && doAfterAppend(buffer);
+    }
+
+    /**
+     * Called if the filter is ON. Follows the contract of the {@link #afterAppend(StringBuilder)} method.
+     *
+     * @param buffer the input buffer
+     * @return the results
+     */
+    protected boolean doAfterAppend(StringBuilder buffer) {
         return false;
+    }
+
+    @Override
+    public final boolean isOff() {
+        return off;
+    }
+
+    @Override
+    public final void setOff(boolean off) {
+       this.off = off;
     }
 }

@@ -68,7 +68,7 @@ public final class Filters {
     public static Filter replaceInString(final Pattern regexp, final String replacement) {
         return new FilterAdapter() {
             @Override
-            public String beforeAppend(String string, StringBuilder buffer) {
+            protected String doBeforeAppend(String string, StringBuilder buffer) {
                 return regexp.matcher(string).replaceAll(replacement);
             }
         };
@@ -122,10 +122,53 @@ public final class Filters {
     public static Filter replaceInBuffer(final Pattern regexp, final String replacement) {
         return new FilterAdapter() {
             @Override
-            public boolean afterAppend(StringBuilder buffer) {
+            protected boolean doAfterAppend(StringBuilder buffer) {
                 Matcher matcher = regexp.matcher(buffer);
                 String str = matcher.replaceAll(replacement);
                 buffer.replace(0, buffer.length(), str);
+                return false;
+            }
+        };
+    }
+
+    /**
+     * Combines the filters in a filter chain.
+     * <p/>
+     * The given filters are applied one by one in the order they appear in the method argument list.
+     * <p/>
+     * The string returns by the
+     * {@link Filter#beforeAppend(String, StringBuilder)} method of one filter is passed a
+     * parameter to the next one if not {@code null}. If it is {@code null}, then the {@code beforeAppend} won't be
+     * called any more and the latest non-null result is appended to the expect internal buffer.
+     * <p/>
+     * If return value of the {@link Filter#afterAppend(StringBuilder)} method is true, then all the calls
+     * of this method on the consequent filters will be suppressed.
+     *
+     * @param filters the filters. not null.
+     * @return the combined filter.
+     */
+    public static Filter chain(final Filter ... filters) {
+        return new FilterAdapter() {
+            @Override
+            protected String doBeforeAppend(String string, StringBuilder buffer) {
+                String previousResult = null;
+                for (Filter filter : filters) {
+                    string = filter.beforeAppend(string, buffer);
+                    if (string == null) {
+                        return previousResult;
+                    }
+                    previousResult = string;
+                }
+                return string;
+            }
+
+            @Override
+            protected boolean doAfterAppend(StringBuilder buffer) {
+                for (Filter filter : filters) {
+                    if (filter.afterAppend(buffer)) {
+                        return true;
+                    }
+                }
                 return false;
             }
         };

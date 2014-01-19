@@ -66,13 +66,43 @@ public class FilterTest {
         StringBuilder b2 = new StringBuilder();
         filter.afterAppend(b2);
         assertTrue(b2.length() == 0);
+
         b2.append("12345");
         filter.afterAppend(b2);
         assertEquals(b2.toString(), "12345");
         Filter filter2 = replaceInBuffer(Pattern.compile("12.4"), "");
         filter2.beforeAppend("", b2);
         assertEquals(b2.toString(), "12345");
+
         filter2.afterAppend(b2);
         assertEquals(b2.toString(), "5");
+    }
+
+    @Test
+    public void testFilterSwitcher() {
+        Filter filter = replaceInString("a", "b");
+        filter.setOff(true);
+        assertEquals(filter.beforeAppend("abcd", null), "abcd");
+
+        Filter filter2 = replaceInBuffer("_", "!");
+        filter2.setOff(true);
+        StringBuilder abb = new StringBuilder("_abb");
+        assertFalse(filter2.afterAppend(abb));
+        assertEquals(abb.toString(), "_abb");
+
+        assertTrue(filter.isOff());
+        filter.setOff(false);
+        filter2.setOff(false);
+        assertFalse(filter.isOff());
+
+        Filter chain = chain(filter, filter2);
+        assertEquals(chain.beforeAppend("abcd", null), "bbcd");
+        abb = new StringBuilder("_abb");
+        assertFalse(chain.afterAppend(abb));
+        assertEquals(abb.toString(), "!abb");
+
+        chain.setOff(true);
+        assertEquals(chain.beforeAppend("abcd", null), "abcd");
+
     }
 }
