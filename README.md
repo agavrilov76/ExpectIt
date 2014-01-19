@@ -1,10 +1,10 @@
 [![Build Status](https://travis-ci.org/Alexey1Gavrilov/expectit.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/expectit)
-Yet Another Expect for Java
-===========================
+Expectit - Yet Another Expect for Java
+======================================
 Overview
 --------
-Yet another pure Java 1.6+ implementation of the [Expect](http://en.wikipedia.org/wiki/Expect) tool. It is designed to
-be simple, easy to use and extensible. Written from scratch. Here are the features:
+Expectit - is yet another pure Java 1.6+ implementation of the [Expect](http://en.wikipedia.org/wiki/Expect) tool.
+It is designed to be simple, easy to use and extensible. Written from scratch. Here are the features:
 
 * Fluent-style API.
 * No third-party dependencies.
@@ -14,9 +14,19 @@ be simple, easy to use and extensible. Written from scratch. Here are the featur
 * Extensible filter framework to modify input, for example, to remove non-printable ANSI terminal characters.
 * Apache License.
 
+The Expectit project is a modern alternative to other popular 'Expect for Java' implementations, such as:
+
+* [ExpectJ](http://expectj.sourceforge.net/)
+* [Expect4J](https://github.com/cverges/expect4j)
+* [Expect-for-Java](https://github.com/ronniedong/Expect-for-Java)
+
+I believe that none of the projects above has all the features that Expectit has. So if you are looking for a Java
+expect library please give Expectit a try.
+
 Quick start
 -----------
-The library is available on the Maven central. Add the following Maven dependency to your project:
+The library is available on [the Maven central](http://search.maven.org/#search|gav|1|g%3A%22net.sf.expectit%22%20AND%20a%3A%22expectit-core%22).
+Add the following Maven dependency to your project:
 
 ```xml
     <dependency>
@@ -25,9 +35,11 @@ The library is available on the Maven central. Add the following Maven dependenc
         <version>0.2.2</version>
     </dependency>
 ```
-You can also download the .jar files from [the sourceforge project page](https://sourceforge.net/projects/expectit/files/releases/).
+You can also download the ``expectit-core.jar`` file from the release project page at
+[sourceforge.net](https://sourceforge.net/projects/expectit/files/releases/) and add it to your classpath.
 
-Create an instance of ``net.sf.expectit.Expect`` and work with it as follows:
+To begin with you need to construct an instance of ``net.sf.expectit.Expect`` and set the input and output streams as
+follows:
 
 ```java
     // the stream from where you read your input data
@@ -43,6 +55,8 @@ Create an instance of ``net.sf.expectit.Expect`` and work with it as follows:
     // accessing the matching group
     String group = result.group(2);
 ```
+Note that you may need to add static import of the matcher factory methods in your code.
+
 How it works
 ------------
 Once an Expect object is created the library starts background threads for every input stream. The threads read
@@ -56,11 +70,13 @@ input stream NIO pipe.
 The result object indicates whether the match operation was successful or not. It holds the context of the match. It
 implements the ``java.util.regexp.MatchResult`` interface which provides access to the result of regular
 expression matching results. If the match was successful, then the corresponding input buffer is update, all
-characters before the match including the match are removed. The next match is performed for the updated buffer.
+characters before the match including the matching string are removed. The next match is performed for the updated
+buffer.
 
 Interacting with OS process
 ---------------------------
 Here is an example of interacting with a spawn process:
+
 ```java
         Process process = Runtime.getRuntime().exec("/bin/sh");
 
@@ -86,10 +102,11 @@ Here is an example of interacting with a spawn process:
         process.waitFor();
         expect.close();
 ```
-Interacting via SSH
---------------------
+
+Interacting with SSH server
+---------------------------
 Here is an example on how to talk to a public SSH service on http://sdf.org using the JSch library.
-Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your project dependencies.
+Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your project classpath.
 ```java
         JSch jSch = new JSch();
         Session session = jSch.getSession("new", "sdf.org");
@@ -103,7 +120,7 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
                 .withEchoOutput(adapt(System.out))
-                .withInputFilters(removeColors(), removeNonPrintable())
+        //        .withInputFilters(removeColors(), removeNonPrintable())
                 .withErrorOnTimeout(true)
                 .build();
         // try-with-resources is omitted for simplicity
@@ -122,9 +139,11 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
         session.disconnect();
         expect.close();
 ```
-Using composition of matchers
------------------------------
-In the following example you can see how to combine different matchers:
+
+Using different type of matchers
+--------------------------------
+In the following example you can see how to combine different matchers (assuming static import of matcher factory
+methods):
 ```java
         // match any of predicates
         expect.expect(anyOf(contains("string"), regexp("abc.*def")));
@@ -134,7 +153,39 @@ In the following example you can see how to combine different matchers:
         expect.expect(contains("string1"), contains("string2"));
         // expect to match three times in a row
         expect.expect(times(3, contains("string")));
+        // expect any non-empty string match
+        expect.expect(anyString());
 ```
+Filtering the input
+-------------------
+If you want to modify or remove some characters in the input before performing expect operations you can use filters.
+A filter instance implements ``net.sf.expectit.filter.Filter`` interface and is applied right before the matching
+occurs.
+
+Filters are defined at the time an ``net.sf.expectit.Expect`` instance is being created and they can
+be disabled and re-enabled while working with the Expect instance.
+
+The library comes with the filters for removing ANSI escape terminal and non-printable characters.
+There are also more general ``replaceInString`` and ``replaceInBuffer`` filters used to modify the input buffer using
+regular expressions. Here is an example:
+
+ ```java
+     Expect expect = new ExpectBuilder()
+            .withOutput(...)
+            .withInputs(...)
+            // define the filters
+            .withInputFilters(
+                // set the filter to remove ANSI char for colors in terminal
+                removeColors(),
+                // set the filter to remove non-printable characters
+                removeNonPrintable(),
+                // set the filter to replace a substring that matches tshe regular expression
+                replaceInString("a(.)c", "x$1z"))
+            .build();
+
+ ```
+Note that you may need to add static import of the filter factory methods in your code.
+
 More examples
 -------------
 * [Socket Example: parsing HTTP response](expectit-core/src/test/java/net/sf/expectit/SocketExample.java)

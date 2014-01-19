@@ -38,7 +38,7 @@ public final class Filters {
     public static final Pattern COLORS_PATTERN = Pattern.compile(COLORS_REGEXP_STRING);
 
     /**
-     * The regular expression matches non printable characters: {@code [\x00\x08\x0B\x0C\x0E-\x1F]}.
+     * The regular expression which matches non printable characters: {@code [\x00\x08\x0B\x0C\x0E-\x1F]}.
      */
     public static final Pattern NON_PRINTABLE_PATTERN = Pattern.compile("[\\x00\\x08\\x0B\\x0C\\x0E-\\x1F]");
 
@@ -46,8 +46,8 @@ public final class Filters {
     }
 
     /**
-     * Creates a filter which removes all non-printable characters matching {@link #NON_PRINTABLE_PATTERN} in the input
-     * string.
+     * Creates a filter which removes all the non-printable characters matching {@link #NON_PRINTABLE_PATTERN} in the
+     * input string.
      *
      * @return the filter
      */
@@ -134,18 +134,18 @@ public final class Filters {
     /**
      * Combines the filters in a filter chain.
      * <p/>
-     * The given filters are applied one by one in the order they appear in the method argument list.
+     * The given filters are applied one by one in the order that hey appear in the method argument list.
      * <p/>
      * The string returns by the
      * {@link Filter#beforeAppend(String, StringBuilder)} method of one filter is passed a
-     * parameter to the next one if not {@code null}. If it is {@code null}, then the {@code beforeAppend} won't be
-     * called any more and the latest non-null result is appended to the expect internal buffer.
+     * parameter to the next one if it is not {@code null}. If it is {@code null}, then the {@code beforeAppend}
+     * won't be called any more and the latest non-null result is appended to the expect internal buffer.
      * <p/>
-     * If return value of the {@link Filter#afterAppend(StringBuilder)} method is true, then all the calls
+     * If the return value of the {@link Filter#afterAppend(StringBuilder)} method is true, then all the calls
      * of this method on the consequent filters will be suppressed.
      *
-     * @param filters the filters. not null.
-     * @return the combined filter.
+     * @param filters the filters, not {@code null}
+     * @return the combined filter
      */
     public static Filter chain(final Filter ... filters) {
         return new FilterAdapter() {

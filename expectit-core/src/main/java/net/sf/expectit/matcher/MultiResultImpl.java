@@ -27,7 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A matcher implementation for multiple operation.
+ * A matcher implementation for multiple operations.
  *
  * @author Alexey Gavrilov
  */

@@ -1,5 +1,5 @@
 /**
- * Classes for filtering input before passing it to perform matching.
+ * Classes for filtering input before passing it further for matching.
  *
  * @author Alexey Gavrilov
  */

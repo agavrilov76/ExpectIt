@@ -81,19 +81,19 @@ public class FilterTest {
     @Test
     public void testFilterSwitcher() {
         Filter filter = replaceInString("a", "b");
-        filter.setOff(true);
+        filter.setEnabled(false);
         assertEquals(filter.beforeAppend("abcd", null), "abcd");
 
         Filter filter2 = replaceInBuffer("_", "!");
-        filter2.setOff(true);
+        filter2.setEnabled(false);
         StringBuilder abb = new StringBuilder("_abb");
         assertFalse(filter2.afterAppend(abb));
         assertEquals(abb.toString(), "_abb");
 
-        assertTrue(filter.isOff());
-        filter.setOff(false);
-        filter2.setOff(false);
-        assertFalse(filter.isOff());
+        assertFalse(filter.isEnabled());
+        filter.setEnabled(true);
+        filter2.setEnabled(true);
+        assertTrue(filter.isEnabled());
 
         Filter chain = chain(filter, filter2);
         assertEquals(chain.beforeAppend("abcd", null), "bbcd");
@@ -101,7 +101,7 @@ public class FilterTest {
         assertFalse(chain.afterAppend(abb));
         assertEquals(abb.toString(), "!abb");
 
-        chain.setOff(true);
+        chain.setEnabled(false);
         assertEquals(chain.beforeAppend("abcd", null), "abcd");
 
     }

@@ -29,6 +29,8 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
+ * A class to accommodate results of the multiple matches.
+ *
  * @author Alexey Gavrilov
  */
 class MultiMatcher implements Matcher<MultiResult> {

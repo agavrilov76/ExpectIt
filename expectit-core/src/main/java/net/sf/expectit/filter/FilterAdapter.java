@@ -21,10 +21,14 @@ package net.sf.expectit.filter;
  */
 
 /**
- * A default filter implementation which does not modify the input. It is intended to be used for creating subclasses.
+ * A default filter implementation which does not modify the input.
+ * <p/>
+ * Implements functionality for enable/disable the filter.
+ * It is intended to be used for creating subclasses.
  */
 public class FilterAdapter implements Filter {
-    private boolean off;
+    // the filter is enabled by default
+    private boolean enabled = true;
     /**
      * The protected default constructor.
      */
@@ -33,15 +37,17 @@ public class FilterAdapter implements Filter {
 
     @Override
     public final String beforeAppend(String string, StringBuilder buffer) {
-        if (off) {
+        if (!enabled) {
             return string;
         }
         return doBeforeAppend(string, buffer);
     }
 
     /**
-     * Called if the filter is ON. Follows the contract of the {@link #beforeAppend(String, StringBuilder)}
+     * Called if the filter is enabled. Follows the contract of the {@link #beforeAppend(String, StringBuilder)}
      * method.
+     * <p/>
+     * By default returns the given string.
      *
      * @param string the input string
      * @param buffer the input buffer
@@ -53,26 +59,26 @@ public class FilterAdapter implements Filter {
 
     @Override
     public final boolean afterAppend(StringBuilder buffer) {
-        return !off && doAfterAppend(buffer);
+        return enabled && doAfterAppend(buffer);
     }
 
     /**
-     * Called if the filter is ON. Follows the contract of the {@link #afterAppend(StringBuilder)} method.
+     * Called if the filter is enabled. Follows the contract of the {@link #afterAppend(StringBuilder)} method.
      *
      * @param buffer the input buffer
-     * @return the results
+     * @return the result, the default implementation returns false.
      */
     protected boolean doAfterAppend(StringBuilder buffer) {
         return false;
     }
 
     @Override
-    public final boolean isOff() {
-        return off;
+    public final boolean isEnabled() {
+        return enabled;
     }
 
     @Override
-    public final void setOff(boolean off) {
-       this.off = off;
+    public final void setEnabled(boolean enabled) {
+       this.enabled = enabled;
     }
 }

@@ -53,7 +53,7 @@ public class KarafExample {
         Expect expect = new ExpectBuilder()
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
-                .withEchoOutput(adapt(System.out))
+                //.withEchoOutput(adapt(System.out))
                 .withInputFilters(filter)
                 .withErrorOnTimeout(true)
                 .build();
@@ -66,8 +66,9 @@ public class KarafExample {
         System.err.println(list);
         expect.sendLine("list");
         System.err.println(expect.expect(regexp("karaf@root\\(\\)> ")).getBefore());
-        filter.setOff(true);
+        filter.setEnabled(false);
         expect.sendLine("bundle:info --help");
+        System.err.println(expect.expect(regexp(".*root\\(\\)>")).getBefore());
         expect.sendLine("logout");
         expect.expect(eof());
         channel.disconnect();

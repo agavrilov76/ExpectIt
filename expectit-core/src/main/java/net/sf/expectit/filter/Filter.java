@@ -21,47 +21,50 @@ package net.sf.expectit.filter;
  */
 
 /**
- * A filter interface applied to input before performing expect operations.
+ * A filter interface applied to the input before performing expect operations.
  *
  * @author Alexey Gavrilov
  */
 public interface Filter {
     /**
      * Invoked when a string read from the input is about to be appended to the input buffer. This string is passed
-     * as a parameter to this method, and the result is actually appended.
+     * as a parameter to this method, and the return value is actually appended.
      * <p/>
      * Allows to modify the matching input by providing the return value which differs from the given string. The
-     * method is invoked on the thread that performs an expect operation.
+     * method is invoked on the thread that performs expect operations.
      *
-     * @param string a chunk of input data read from the input stream. Can be {@code null} if the filter is run in a
-     *               with in a filter chain, and preceding filter returns {@code null}
+     * @param string a chunk of input data read from the input stream. Can not be {@code null}. If the filter
+     *               works in the {@link Filters#chain(Filter...)}, then the string is the result of preceding filter
      * @param buffer the reference to the input buffer. Can be used to modify the entire buffer contents.
-     * @return the string to be appended to the input buffers, or {@code null} to ignore all the consequent filters.
+     * @return the string to be appended to the input buffers, or {@code null} to ignore all the consequent filters in
+     * the filter chain.
      */
     String beforeAppend(String string, StringBuilder buffer);
 
     /**
      * Invoked when the input string has just been appended to the input buffer.
      * <p/>
-     * The method is invoked on the thread that performs an expect operation.
+     * The method is invoked on the thread that performs expect operations.
      *
      * @param buffer the reference to the input buffer. Can be used to modify the entire buffer contents.
-     * @return a boolean flag indicating whether the filtering process should be stopped or not. {@code true} if all the
+     * @return a boolean flag indicating whether the filtering process should be stopped here. {@code true} if all the
      *                  consequent filters must not be executed, or {@code false} otherwise.
      */
     boolean afterAppend(StringBuilder buffer);
 
     /**
-     * Indicates if the filter is switched off.
+     * Indicates if the filter is enabled or disabled.
      *
-     * @return the filter off flag.
+     * @return {@code true} if the filter is enabled, or {@code false} otherwise.
      */
-    boolean isOff();
+    boolean isEnabled();
 
     /**
-     * Switches the filter on and off for the consequent match operations.
+     * Enables or disables the filter for the input.
+     * <p/>
+     * Allows to switch filter on and off while working with the expect instance.
      *
-     * @param off if {@code true} then the filter will be switched off, {@code false} otherwise.
+     * @param enabled if {@code true} then the filter will be enabled, or {@code false} otherwise.
      */
-    void setOff(boolean off);
+    void setEnabled(boolean enabled);
 }
