@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>net.sf.expectit</groupId>
     <artifactId>expectit-parent</artifactId>
-    <version>0.2.3</version>
+    <version>0.2.4-SNAPSHOT</version>
     <modules>
         <module>expectit-core</module>
     </modules>
@@ -36,7 +36,7 @@
         <url>https://github.com/Alexey1Gavrilov/expectit</url>
         <connection>scm:git:git://github.com/Alexey1Gavrilov/expectit.git</connection>
         <developerConnection>scm:git:git@github.com:Alexey1Gavrilov/expectit.git</developerConnection>
-        <tag>v0.2.3</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <developers>
