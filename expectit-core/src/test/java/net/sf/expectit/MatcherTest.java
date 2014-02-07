@@ -367,10 +367,19 @@ public class MatcherTest {
         assertEquals("a1", result.getBefore());
         assertEquals(result.getBefore(), "a1");
 
+        result = times(2, contains("abc")).matches("ZabcXabcY", false);
+        assertTrue(result.isSuccessful());
+        assertEquals(result.getBefore(), "X");
+        assertEquals(result.getResults().get(0).getBefore(), "Z");
+        assertEquals(result.getResults().get(1).getBefore(), "X");
+
+        result = times(3, contains("abc")).matches("ZabcXabcY", false);
+        assertFalse(result.isSuccessful());
+
         result = input.expect(2 * SMALL_TIMEOUT, times(3, contains("_")));
         for (Result r : result.getResults()) {
             assertTrue(r.isSuccessful());
-            assertEquals("2c3", r.getBefore());
+            assertTrue(r.getBefore().endsWith("2c3"));
         }
 
         result = input.expect(SMALL_TIMEOUT, times(5, contains("c")));

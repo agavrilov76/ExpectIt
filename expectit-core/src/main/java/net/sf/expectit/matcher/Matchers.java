@@ -195,13 +195,11 @@ public final class Matchers {
     /**
      * Creates a matcher that matches if the given {@code matcher} matches the {@code number} of times.
      * <p/>
-     * The match result represents a combination of any match operations. If succeeded, the match result with the
-     * greatest end position is selected to implement the result {@link Result} instance returned by this method.
+     * The match result represents a combination of all the performed match operations. If succeeded, the result
+     * with the greatest end position is returned.
      * <p/>
-     * If several matchers have the same end position, then the result from the one with the smaller argument index is
-     * returned.
      *
-     * @param number  the number of times which given {@code matcher} must match the input
+     * @param number  the number of times which the given {@code matcher} must match the input
      * @param matcher the matcher
      * @return the result
      */
@@ -212,18 +210,23 @@ public final class Matchers {
 
             @Override
             public MultiResult matches(String input, boolean isEof) {
-                Result result = matcher.matches(input, isEof);
-                int index = number - matchCount;
-                if (result.isSuccessful()) {
-                    results[index] = result;
-                    if (--matchCount == 0) {
-                        return new MultiResultImpl(result, Arrays.asList(results));
+                int beginIndex = 0;
+                while (true) {
+                    Result result = matcher.matches(input.substring(beginIndex), isEof);
+                    int index = number - matchCount;
+                    if (result.isSuccessful()) {
+                        beginIndex += result.end();
+                        results[index] = result;
+                        if (--matchCount == 0) {
+                            return new MultiResultImpl(result, Arrays.asList(results));
+                        }
+                    } else {
+                        if (index < results.length - 1) {
+                            Arrays.fill(results, index + 1, number, SimpleResult.NEGATIVE);
+                        }
+                        return new MultiResultImpl(SimpleResult.NEGATIVE, Arrays.asList(results));
                     }
                 }
-                if (index < results.length - 1) {
-                    Arrays.fill(results, index + 1, number, SimpleResult.NEGATIVE);
-                }
-                return new MultiResultImpl(SimpleResult.NEGATIVE, Arrays.asList(results));
             }
         };
     }
