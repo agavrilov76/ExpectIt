@@ -1,4 +1,4 @@
-package net.sf.expectit.ant.matcher;
+package net.sf.expectit.ant.filter;
 
 /*
  * #%L
@@ -20,28 +20,38 @@ package net.sf.expectit.ant.matcher;
  * #L%
  */
 
-import net.sf.expectit.Result;
-
 /**
- * An abstract base matcher element for matchers that require regular expression.
+ * A base element for replace filters.
  */
-abstract class AbstractRegexpElement extends AbstractMatcherElement<Result> {
+public abstract class AbstractReplaceElement extends AbstractFilterElement {
+    private String replacement;
     private String regexp;
 
     /**
-     * Sets the regular expression.
+     * Sets the replacement.
      *
-     * @param regexp the regular expression.
+     * @param replacement the replacement
+     */
+    public void setReplacement(String replacement) {
+        this.replacement = replacement;
+    }
+
+    /**
+     * Sets the regexp string.
+     *
+     * @param regexp the regexp string
      */
     public void setRegexp(String regexp) {
         this.regexp = regexp;
     }
 
-    /**
-     * Gets the regular expression.
-     *
-     * @return the regular expression.
-     */
+    String getReplacement() {
+        if (replacement == null) {
+            throw new IllegalArgumentException("replacement value is required");
+        }
+        return getProject().replaceProperties(replacement);
+    }
+
     String getRegexp() {
         if (regexp == null) {
             throw new IllegalArgumentException("regexp value is required");

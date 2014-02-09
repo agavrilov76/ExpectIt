@@ -33,6 +33,9 @@ public class ContainsElement extends AbstractMatcherElement<Result> {
 
     @Override
     protected Matcher<Result> createMatcher() {
+        if (string == null) {
+            throw new IllegalArgumentException("string value is required");
+        }
         return contains(getProject().replaceProperties(string));
     }
 

@@ -17,7 +17,7 @@
   limitations under the License.
   #L%
   -->
-<project name="integration-test" xmlns:expect="http://expectit.sf.net">
+<project name="integration-test" xmlns:expect="antlib:net.sf.expectit.ant">
     <condition property="isWindows">
         <os family="windows"/>
     </condition>
@@ -33,8 +33,6 @@
     </macrodef>
 
     <target name="test-exec-namespace" unless="isWindows">
-        <taskdef resource="net/sf/expectit/ant/taskdef.properties" uri="http://expectit.sf.net"/>
-
         <expect:exec executable="/bin/sh" echoOutput="true" destroyProcess="true" expectTimeout="1000">
             <expect:filters>
                 <expect:replaceInBuffer regexp="abc" replacement="xyz"/>
@@ -106,91 +104,83 @@
     </target>
 
     <target name="test-exec-no-namespace" unless="isWindows">
-        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
-        <expect.exec executable="/bin/sh">
-            <expect.sequential>
+        <expect:exec executable="/bin/sh">
+            <expect:sequential>
                 <property name="regexp" value="(?s).*hi.*"/>
-                <expect.send line="echo hi!"/>
-                <expect.matches regexp="${regexp}" resultPrefix="result20"/>
+                <expect:send line="echo hi!"/>
+                <expect:matches regexp="${regexp}" resultPrefix="result20"/>
                 <fail unless="result20.success"/>
-                <expect.contains string="xxx" timeout="200" resultPrefix="result21"/>
+                <expect:contains string="xxx" timeout="200" resultPrefix="result21"/>
                 <fail if="result21.success"/>
-                <expect.send line="exit"/>
-            </expect.sequential>
-        </expect.exec>
+                <expect:send line="exit"/>
+            </expect:sequential>
+        </expect:exec>
     </target>
 
     <target name="test-exec-negative">
         <fail if="isWindows"/>
-        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
-        <expect.exec executable="/bin/sh">
+        <expect:exec executable="/bin/sh">
             <arg line="--help"/>
-            <expect.sequential>
-                <expect.send line="echo hi!; exit"/>
-            </expect.sequential>
-        </expect.exec>
+            <expect:sequential>
+                <expect:send line="echo hi!; exit"/>
+            </expect:sequential>
+        </expect:exec>
     </target>
 
     <target name="test-exec-2-negative">
         <fail if="isWindows"/>
-        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
-        <expect.exec executable="/bin/sh" errorOnTimeout="true">
-            <expect.sequential>
-                <expect.send line="echo hi!; exit"/>
-                <expect.contains timeout="200" string="XXX"/>
-            </expect.sequential>
-        </expect.exec>
+        <expect:exec executable="/bin/sh" errorOnTimeout="true">
+            <expect:sequential>
+                <expect:send line="echo hi!; exit"/>
+                <expect:contains timeout="200" string="XXX"/>
+            </expect:sequential>
+        </expect:exec>
     </target>
 
     <target name="test-socket">
-        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
-        <expect.socket host="localhost" port="${ftp.port}" echoOutput="true">
-            <expect.sequential>
-                <expect.anyString/>
-                <expect.send line="user ftp"></expect.send>
-                <expect.anyString/>
-                <expect.send line="pass secret"/>
-                <expect.anyString input="0"/>
-                <expect.send line="ls"/>
-                <expect.anyString/>
-            </expect.sequential>
-        </expect.socket>
+        <expect:socket host="localhost" port="${ftp.port}" echoOutput="true">
+            <expect:sequential>
+                <expect:anyString/>
+                <expect:send line="user ftp"></expect:send>
+                <expect:anyString/>
+                <expect:send line="pass secret"/>
+                <expect:anyString input="0"/>
+                <expect:send line="ls"/>
+                <expect:anyString/>
+            </expect:sequential>
+        </expect:socket>
     </target>
 
     <target name="test-socket-negative">
-        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
-        <expect.socket host="localhost" port="${ftp.port}" echoOutput="true"/>
+        <expect:socket host="localhost" port="${ftp.port}" echoOutput="true"/>
     </target>
 
     <target name="test-socket-2-negative">
-        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
-        <expect.socket host="localhost" port="${ftp.port}" echoOutput="true">
-            <expect.sequential>
-                <expect.send line="xxx"/>
-                <expect.anyString input="33"/>
-            </expect.sequential>
-        </expect.socket>
+        <expect:socket host="localhost" port="${ftp.port}" echoOutput="true">
+            <expect:sequential>
+                <expect:send line="xxx"/>
+                <expect:anyString input="33"/>
+            </expect:sequential>
+        </expect:socket>
     </target>
 
     <target name="test-socket-3-negative">
-        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
-        <expect.socket host="localhost" port="${ftp.port}" echoOutput="true">
-            <expect.sequential>
-                <expect.send number="" line="xxx"/>
-            </expect.sequential>
-        </expect.socket>
+        <expect:socket host="localhost" port="${ftp.port}" echoOutput="true">
+            <expect:sequential>
+                <expect:send number="" line="xxx"/>
+            </expect:sequential>
+        </expect:socket>
     </target>
 
 
     <target name="test-ssh">
-        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
-        <expect.ssh host="localhost" echoOutput="true" port="${ssh.port}" username="ssh" trust="true"
+        <expect:ssh host="localhost" echoOutput="true" port="${ssh.port}" username="ssh" trust="true"
                     password="secret">
-            <expect.sequential>
-                <expect.send line="test"/>
-                <expect.contains string="test" resultPrefix="result100"/>
-            </expect.sequential>
-        </expect.ssh>
+            <expect:sequential>
+                <expect:send line="test"/>
+                <expect:contains string="test" resultPrefix="result100"/>
+            </expect:sequential>
+        </expect:ssh>
         <fail unless="result100.success"/>
     </target>
 

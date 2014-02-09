@@ -1,14 +1,36 @@
+<!--
+  #%L
+  net.sf.expectit
+  %%
+  Copyright (C) 2014 Alexey Gavrilov
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
 <project name="example1">
     <property name="build-ssh-example.ant.file" location="build-ssh-example.xml"/>
     <dirname file="${build-ssh-example.ant.file}" property="script.dir"/>
     <property name="expectit.jar" location="${script.dir}/../../target/expectit-ant-0.3.0-SNAPSHOT.jar"/>
     <taskdef classpath="${expectit.jar}"
-             resource="net/sf/expectit/ant/taskdef.properties" uri="http://expectit.sf.net" />
+             resource="net/sf/expectit/ant/antlib.xml" uri="antlib:net.sf.expectit.ant" />
 
-    <target name="main">
+    <target name="main" xmlns:expect="antlib:net.sf.expectit.ant">
         <echo>${script.dir} ${expectit.jar}</echo>
-        <expect:exec xmlns:expect="http://expectit.sf.net">
+        <!-- <expect:ssh />-->
+        <expect:socket />
+        <expect:exec executable="/bin/sh">
             <expect:sequential>
+                <expect:contains/>
                 <expect:send line=""/>
             </expect:sequential>
         </expect:exec>

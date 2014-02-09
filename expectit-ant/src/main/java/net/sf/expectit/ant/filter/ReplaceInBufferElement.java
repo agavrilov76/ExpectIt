@@ -27,32 +27,11 @@ import static net.sf.expectit.filter.Filters.replaceInBuffer;
 /**
  * An element corresponding to the {@link net.sf.expectit.filter.Filters#replaceInBuffer(String, String)} filter.
  */
-public class ReplaceInBufferElement extends AbstractFilterElement {
-
-    private String replacement;
-    private String regexp;
+public class ReplaceInBufferElement extends AbstractReplaceElement {
 
     @Override
     public Filter createFilter() {
-        return replaceInBuffer(getProject().replaceProperties(regexp),
-                getProject().replaceProperties(replacement));
+        return replaceInBuffer(getRegexp(), getReplacement());
     }
 
-    /**
-     * Sets the replacement. See {@link net.sf.expectit.filter.Filters#replaceInBuffer(String, String)}.
-     *
-     * @param replacement the replacement
-     */
-    public void setReplacement(String replacement) {
-        this.replacement = replacement;
-    }
-
-    /**
-     * Sets the regexp string. See {@link net.sf.expectit.filter.Filters#replaceInBuffer(String, String)}.
-     *
-     * @param regexp the regexp string
-     */
-    public void setRegexp(String regexp) {
-        this.regexp = regexp;
-    }
 }

@@ -32,7 +32,7 @@ public class MatchesElement extends AbstractRegexpElement {
 
     @Override
     protected Matcher<Result> createMatcher() {
-        return matches(getProject().replaceProperties(getRegexp()));
+        return matches(getRegexp());
     }
 
 }

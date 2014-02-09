@@ -97,32 +97,6 @@
                 <artifactId>findbugs-maven-plugin</artifactId>
             </plugin>
             <plugin>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>1.7</version>
-                <executions>
-                    <execution>
-                        <id>copy-taskdef</id>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <phase>process-resources</phase>
-                        <configuration>
-                            <target>
-                                <copy file="${project.build.outputDirectory}/net/sf/expectit/ant/taskdef.properties"
-                                      tofile="${project.build.outputDirectory}/net/sf/expectit/ant/taskdef-prefixed.properties">
-                                    <filterchain>
-                                        <striplinecomments>
-                                            <comment value="#"/>
-                                        </striplinecomments>
-                                        <prefixlines prefix="expect."/>
-                                    </filterchain>
-                                </copy>
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <configuration>

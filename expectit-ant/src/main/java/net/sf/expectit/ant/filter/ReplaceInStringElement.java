@@ -27,31 +27,10 @@ import static net.sf.expectit.filter.Filters.replaceInString;
 /**
  * An element corresponding to the {@link net.sf.expectit.filter.Filters#replaceInString(String, String)} filter.
  */
-public class ReplaceInStringElement extends AbstractFilterElement {
-
-    private String replacement;
-    private String regexp;
+public class ReplaceInStringElement extends AbstractReplaceElement {
 
     @Override
     public Filter createFilter() {
-        return replaceInString(regexp, replacement);
-    }
-
-    /**
-     * Sets the replacement. See {@link net.sf.expectit.filter.Filters#replaceInString(String, String)}.
-     *
-     * @param replacement the replacement
-     */
-    public void setReplacement(String replacement) {
-        this.replacement = replacement;
-    }
-
-    /**
-     * Sets the regexp string. See {@link net.sf.expectit.filter.Filters#replaceInString(String, String)}.
-     *
-     * @param regexp the regexp string
-     */
-    public void setRegexp(String regexp) {
-        this.regexp = regexp;
+        return replaceInString(getRegexp(), getReplacement());
     }
 }
