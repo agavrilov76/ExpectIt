@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
 /**
- * A test for interacting with Windows OS shell
+ * A test for interacting with Windows OS shell.
  */
 public class WinProcessTest {
 

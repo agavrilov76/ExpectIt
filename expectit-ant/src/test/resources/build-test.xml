@@ -1,0 +1,192 @@
+<!--
+  #%L
+  net.sf.expectit
+  %%
+  Copyright (C) 2014 Alexey Gavrilov
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+<project name="integration-test" xmlns:expect="http://expectit.sf.net">
+    <macrodef name="assert-equals">
+        <attribute name="property"/>
+        <attribute name="value"/>
+        <sequential>
+            <condition property="assert-equals-@{property}-@{value}">
+                <equals arg1="${@{property}}" arg2="@{value}"/>
+            </condition>
+            <fail unless="assert-equals-@{property}-@{value}">${@{property}} != @{value}</fail>
+        </sequential>
+    </macrodef>
+
+    <target name="test-exec-namespace">
+        <taskdef resource="net/sf/expectit/ant/taskdef.properties" uri="http://expectit.sf.net"/>
+
+        <expect:exec executable="/bin/sh" echoOutput="true" destroyProcess="true" expectTimeout="1000">
+            <expect:filters>
+                 <expect:replaceInBuffer regexp="abc" replacement="xyz"/>
+                 <expect:replaceInString regexp="123" replacement="456"/>
+                 <expect:removeNonPrintable/>
+                 <expect:removeColors/>
+            </expect:filters>
+            <expect:sequential>
+                <expect:send line="echo testabc123"/>
+                <expect:contains string="xyz456" resultPrefix="result1"/>
+                <expect:send line="echo XYZ34"/>
+                <expect:regexp regexp="X(.)Z(\d)" resultPrefix="result2"/>
+                <assert-equals property="result1.before" value="test"/>
+                <assert-equals property="result1.success" value="true"/>
+                <assert-equals property="result2.group" value="XYZ3"/>
+                <assert-equals property="result2.group.1" value="Y"/>
+                <assert-equals property="result2.group.2" value="3"/>
+
+
+                <expect:send string="echo def"/>
+                <expect:send line=""/>
+
+                <expect:anyString/>
+                <expect:contains string="abcd" resultPrefix="result2n"/>
+                <fail if="result2n.success"/>
+
+                <expect:send line="echo hi!"/>
+                <expect:allOf resultPrefix="result3">
+                    <expect:contains string="h"/>
+                    <expect:matches regexp="(?s).+" resultPrefix="result4"/>
+                </expect:allOf>
+                <echoproperties prefix="result"/>
+                <fail unless="result3.success"/>
+                <fail unless="result4.success"/>
+                <assert-equals property="result3.0.group" value="h"/>
+
+                <expect:send line="echo qwertyXqwertyDqwerty"/>
+                <expect:times number="2" resultPrefix="result5">
+                    <expect:contains string="qwerty"/>
+                </expect:times>
+                <fail unless="result5.success"/>
+
+                <expect:anyOf resultPrefix="result6">
+                    <expect:regexp regexp="qw"/>
+                    <expect:contains string="poreetq"/>
+                </expect:anyOf>
+                <fail unless="result6.success"/>
+
+                <property name="property" value="val"/>
+
+                <expect:send line="echo XvalY"/>
+                <expect:regexp regexp="\n"/>
+                <expect:contains timeout="2000" string="${property}" resultPrefix="result7"/>
+                <assert-equals property="result7.before" value="X"/>
+
+                <expect:send line="echo error &gt;&amp;2"/>
+                <expect:contains input="1" string="error" resultPrefix="result8"/>
+                <fail unless="result8.success"/>
+
+                <expect:send line="exit"/>
+                <expect:eof resultPrefix="resultX"/>
+                <fail unless="resultX.success"/>
+                <assert-equals property="resultX.group" value=""/>
+                <echoproperties prefix="resultX"/>
+            </expect:sequential>
+        </expect:exec>
+
+        <fail unless="result1.group"/>
+    </target>
+
+    <target name="test-exec-no-namespace">
+        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
+        <expect.exec executable="/bin/sh">
+            <expect.sequential>
+                <property name="regexp" value="(?s).*hi.*"/>
+                <expect.send line="echo hi!"/>
+                <expect.matches regexp="${regexp}" resultPrefix="result20"/>
+                <fail unless="result20.success"/>
+                <expect.contains string="xxx" timeout="200" resultPrefix="result21"/>
+                <fail if="result21.success"/>
+                <expect.send line="exit"/>
+            </expect.sequential>
+        </expect.exec>
+    </target>
+
+    <target name="test-exec-negative">
+        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
+        <expect.exec executable="/bin/sh">
+            <arg line="--help"/>
+            <expect.sequential>
+                <expect.send line="echo hi!; exit"/>
+            </expect.sequential>
+        </expect.exec>
+    </target>
+
+    <target name="test-exec-2-negative">
+        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
+        <expect.exec executable="/bin/sh" errorOnTimeout="true">
+            <expect.sequential>
+                <expect.send line="echo hi!; exit"/>
+                <expect.contains timeout="200" string="XXX"/>
+            </expect.sequential>
+        </expect.exec>
+    </target>
+
+    <target name="test-socket">
+        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
+        <expect.socket host="localhost" port="${ftp.port}" echoOutput="true">
+            <expect.sequential>
+                <expect.anyString/>
+                <expect.send line="user ftp"></expect.send>
+                <expect.anyString/>
+                <expect.send line="pass secret"/>
+                <expect.anyString input="0"/>
+                <expect.send line="ls"/>
+                <expect.anyString/>
+            </expect.sequential>
+        </expect.socket>
+    </target>
+
+    <target name="test-socket-negative">
+        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
+        <expect.socket host="localhost" port="${ftp.port}" echoOutput="true"/>
+    </target>
+
+    <target name="test-socket-2-negative">
+        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
+        <expect.socket host="localhost" port="${ftp.port}" echoOutput="true">
+            <expect.sequential>
+                <expect.send line="xxx"/>
+                <expect.anyString input="33"/>
+            </expect.sequential>
+        </expect.socket>
+    </target>
+
+    <target name="test-socket-3-negative">
+        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
+        <expect.socket host="localhost" port="${ftp.port}" echoOutput="true">
+            <expect.sequential>
+                <expect.send number="" line="xxx"/>
+            </expect.sequential>
+        </expect.socket>
+    </target>
+
+
+    <target name="test-ssh">
+        <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
+        <expect.ssh host="localhost" echoOutput="true" port="${ssh.port}" username="ssh" trust="true"
+                    password="secret">
+            <expect.sequential>
+                <expect.send line="test"/>
+                <expect.contains string="test" resultPrefix="result100"/>
+            </expect.sequential>
+        </expect.ssh>
+        <fail unless="result100.success"/>
+    </target>
+
+</project>

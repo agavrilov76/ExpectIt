@@ -174,11 +174,12 @@ public final class Matchers {
     /**
      * Creates a matcher that matches if input reaches the end of stream.
      * <p/>
-     * If succeeded, the {@link net.sf.expectit.Result#getBefore()} will return the entire input buffer.
+     * If succeeded, the {@link net.sf.expectit.Result#getBefore()} will return the entire input buffer, and
+     * the {@link net.sf.expectit.Result#group()} returns an empty string.
      *
      * @return the matcher
      */
-    public static Matcher<?> eof() {
+    public static Matcher<Result> eof() {
         return new Matcher<Result>() {
             @Override
             public Result matches(String input, boolean isEof) {
