@@ -18,6 +18,9 @@
   #L%
   -->
 <project name="integration-test" xmlns:expect="http://expectit.sf.net">
+    <condition property="isWindows">
+        <os family="windows" />
+    </condition>
     <macrodef name="assert-equals">
         <attribute name="property"/>
         <attribute name="value"/>
@@ -29,7 +32,7 @@
         </sequential>
     </macrodef>
 
-    <target name="test-exec-namespace">
+    <target name="test-exec-namespace" unless="isWindows">
         <taskdef resource="net/sf/expectit/ant/taskdef.properties" uri="http://expectit.sf.net"/>
 
         <expect:exec executable="/bin/sh" echoOutput="true" destroyProcess="true" expectTimeout="1000">
@@ -102,7 +105,7 @@
         <fail unless="result1.group"/>
     </target>
 
-    <target name="test-exec-no-namespace">
+    <target name="test-exec-no-namespace" unless="isWindows">
         <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
         <expect.exec executable="/bin/sh">
             <expect.sequential>
@@ -118,6 +121,7 @@
     </target>
 
     <target name="test-exec-negative">
+        <fail if="isWindows"/>
         <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
         <expect.exec executable="/bin/sh">
             <arg line="--help"/>
@@ -128,6 +132,7 @@
     </target>
 
     <target name="test-exec-2-negative">
+        <fail if="isWindows"/>
         <taskdef resource="net/sf/expectit/ant/taskdef-prefixed.properties"/>
         <expect.exec executable="/bin/sh" errorOnTimeout="true">
             <expect.sequential>

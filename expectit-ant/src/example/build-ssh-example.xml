@@ -7,6 +7,16 @@
 
     <target name="main">
         <echo>${script.dir} ${expectit.jar}</echo>
+        <expect:exec>
+            <expect:sequential>
+
+            </expect:sequential>
+        </expect:exec>
+        <expect:ssh>
+            <expect:sequential>
+
+            </expect:sequential>
+        </expect:ssh>
     </target>
 
 </project>
