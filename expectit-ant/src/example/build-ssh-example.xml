@@ -1,0 +1,12 @@
+<project name="example1" xmlns:expect="http://expectit.sf.net">
+    <property name="build-ssh-example.ant.file" location="build-ssh-example.xml"/>
+    <dirname file="${build-ssh-example.ant.file}" property="script.dir"/>
+    <property name="expectit.jar" location="${script.dir}/../../target/expectit-ant-0.3.0-SNAPSHOT.jar"/>
+    <taskdef classpath="${expectit.jar}"
+             resource="net/sf/expectit/ant/taskdef.properties" uri="http://expectit.sf.net" />
+
+    <target name="main">
+        <echo>${script.dir} ${expectit.jar}</echo>
+    </target>
+
+</project>

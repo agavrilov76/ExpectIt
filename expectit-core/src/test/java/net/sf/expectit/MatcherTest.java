@@ -382,10 +382,10 @@ public class MatcherTest {
             assertTrue(r.getBefore().endsWith("2c3"));
         }
 
-        result = input.expect(SMALL_TIMEOUT, times(5, contains("c")));
+        result = input.expect(SMALL_TIMEOUT, times(10, contains("c")));
         assertTrue(result.getResults().get(0).isSuccessful());
-        assertFalse(result.getResults().get(3).isSuccessful());
-        assertFalse(result.getResults().get(4).isSuccessful());
+        assertFalse(result.getResults().get(8).isSuccessful() );
+        assertFalse(result.getResults().get(9).isSuccessful());
         assertFalse(result.isSuccessful());
     }
 
