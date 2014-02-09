@@ -115,7 +115,7 @@
                                             <comment value="#"/>
                                         </striplinecomments>
                                         <prefixlines prefix="expect."/>
-                                     </filterchain>
+                                    </filterchain>
                                 </copy>
                             </target>
                         </configuration>

@@ -25,7 +25,7 @@ import java.io.IOException;
 /**
  * Echo adapter factory.
  */
-public final class  EchoAdapters {
+public final class EchoAdapters {
 
     private EchoAdapters() {
     }

@@ -22,18 +22,19 @@ package net.sf.expectit.ant;
 
 import org.apache.sshd.common.Factory;
 import org.apache.sshd.server.Command;
-import org.apache.sshd.server.CommandFactory;
 import org.apache.sshd.server.Environment;
 import org.apache.sshd.server.ExitCallback;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
-* Created by alexey on 2/9/14.
-*/
+ * An echo command which pipes the input to the output.
+ */
 class SshEchoCommandFactory implements Factory<Command>, Runnable {
     private ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
     private OutputStream out;

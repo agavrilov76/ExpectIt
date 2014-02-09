@@ -19,7 +19,7 @@
   -->
 <project name="integration-test" xmlns:expect="http://expectit.sf.net">
     <condition property="isWindows">
-        <os family="windows" />
+        <os family="windows"/>
     </condition>
     <macrodef name="assert-equals">
         <attribute name="property"/>
@@ -37,10 +37,10 @@
 
         <expect:exec executable="/bin/sh" echoOutput="true" destroyProcess="true" expectTimeout="1000">
             <expect:filters>
-                 <expect:replaceInBuffer regexp="abc" replacement="xyz"/>
-                 <expect:replaceInString regexp="123" replacement="456"/>
-                 <expect:removeNonPrintable/>
-                 <expect:removeColors/>
+                <expect:replaceInBuffer regexp="abc" replacement="xyz"/>
+                <expect:replaceInString regexp="123" replacement="456"/>
+                <expect:removeNonPrintable/>
+                <expect:removeColors/>
             </expect:filters>
             <expect:sequential>
                 <expect:send line="echo testabc123"/>

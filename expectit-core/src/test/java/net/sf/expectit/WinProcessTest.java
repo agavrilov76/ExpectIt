@@ -30,8 +30,8 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
-import static net.sf.expectit.echo.EchoAdapters.adapt;
 import static net.sf.expectit.Utils.LONG_TIMEOUT;
+import static net.sf.expectit.echo.EchoAdapters.adapt;
 import static net.sf.expectit.filter.Filters.removeNonPrintable;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.eof;

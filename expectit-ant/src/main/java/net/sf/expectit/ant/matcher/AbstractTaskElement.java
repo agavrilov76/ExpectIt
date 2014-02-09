@@ -27,7 +27,7 @@ import org.apache.tools.ant.Task;
  * An abstract expect task element.
  */
 public abstract class AbstractTaskElement extends Task {
-     private Expect expect;
+    private Expect expect;
 
     /**
      * Sets the expect instance.

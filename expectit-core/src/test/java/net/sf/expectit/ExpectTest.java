@@ -39,7 +39,6 @@ import java.util.concurrent.TimeUnit;
 
 import static net.sf.expectit.Utils.*;
 import static net.sf.expectit.echo.EchoAdapters.adapt;
-import static net.sf.expectit.filter.Filters.chain;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.times;
 import static org.junit.Assert.*;

@@ -22,9 +22,7 @@ package net.sf.expectit;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.net.URLConnection;
 
-import static net.sf.expectit.echo.EchoAdapters.adapt;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.regexp;
 
@@ -38,7 +36,7 @@ public class SocketExample {
         Expect expect = new ExpectBuilder()
                 .withInputs(socket.getInputStream())
                 .withOutput(socket.getOutputStream())
-       //         .withEchoOutput(adapt(System.err))
+                        //         .withEchoOutput(adapt(System.err))
                 .build();
         expect.sendLine("GET");
         String result = expect.expect(contains("\n")).getBefore();

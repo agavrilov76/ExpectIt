@@ -384,7 +384,7 @@ public class MatcherTest {
 
         result = input.expect(SMALL_TIMEOUT, times(10, contains("c")));
         assertTrue(result.getResults().get(0).isSuccessful());
-        assertFalse(result.getResults().get(8).isSuccessful() );
+        assertFalse(result.getResults().get(8).isSuccessful());
         assertFalse(result.getResults().get(9).isSuccessful());
         assertFalse(result.isSuccessful());
     }

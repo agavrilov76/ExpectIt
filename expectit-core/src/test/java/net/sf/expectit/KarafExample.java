@@ -29,10 +29,7 @@ import net.sf.expectit.filter.Filter;
 import java.io.IOException;
 import java.util.Properties;
 
-import static net.sf.expectit.echo.EchoAdapters.adapt;
-import static net.sf.expectit.filter.Filters.chain;
-import static net.sf.expectit.filter.Filters.removeNonPrintable;
-import static net.sf.expectit.filter.Filters.removeColors;
+import static net.sf.expectit.filter.Filters.*;
 import static net.sf.expectit.matcher.Matchers.*;
 
 /**
@@ -53,7 +50,7 @@ public class KarafExample {
         Expect expect = new ExpectBuilder()
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
-                //.withEchoOutput(adapt(System.out))
+                        //.withEchoOutput(adapt(System.out))
                 .withInputFilters(filter)
                 .withErrorOnTimeout(true)
                 .build();

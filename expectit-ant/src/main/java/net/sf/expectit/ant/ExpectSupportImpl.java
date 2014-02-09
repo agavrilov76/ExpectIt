@@ -128,7 +128,7 @@ public class ExpectSupportImpl implements Closeable, ExpectSupport {
      * Sets the input streams for the expect instance.
      *
      * @param index the number of the input stream
-     * @param is the input stream
+     * @param is    the input stream
      * @see net.sf.expectit.ExpectBuilder#withInputs(java.io.InputStream...)
      */
     public void setInput(int index, InputStream is) {

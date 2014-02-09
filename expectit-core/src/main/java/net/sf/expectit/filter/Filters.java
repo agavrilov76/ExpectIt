@@ -61,8 +61,8 @@ public final class Filters {
      * <p/>
      * The method just calls {@link String#replaceAll(String, String)} for the input string.
      *
-     * @param  regexp the regular expression
-     * @param  replacement the string to be substituted for each match
+     * @param regexp      the regular expression
+     * @param replacement the string to be substituted for each match
      * @return the filter
      */
     public static Filter replaceInString(final Pattern regexp, final String replacement) {
@@ -78,7 +78,7 @@ public final class Filters {
      * Equivalent to {@link #replaceInString(java.util.regex.Pattern, String)} but takes the regular expression
      * as string.
      *
-     * @param regexp the regular expression
+     * @param regexp      the regular expression
      * @param replacement the string to be substituted for each match
      * @return the filter
      */
@@ -100,7 +100,7 @@ public final class Filters {
      * Equivalent to {@link #replaceInBuffer(java.util.regex.Pattern, String)} but takes the regular expression
      * as string.
      *
-     * @param regexp the regular expression
+     * @param regexp      the regular expression
      * @param replacement the string to be substituted for each match
      * @return the filter
      */
@@ -115,8 +115,8 @@ public final class Filters {
      * The method just calls {@link String#replaceAll(String, String)} for the entire buffer contents every time new
      * data arrives,
      *
-     * @param  regexp the regular expression
-     * @param  replacement the string to be substituted for each match
+     * @param regexp      the regular expression
+     * @param replacement the string to be substituted for each match
      * @return the filter
      */
     public static Filter replaceInBuffer(final Pattern regexp, final String replacement) {
@@ -147,7 +147,7 @@ public final class Filters {
      * @param filters the filters, not {@code null}
      * @return the combined filter
      */
-    public static Filter chain(final Filter ... filters) {
+    public static Filter chain(final Filter... filters) {
         return new FilterAdapter() {
             @Override
             protected String doBeforeAppend(String string, StringBuilder buffer) {

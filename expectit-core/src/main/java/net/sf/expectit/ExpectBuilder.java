@@ -124,9 +124,9 @@ public class ExpectBuilder {
      * Filters can be used to modify the input before performing expect operations. For example, to remove
      * non-printable characters. Filters can be switched on and off while working with the expect instance.
      *
-     * @param filter the filter
+     * @param filter      the filter
      * @param moreFilters more filter to apply. if specified then all the filters are combined using the
-     * {@link Filters#chain(Filter...)} method.s
+     *                    {@link Filters#chain(Filter...)} method.s
      * @return this
      */
     public final ExpectBuilder withInputFilters(Filter filter, Filter... moreFilters) {

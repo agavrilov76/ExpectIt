@@ -48,7 +48,7 @@ public interface Filter {
      *
      * @param buffer the reference to the input buffer. Can be used to modify the entire buffer contents.
      * @return a boolean flag indicating whether the filtering process should be stopped here. {@code true} if all the
-     *                  consequent filters must not be executed, or {@code false} otherwise.
+     * consequent filters must not be executed, or {@code false} otherwise.
      */
     boolean afterAppend(StringBuilder buffer);
 

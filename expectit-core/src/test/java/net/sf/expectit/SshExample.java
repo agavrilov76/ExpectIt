@@ -29,8 +29,8 @@ import java.io.IOException;
 import java.util.Properties;
 
 import static net.sf.expectit.echo.EchoAdapters.adapt;
-import static net.sf.expectit.filter.Filters.removeNonPrintable;
 import static net.sf.expectit.filter.Filters.removeColors;
+import static net.sf.expectit.filter.Filters.removeNonPrintable;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.regexp;
 

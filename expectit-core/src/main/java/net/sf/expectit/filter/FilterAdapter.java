@@ -29,6 +29,7 @@ package net.sf.expectit.filter;
 public class FilterAdapter implements Filter {
     // the filter is enabled by default
     private boolean enabled = true;
+
     /**
      * The protected default constructor.
      */
@@ -79,6 +80,6 @@ public class FilterAdapter implements Filter {
 
     @Override
     public final void setEnabled(boolean enabled) {
-       this.enabled = enabled;
+        this.enabled = enabled;
     }
 }
