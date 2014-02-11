@@ -27,13 +27,28 @@
     <target name="main" xmlns:expect="antlib:net.sf.expectit.ant">
         <echo>${script.dir} ${expectit.jar}</echo>
         <!-- <expect:ssh />-->
-        <expect:socket />
+        <!-- <expect:socket /> -->
         <expect:exec executable="/bin/sh">
             <expect:sequential>
                 <expect:contains/>
                 <expect:send line=""/>
             </expect:sequential>
         </expect:exec>
+    </target>
+
+    <target name="windows" xmlns:ex="antlib:net.sf.expectit.ant">
+        <ex:exec executable="cmd" charset="cp866">
+            <ex:filters>
+                <ex:replaceInString regexp="Microsoft" replacement="XXX"/>
+            </ex:filters>
+            <ex:sequential>
+                <ex:send line="echo hello!"/>
+                <ex:contains string="hello!" resultPrefix="result"/>
+                <echoproperties prefix="result" />
+                <ex:send line="exit"/>
+                <ex:eof/>
+            </ex:sequential>
+        </ex:exec>
     </target>
 
 </project>
