@@ -1,8 +1,8 @@
 [![Build Status](https://travis-ci.org/Alexey1Gavrilov/expectit.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/expectit)
-Expectit - Yet Another Expect for Java
-======================================
-Overview
---------
+# Expectit - Yet Another Expect for Java
+
+## Overview
+
 Expectit - is yet another pure Java 1.6+ implementation of the [Expect](http://en.wikipedia.org/wiki/Expect) tool.
 It is designed to be simple, easy to use and extensible. Written from scratch. Here are the features:
 
@@ -12,6 +12,7 @@ It is designed to be simple, easy to use and extensible. Written from scratch. H
 * Extensible matcher framework. Support regular expressions and group operations.
 * Support multiple input streams.
 * Extensible filter framework to modify input, for example, to remove non-printable ANSI terminal characters.
+* Ant Support: [expect for Ant.](#ant-support)
 * Apache License.
 
 The Expectit project is a modern alternative to other popular 'Expect for Java' implementations, such as:
@@ -23,8 +24,8 @@ The Expectit project is a modern alternative to other popular 'Expect for Java' 
 I believe that none of the projects above has all the features that Expectit has. So if you are looking for a Java
 expect library please give Expectit a try.
 
-Quick start
------------
+## Quick start
+
 The library is available on [the Maven central](http://search.maven.org/#search|gav|1|g%3A%22net.sf.expectit%22%20AND%20a%3A%22expectit-core%22).
 Add the following Maven dependency to your project:
 
@@ -57,8 +58,8 @@ follows:
 ```
 Note that you may need to add static import of the matcher factory methods in your code.
 
-How it works
-------------
+## How it works
+
 Once an Expect object is created the library starts background threads for every input stream. The threads read
 bytes from the streams and copy them into NIO pipes. The pipes are configured to use non-blocking source channel.
 
@@ -73,8 +74,8 @@ expression matching results. If the match was successful, then the corresponding
 characters before the match including the matching string are removed. The next match is performed for the updated
 buffer.
 
-Interacting with OS process
----------------------------
+## Interacting with OS process
+
 Here is an example of interacting with a spawn process:
 
 ```java
@@ -103,8 +104,8 @@ Here is an example of interacting with a spawn process:
         expect.close();
 ```
 
-Interacting with SSH server
----------------------------
+## Interacting with SSH server
+
 Here is an example on how to talk to a public SSH service on http://sdf.org using the JSch library.
 Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your project classpath.
 ```java
@@ -140,8 +141,8 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
         expect.close();
 ```
 
-Using different type of matchers
---------------------------------
+## Using different type of matchers
+
 In the following example you can see how to combine different matchers (assuming static import of matcher factory
 methods):
 ```java
@@ -156,8 +157,8 @@ methods):
         // expect any non-empty string match
         expect.expect(anyString());
 ```
-Filtering the input
--------------------
+## Filtering the input
+
 If you want to modify or remove some characters in the input before performing expect operations you can use filters.
 A filter instance implements ``net.sf.expectit.filter.Filter`` interface and is applied right before the matching
 occurs.
@@ -187,18 +188,43 @@ regular expressions. Here is an example:
 ```
 Note that you may need to add static import of the filter factory methods in your code.
 
-More examples
--------------
+## Ant Support
+
+Expecit comes with the Ant module that defines a custom Ant tasks based on the Expectit library for interation with socket connections, processes and SSH services. Here is an example of the interaction with a ftp server:
+
+```xml
+    <taskdef classpath="${expectit.jar}"
+             resource="net/sf/expectit/ant/antlib.xml" uri="antlib:net.sf.expectit.ant" />
+    <target name="socket" xmlns:ex="antlib:net.sf.expectit.ant">
+        <ex:socket host="ftp.freebsd.org" port="21" echooutput="true">
+            <ex:sequential>
+                <ex:send line="USER ftp"/>
+                <ex:anyString />
+                <ex:send line="PASS anonymous"/>
+                <ex:anyString/>
+                <ex:send line="HELP"/>
+                <ex:times number="2">
+                    <ex:contains string="214"/>
+                </ex:times>
+            </ex:sequential>
+        </ex:socket>
+    </target>
+```
+The Expecit Ant task library definces the following elements: `socket`, `process` and `ssh`. Please refer to the Expectit Ant wiki page for [documenatation](expectit-ant/README.md).
+
+
+## More examples
+
 * [Socket Example: parsing HTTP response](expectit-core/src/test/java/net/sf/expectit/SocketExample.java)
 * [Complete SSH example](expectit-core/src/test/java/net/sf/expectit/SshExample.java)
 * [Interacting with the Apache Karaf remote shell](expectit-core/src/test/java/net/sf/expectit/KarafExample.java)
  
-Questions
----------
+## Questions
+
 If you have any questions about the library please post your message to this [Google group](https://groups.google.com/forum/#!forum/java-expectit).
 
-License
--------
+## License
+
 [Apache License, Version 2.0](LICENSE.txt)
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Alexey1Gavrilov/expectit/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
