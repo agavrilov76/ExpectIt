@@ -1,4 +1,4 @@
-Unreleased
--------------
+0.3.0
+----------
     #2: times matcher doesn't match if input buffer already contains matching string
     #3: Provide Ant support
