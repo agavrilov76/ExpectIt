@@ -21,19 +21,32 @@
     <property name="build-ssh-example.ant.file" location="build-ssh-example.xml"/>
     <dirname file="${build-ssh-example.ant.file}" property="script.dir"/>
     <property name="expectit.jar" location="${script.dir}/../../target/expectit-ant-0.3.0-SNAPSHOT.jar"/>
+
     <taskdef classpath="${expectit.jar}"
              resource="net/sf/expectit/ant/antlib.xml" uri="antlib:net.sf.expectit.ant" />
 
     <target name="main" xmlns:expect="antlib:net.sf.expectit.ant">
-        <echo>${script.dir} ${expectit.jar}</echo>
-        <!-- <expect:ssh />-->
-        <!-- <expect:socket /> -->
-        <expect:exec executable="/bin/sh">
+        <expect:ssh host="sdf.org" errorOnTimeout="true" username="new" echoOutput="true">
+            <expect:filters>
+                <expect:removeColors/>
+                <expect:removeNonPrintable/>
+            </expect:filters>
             <expect:sequential>
-                <expect:contains/>
+                <expect:contains string="[RETURN]"/>
                 <expect:send line=""/>
+                <expect:contains string="login:"/>
+                <expect:send line="new"/>
+                <expect:contains string="(Y/N)"/>
+                <expect:send string="N"/>
+                <expect:regexp regexp=": $"/>
+                <expect:send string="\b"/>
+                <expect:regexp regexp="\(y\/n\)"/>
+                <expect:send line="y"/>
+                <expect:contains string="Would you like to sign the guestbook?"/>
+                <expect:send line="n"/>
+                <expect:contains string="[RETURN]"/>
             </expect:sequential>
-        </expect:exec>
+        </expect:ssh>
     </target>
 
     <target name="windows" xmlns:ex="antlib:net.sf.expectit.ant">
@@ -49,6 +62,21 @@
                 <ex:eof/>
             </ex:sequential>
         </ex:exec>
+    </target>
+
+    <target name="socket" xmlns:ex="antlib:net.sf.expectit.ant">
+        <ex:socket host="ftp.freebsd.org" port="21" echooutput="true">
+            <ex:sequential>
+                <ex:send line="USER ftp"/>
+                <ex:anyString />
+                <ex:send line="PASS anonymous"/>
+                <ex:anyString/>
+                <ex:send line="HELP"/>
+                <ex:times number="2">
+                    <ex:contains string="214"/>
+                </ex:times>
+            </ex:sequential>
+        </ex:socket>
     </target>
 
 </project>
