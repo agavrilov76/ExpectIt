@@ -190,7 +190,17 @@ Note that you may need to add static import of the filter factory methods in you
 
 ## Ant Support
 
-Expecit comes with the Ant module that defines a custom Ant tasks based on the Expectit library for interation with socket connections, processes and SSH services. Here is an example of the interaction with a ftp server:
+Expecit comes with the Ant module that defines a custom Ant tasks based on the Expectit library for interation with socket connections, processes and SSH services. The Ant module jar file `expectit-ant.jar` can be downloaded from the [release page](http://sourceforge.net/projects/expectit/files/releases/) or taken from the Maven central:
+
+```xml
+<dependency>
+    <groupId>net.sf.expectit</groupId>
+    <artifactId>expectit-ant</artifactId>
+    <version>0.3.0</version>
+</dependency>
+```
+
+Here is an example of the interaction with a ftp server:
 
 ```xml
     <taskdef classpath="${expectit.jar}"
@@ -210,7 +220,7 @@ Expecit comes with the Ant module that defines a custom Ant tasks based on the E
         </ex:socket>
     </target>
 ```
-The Expecit Ant task library definces the following elements: `socket`, `process` and `ssh`. Please refer to the Expectit Ant wiki page for [documenatation](expectit-ant/README.md).
+The Expecit Ant task library defines the following elements: `socket`, `process` and `ssh`. Please refer to the Expectit Ant wiki page for information.
 
 
 ## More examples
