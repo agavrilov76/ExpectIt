@@ -220,7 +220,7 @@ Here is an example of the interaction with a ftp server:
         </ex:socket>
     </target>
 ```
-The Expecit Ant task library defines the following elements: `socket`, `process` and `ssh`. Please refer to the Expectit Ant wiki page for information.
+The Expecit Ant task library defines the following elements: `socket`, `process` and `ssh`. Please refer to [the Expect for Ant wiki page](https://github.com/Alexey1Gavrilov/expectit/wiki/Expect-for-Ant) for more information.
 
 
 ## More examples
