@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/Alexey1Gavrilov/expectit.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/expectit)
-# Expectit - Yet Another Expect for Java
+# Yet Another Expect for Java
 
 ## Overview
 
@@ -12,7 +12,7 @@ It is designed to be simple, easy to use and extensible. Written from scratch. H
 * Extensible matcher framework. Support regular expressions and group operations.
 * Support multiple input streams.
 * Extensible filter framework to modify input, for example, to remove non-printable ANSI terminal characters.
-* Ant Support: [expect for Ant.](#ant-support)
+* [Expect for Ant](wiki/Expect-for-Ant)
 * Apache License.
 
 The Expectit project is a modern alternative to other popular 'Expect for Java' implementations, such as:
@@ -188,46 +188,12 @@ regular expressions. Here is an example:
 ```
 Note that you may need to add static import of the filter factory methods in your code.
 
-## Ant Support
-
-Expecit comes with the Ant module that defines a custom Ant tasks based on the Expectit library for interation with socket connections, processes and SSH services. The Ant module jar file `expectit-ant.jar` can be downloaded from the [release page](http://sourceforge.net/projects/expectit/files/releases/) or taken from the Maven central:
-
-```xml
-<dependency>
-    <groupId>net.sf.expectit</groupId>
-    <artifactId>expectit-ant</artifactId>
-    <version>0.3.0</version>
-</dependency>
-```
-
-Here is an example of the interaction with a ftp server:
-
-```xml
-    <taskdef classpath="${expectit.jar}"
-             resource="net/sf/expectit/ant/antlib.xml" uri="antlib:net.sf.expectit.ant" />
-    <target name="socket" xmlns:ex="antlib:net.sf.expectit.ant">
-        <ex:socket host="ftp.freebsd.org" port="21" echooutput="true">
-            <ex:sequential>
-                <ex:send line="USER ftp"/>
-                <ex:anyString />
-                <ex:send line="PASS anonymous"/>
-                <ex:anyString/>
-                <ex:send line="HELP"/>
-                <ex:times number="2">
-                    <ex:contains string="214"/>
-                </ex:times>
-            </ex:sequential>
-        </ex:socket>
-    </target>
-```
-The Expecit Ant task library defines the following elements: `socket`, `process` and `ssh`. Please refer to [the Expect for Ant wiki page](https://github.com/Alexey1Gavrilov/expectit/wiki/Expect-for-Ant) for more information.
-
-
 ## More examples
 
 * [Socket Example: parsing HTTP response](expectit-core/src/test/java/net/sf/expectit/SocketExample.java)
 * [Complete SSH example](expectit-core/src/test/java/net/sf/expectit/SshExample.java)
 * [Interacting with the Apache Karaf remote shell](expectit-core/src/test/java/net/sf/expectit/KarafExample.java)
+* [Expect for Ant example](expectit-ant/src/example/build-ssh-example.xml)
  
 ## Questions
 
