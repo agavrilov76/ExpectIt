@@ -3,7 +3,7 @@
 
 ## Overview
 
-Expectit - is yet another pure Java 1.6+ implementation of the [Expect](http://en.wikipedia.org/wiki/Expect) tool.
+ExpectIt - is yet another pure Java 1.6+ implementation of the [Expect](http://en.wikipedia.org/wiki/Expect) tool.
 It is designed to be simple, easy to use and extensible. Written from scratch. Here are the features:
 
 * Fluent-style API.
