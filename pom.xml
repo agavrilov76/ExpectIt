@@ -78,7 +78,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <analysisPhase>verify</analysisPhase>
+        <sourceAnalysisPhase>process-sources</sourceAnalysisPhase>
+        <binariesAnalysisPhase>verify</binariesAnalysisPhase>
         <sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/
         </sonatypeOssDistMgmtSnapshotsUrl>
 
@@ -95,7 +96,8 @@
                 </property>
             </activation>
             <properties>
-                <analysisPhase>none</analysisPhase>
+                <sourceAnalysisPhase>none</sourceAnalysisPhase>
+                <binariesAnalysisPhase>none</binariesAnalysisPhase>
             </properties>
         </profile>
         <profile>
@@ -212,7 +214,7 @@
                     <version>2.11</version>
                     <executions>
                         <execution>
-                            <phase>${analysisPhase}</phase>
+                            <phase>${sourceAnalysisPhase}</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
@@ -229,7 +231,7 @@
                     <version>3.0.1</version>
                     <executions>
                         <execution>
-                            <phase>${analysisPhase}</phase>
+                            <phase>${sourceAnalysisPhase}</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
@@ -245,7 +247,7 @@
                     <version>2.5.3</version>
                     <executions>
                         <execution>
-                            <phase>${analysisPhase}</phase>
+                            <phase>${binariesAnalysisPhase}</phase>
                             <goals>
                                 <goal>check</goal>
                             </goals>
