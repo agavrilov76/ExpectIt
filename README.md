@@ -15,14 +15,14 @@ It is designed to be simple, easy to use and extensible. Written from scratch. H
 * [Custom Expect Ant Task](../..//wiki/Expect-for-Ant)
 * Apache License.
 
-The Expectit project is a modern alternative to other popular 'Expect for Java' implementations, such as:
+The ExpectIt project is a modern alternative to other popular 'Expect for Java' implementations, such as:
 
 * [ExpectJ](http://expectj.sourceforge.net/)
 * [Expect4J](https://github.com/cverges/expect4j)
 * [Expect-for-Java](https://github.com/ronniedong/Expect-for-Java)
 
-I believe that none of the projects above has all the features that Expectit has. So if you are looking for a Java
-expect library please give Expectit a try.
+I believe that none of the projects above has all the features that ExpectIt has. So if you are looking for a Java
+expect library please give ExpectIt a try.
 
 ## Quick start
 
