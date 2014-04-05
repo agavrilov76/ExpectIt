@@ -77,33 +77,36 @@ class SingleInputExpect {
         long timeElapsed = timeoutMs;
         ByteBuffer byteBuffer = ByteBuffer.allocate(BUFFER_SIZE);
         Selector selector = Selector.open();
-        source.register(selector, SelectionKey.OP_READ);
+        try {
+            source.register(selector, SelectionKey.OP_READ);
 
-        R result = matcher.matches(buffer.toString(), copierFuture.isDone());
-        while (!result.isSuccessful() && timeElapsed > 0) {
-            int keys = selector.select(timeElapsed);
-            timeElapsed = timeToStop - System.currentTimeMillis();
-            if (keys == 0) {
-                continue;
+            R result = matcher.matches(buffer.toString(), copierFuture.isDone());
+            while (!result.isSuccessful() && timeElapsed > 0) {
+                int keys = selector.select(timeElapsed);
+                timeElapsed = timeToStop - System.currentTimeMillis();
+                if (keys == 0) {
+                    continue;
+                }
+                selector.selectedKeys().clear();
+
+                int len = source.read(byteBuffer);
+                if (len > 0) {
+                    String string = new String(byteBuffer.array(), 0, len, charset);
+                    processString(string);
+                    byteBuffer.clear();
+                }
+
+                result = matcher.matches(buffer.toString(), len == -1);
             }
-            selector.selectedKeys().clear();
-
-            int len = source.read(byteBuffer);
-            if (len > 0) {
-                String string = new String(byteBuffer.array(), 0, len, charset);
-                processString(string);
-                byteBuffer.clear();
+            if (result.isSuccessful()) {
+                buffer.delete(0, result.end());
+            } else if (copierFuture.isDone() && buffer.length() == 0) {
+                throw new EOFException("Input closed");
             }
-
-            result = matcher.matches(buffer.toString(), len == -1);
+            return result;
+        } finally {
+            selector.close();
         }
-
-        if (result.isSuccessful()) {
-            buffer.delete(0, result.end());
-        } else if (copierFuture.isDone() && buffer.length() == 0) {
-            throw new EOFException("Input closed");
-        }
-        return result;
     }
 
     private void processString(String string) throws IOException {
@@ -122,10 +125,12 @@ class SingleInputExpect {
         }
     }
 
-    public void stop() {
+    public void stop() throws IOException {
         if (copierFuture != null) {
             copierFuture.cancel(true);
         }
+        sink.close();
+        source.close();
     }
 
     StringBuilder getBuffer() {

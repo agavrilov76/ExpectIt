@@ -65,7 +65,7 @@ public class MatcherTest {
     }
 
     @After
-    public void cleanup() {
+    public void cleanup() throws IOException {
         input.stop();
         executor.shutdown();
     }

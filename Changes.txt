@@ -1,3 +1,6 @@
+0.3.1
+----------
+    #8  Resource leak (reported by neilgierman) 
 0.3.0
 ----------
     #2: times matcher doesn't match if input buffer already contains matching string
