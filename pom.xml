@@ -16,7 +16,7 @@
     </description>
     <url>https://github.com/Alexey1Gavrilov/expectit</url>
     <organization>
-        <name>Alexey Gavrilov</name>
+        <name>Alexey Gavrilov and contributors</name>
         <url>mailto:Alexey1.Gavrilov@gmail.com</url>
     </organization>
     <licenses>
@@ -265,7 +265,7 @@
                     <version>1.5</version>
                     <configuration>
                         <licenseName>apache_v2</licenseName>
-                        <projectName>net.sf.expectit</projectName>
+                        <projectName>ExpectIt</projectName>
                     </configuration>
                 </plugin>
                 <plugin>

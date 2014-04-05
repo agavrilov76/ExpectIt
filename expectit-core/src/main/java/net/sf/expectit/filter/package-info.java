@@ -7,9 +7,9 @@ package net.sf.expectit.filter;
 
 /*
  * #%L
- * net.sf.expectit
+ * ExpectIt
  * %%
- * Copyright (C) 2014 Alexey Gavrilov
+ * Copyright (C) 2014 Alexey Gavrilov and contributors
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
