@@ -3,7 +3,7 @@
     <parent>
         <artifactId>expectit-parent</artifactId>
         <groupId>net.sf.expectit</groupId>
-        <version>0.3.1-SNAPSHOT</version>
+        <version>0.3.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <name>Expectit :: Ant Integration</name>
