@@ -20,8 +20,10 @@ package net.sf.expectit;
  * #L%
  */
 
+import org.junit.Assume;
 import org.junit.Test;
 
+import javax.management.AttributeNotFoundException;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import java.io.ByteArrayInputStream;
@@ -41,9 +43,14 @@ public class ResourceLeakTest {
      * Gets the number of the open file descriptors via JMX.s
      */
     private long getOpenFileDescriptorCount() throws Exception {
-        ObjectName os  = new ObjectName("java.lang:type=OperatingSystem");
+        ObjectName os = new ObjectName("java.lang:type=OperatingSystem");
         MBeanServer server = ManagementFactory.getPlatformMBeanServer();
-        return (Long) server.getAttribute(os, "OpenFileDescriptorCount");
+        try {
+            return (Long) server.getAttribute(os, "OpenFileDescriptorCount");
+        } catch (AttributeNotFoundException ok) {
+            Assume.assumeNoException("OS doesn't support ope file descriptors parameter", ok);
+            throw ok;
+        }
     }
 
     @Test
