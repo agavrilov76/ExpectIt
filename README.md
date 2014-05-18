@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Alexey1Gavrilov/expectit.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/expectit)
+[![Build Status](https://travis-ci.org/Alexey1Gavrilov/ExpectIt.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/ExpectIt)
 # Yet Another Expect for Java
 
 ## Overview
