@@ -20,6 +20,7 @@ package net.sf.expectit;
  * #L%
  */
 
+import org.junit.Assert;
 import net.sf.expectit.echo.EchoOutput;
 import net.sf.expectit.filter.Filter;
 import net.sf.expectit.matcher.Matcher;
@@ -90,9 +91,20 @@ public class ExpectTest {
         expect = new ExpectBuilder().withInputs(mock(InputStream.class))
                 .withTimeout(3, TimeUnit.DAYS).build();
         assertEquals(((AbstractExpectImpl) expect).getTimeout(), 259200000);
+        expect = new ExpectBuilder().withInputs(mock(InputStream.class))
+                .withInfinitiveTimeout().build();
+        assertEquals(((AbstractExpectImpl) expect).getTimeout(), -1);
+        Expect expect2 = expect.withTimeout(10, TimeUnit.SECONDS);
+        assertEquals(((AbstractExpectImpl) expect2).getTimeout(), 10000);
+        assertEquals(((AbstractExpectImpl) expect).getTimeout(), -1);
 
-        expect = expect.withTimeout(10, TimeUnit.SECONDS);
-        assertEquals(((AbstractExpectImpl) expect).getTimeout(), 10000);
+        assertEquals(((AbstractExpectImpl) expect.withTimeout(3, TimeUnit.MILLISECONDS)).getTimeout(), 3);
+        try {
+            expect.withTimeout(-10, TimeUnit.DAYS);
+            Assert.fail();
+        } catch (IllegalArgumentException ignored) {
+        }
+        assertEquals(((AbstractExpectImpl) expect.withInfinitiveTimeout()).getTimeout(), -1);
     }
 
     private void expectIllegalState(ExpectBuilder builder) throws IOException {

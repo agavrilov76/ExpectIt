@@ -86,10 +86,24 @@ public class ExpectBuilder {
      * @throws java.lang.IllegalArgumentException if the timeout {@code <= 0}
      */
     public final ExpectBuilder withTimeout(long duration, TimeUnit unit) {
+        validateDuration(duration);
+        this.timeout = unit.toMillis(duration);
+        return this;
+    }
+
+    static void validateDuration(long duration) {
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration <= 0");
         }
-        this.timeout = unit.toMillis(duration);
+    }
+
+    /**
+     * Sets the default timeout to infinity.
+     *
+     * @return this
+     */
+    public final ExpectBuilder withInfinitiveTimeout() {
+        this.timeout = -1;
         return this;
     }
 

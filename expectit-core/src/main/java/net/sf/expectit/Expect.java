@@ -112,7 +112,7 @@ public interface Expect extends Closeable {
      * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit.ExpectBuilder#errorOnTimeout}
      * is set.
      * <p/>
-     * An instance of {@link java.io.EOFException} will be thrown if the underlying input steam, the internal buffer
+     * An instance of {@link java.io.EOFException} will be thrown if the underlying input stream, the internal buffer
      * is empty and the match operation is not successful.
      *
      * @param <R>       the matcher type
@@ -120,7 +120,10 @@ public interface Expect extends Closeable {
      * @param matcher   the mather
      * @return the match result
      * @throws java.io.IOException if I/O error occurs
+     * @deprecated This method is deprecated and will be removed. Use
+     * {@link #withTimeout(long, java.util.concurrent.TimeUnit)} to change the timeout for the expect operation.
      */
+    @Deprecated
     <R extends Result> R expect(long timeoutMs, Matcher<R> matcher) throws IOException;
 
     /**
@@ -136,7 +139,10 @@ public interface Expect extends Closeable {
      * @param matcher   the matchers
      * @return the match result from all the matchers
      * @throws java.io.IOException if I/O error occurs
+     * @deprecated This method is deprecated and will be removed. Use
+     * {@link #withTimeout(long, java.util.concurrent.TimeUnit)} to change the timeout for the expect operation.
      */
+    @Deprecated
     MultiResult expect(long timeoutMs, Matcher<?>... matcher) throws IOException;
 
     /**
@@ -170,7 +176,10 @@ public interface Expect extends Closeable {
      * @param matcher   the mather
      * @return the match result
      * @throws java.io.IOException if I/O error occurs
+     * @deprecated This method is deprecated and will be removed. Use
+     * {@link #withTimeout(long, java.util.concurrent.TimeUnit)} to change the timeout for the expect operation.
      */
+    @Deprecated
     <R extends Result> R expectIn(int input, long timeoutMs, Matcher<R> matcher) throws IOException;
 
     /**
@@ -188,11 +197,15 @@ public interface Expect extends Closeable {
      * @param matchers  the matchers
      * @return the match result from all the matchers
      * @throws java.io.IOException if I/O error occurs
+     * @deprecated This method is deprecated and will be removed. Use
+     * {@link #withTimeout(long, java.util.concurrent.TimeUnit)} to change the timeout for the expect operation.
      */
+    @Deprecated
     MultiResult expectIn(int input, long timeoutMs, Matcher<?>... matchers) throws IOException;
+
     /**
-     * Sets the default timeout in the given unit for expect operations for the returned instance. The timeout for
-     * this instance will remain unchanged. Both instances, this and the returned one? will share the same configuration
+     * Sets the default timeout in the given unit for the expect operations for the returned instance. The timeout for
+     * this instance will remain unchanged. Both instances, this and the returned one, will share the same configuration
      * except the default timeout value.
      *
      * @param duration the timeout value
@@ -201,6 +214,15 @@ public interface Expect extends Closeable {
      * @throws java.lang.IllegalArgumentException if the timeout {@code <= 0}
      */
     Expect withTimeout(long duration, TimeUnit unit);
+
+    /**
+     * Sets the default timeout to infinity. The timeout for this instance will remain unchanged. Both instances, this
+     * and the returned one, will share the same configuration except the default timeout value.
+     *
+     * @return an Expect instance with a new default timeout.
+     */
+    Expect withInfinitiveTimeout();
+
     /**
      * Closes all resources associated with this instance.
      *
