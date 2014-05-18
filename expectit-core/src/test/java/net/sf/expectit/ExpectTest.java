@@ -89,7 +89,10 @@ public class ExpectTest {
     public void testTimeUnit() throws IOException {
         expect = new ExpectBuilder().withInputs(mock(InputStream.class))
                 .withTimeout(3, TimeUnit.DAYS).build();
-        assertEquals(((ExpectImpl) expect).getTimeout(), 259200000);
+        assertEquals(((AbstractExpectImpl) expect).getTimeout(), 259200000);
+
+        expect = expect.withTimeout(10, TimeUnit.SECONDS);
+        assertEquals(((AbstractExpectImpl) expect).getTimeout(), 10000);
     }
 
     private void expectIllegalState(ExpectBuilder builder) throws IOException {

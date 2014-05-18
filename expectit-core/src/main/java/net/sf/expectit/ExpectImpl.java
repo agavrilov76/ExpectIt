@@ -28,14 +28,12 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static net.sf.expectit.matcher.Matchers.allOf;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An implementation of the Expect interface which delegates actual work to SingleInputExpect objects.
  */
-class ExpectImpl implements Expect {
-    private final long timeout;
+class ExpectImpl extends AbstractExpectImpl {
     private final OutputStream output;
     private final SingleInputExpect[] inputs;
     private final Charset charset;
@@ -46,7 +44,7 @@ class ExpectImpl implements Expect {
 
     ExpectImpl(long timeout, OutputStream output, SingleInputExpect[] inputs,
                Charset charset, EchoOutput echoOutput, boolean errorOnTimeout, String lineSeparator) {
-        this.timeout = timeout;
+        super(timeout);
         this.output = output;
         this.inputs = inputs;
         this.charset = charset;
@@ -72,8 +70,8 @@ class ExpectImpl implements Expect {
     }
 
     @Override
-    public MultiResult expectIn(int input, long timeoutMs, Matcher<?>... matchers) throws IOException {
-        return expectIn(input, timeoutMs, allOf(matchers));
+    public Expect withTimeout(long duration, TimeUnit unit) {
+        return new ExpectTimeoutAdapter(this, unit.toMillis(duration));
     }
 
     @Override
@@ -113,39 +111,10 @@ class ExpectImpl implements Expect {
     }
 
     @Override
-    public <R extends Result> R expectIn(int input, Matcher<R> matcher) throws IOException {
-        return expectIn(input, timeout, matcher);
-    }
-
-    @Override
-    public <R extends Result> R expect(Matcher<R> matcher) throws IOException {
-        return expectIn(0, matcher);
-    }
-
-    @Override
-    public MultiResult expect(Matcher<?>... matchers) throws IOException {
-        return expect(0, matchers);
-    }
-
-    @Override
-    public <R extends Result> R expect(long timeoutMs, Matcher<R> matcher) throws IOException {
-        return expectIn(0, timeoutMs, matcher);
-    }
-
-    @Override
-    public MultiResult expect(long timeoutMs, Matcher<?>... matchers) throws IOException {
-        return expectIn(0, timeoutMs, matchers);
-    }
-
-    @Override
     public void close() throws IOException {
         for (SingleInputExpect input : inputs) {
             input.stop();
         }
         executor.shutdown();
-    }
-
-    long getTimeout() {
-        return timeout;
     }
 }

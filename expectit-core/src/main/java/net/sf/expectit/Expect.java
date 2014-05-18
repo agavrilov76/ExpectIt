@@ -24,6 +24,7 @@ import net.sf.expectit.matcher.Matcher;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The main interface providing access to the expect operations.
@@ -189,7 +190,17 @@ public interface Expect extends Closeable {
      * @throws java.io.IOException if I/O error occurs
      */
     MultiResult expectIn(int input, long timeoutMs, Matcher<?>... matchers) throws IOException;
-
+    /**
+     * Sets the default timeout in the given unit for expect operations for the returned instance. The timeout for
+     * this instance will remain unchanged. Both instances, this and the returned one? will share the same configuration
+     * except the default timeout value.
+     *
+     * @param duration the timeout value
+     * @param unit     the time unit
+     * @return an Expect instance with a new default timeout.
+     * @throws java.lang.IllegalArgumentException if the timeout {@code <= 0}
+     */
+    Expect withTimeout(long duration, TimeUnit unit);
     /**
      * Closes all resources associated with this instance.
      *
