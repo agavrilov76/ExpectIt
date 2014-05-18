@@ -43,6 +43,7 @@ class ExpectImpl extends AbstractExpectImpl {
     private final boolean errorOnTimeout;
     private final ExecutorService executor;
     private final String lineSeparator;
+    static final int INFINITE_TIMEOUT = -1; // value representing infinite timeout
 
     ExpectImpl(long timeout, OutputStream output, SingleInputExpect[] inputs,
                Charset charset, EchoOutput echoOutput, boolean errorOnTimeout, String lineSeparator) {

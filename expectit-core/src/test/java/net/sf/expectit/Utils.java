@@ -29,6 +29,7 @@ import java.io.InputStream;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 /**
  * Constants and method used in all the tests.
@@ -43,9 +44,18 @@ public final class Utils {
     public static final long SMALL_TIMEOUT = Long.getLong(Utils.class.getName(), 200);
 
     /**
+     * A long timeout which should cause tests to fail.
+     */
+    public static final long LONG_TIMEOUT = Long.getLong(Utils.class.getName(), 1000);
+
+    /**
      * Creates a mock stream that pumps the given text every period of milliseconds.
      */
     public static InputStream mockInputStream(final long period, final String text) throws IOException {
+        if (period <= 0) {
+            throw new IllegalArgumentException("Period should be a non-negative number");
+        }
+
         InputStream mock = mock(InputStream.class);
         when(mock.read(any(byte[].class))).then(new Answer<Object>() {
             private boolean firstTime = true;
@@ -68,10 +78,4 @@ public final class Utils {
         });
         return mock;
     }
-
-    /**
-     * A long timeout which should cause tests to fail.
-     */
-    public static final long LONG_TIMEOUT = Long.getLong(Utils.class.getName(), 1000);
-
 }

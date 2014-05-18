@@ -88,6 +88,7 @@ public interface Expect extends Closeable {
      * @param matcher the mather
      * @return the match result
      * @throws java.io.IOException if I/O error occurs
+     * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has been interrupted
      */
     <R extends Result> R expect(Matcher<R> matcher) throws IOException;
 
@@ -103,6 +104,7 @@ public interface Expect extends Closeable {
      * @param matchers the matchers
      * @return the match result from all the matchers
      * @throws java.io.IOException if I/O error occurs
+     * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has been interrupted
      */
     MultiResult expect(Matcher<?>... matchers) throws IOException;
 
@@ -116,10 +118,11 @@ public interface Expect extends Closeable {
      * is empty and the match operation is not successful.
      *
      * @param <R>       the matcher type
-     * @param timeoutMs the timeout for the expect operation in milliseconds
+     * @param timeoutMs the timeout for the expect operation in milliseconds, infinite if -1 is passed
      * @param matcher   the mather
      * @return the match result
      * @throws java.io.IOException if I/O error occurs
+     * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has been interrupted
      * @deprecated This method is deprecated and will be removed. Use
      * {@link #withTimeout(long, java.util.concurrent.TimeUnit)} to change the timeout for the expect operation.
      */
@@ -135,10 +138,11 @@ public interface Expect extends Closeable {
      * An instance of {@link java.io.EOFException} will be thrown if the underlying input steam, the internal buffer
      * is empty and the match operation is not successful.
      *
-     * @param timeoutMs the timeout for the expect operation in milliseconds
+     * @param timeoutMs the timeout for the expect operation in milliseconds, infinite if -1 is passed
      * @param matcher   the matchers
      * @return the match result from all the matchers
      * @throws java.io.IOException if I/O error occurs
+     * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has been interrupted
      * @deprecated This method is deprecated and will be removed. Use
      * {@link #withTimeout(long, java.util.concurrent.TimeUnit)} to change the timeout for the expect operation.
      */
@@ -160,6 +164,7 @@ public interface Expect extends Closeable {
      * @param matcher the matcher
      * @return the match result
      * @throws java.io.IOException if I/O error occurs
+     * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has been interrupted
      */
     <R extends Result> R expectIn(int input, Matcher<R> matcher) throws IOException;
 
@@ -172,10 +177,11 @@ public interface Expect extends Closeable {
      * @param <R>       the matcher type
      * @param input     the index of the input. if the index is outside of the boundaries, a runtime exception will be
      *                  thrown
-     * @param timeoutMs the timeout for the expect operation in milliseconds
+     * @param timeoutMs the timeout for the expect operation in milliseconds, infinite if -1 is passed
      * @param matcher   the mather
      * @return the match result
      * @throws java.io.IOException if I/O error occurs
+     * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has been interrupted
      * @deprecated This method is deprecated and will be removed. Use
      * {@link #withTimeout(long, java.util.concurrent.TimeUnit)} to change the timeout for the expect operation.
      */
@@ -193,10 +199,11 @@ public interface Expect extends Closeable {
      *
      * @param input     the index of the input. if the index is outside of the boundaries, a runtime exception will be
      *                  thrown
-     * @param timeoutMs the timeout for the expect operation in milliseconds
+     * @param timeoutMs the timeout for the expect operation in milliseconds, infinite if -1 is passed
      * @param matchers  the matchers
      * @return the match result from all the matchers
      * @throws java.io.IOException if I/O error occurs
+     * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has been interrupted
      * @deprecated This method is deprecated and will be removed. Use
      * {@link #withTimeout(long, java.util.concurrent.TimeUnit)} to change the timeout for the expect operation.
      */
