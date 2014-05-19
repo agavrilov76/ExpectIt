@@ -199,6 +199,9 @@
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.16</version>
+                    <configuration>
+                        <reuseForks>false</reuseForks>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
@@ -300,5 +303,16 @@
             </plugins>
         </pluginManagement>
     </build>
+
+    <!-- to resolve the PMD warning "[WARNING] Unable to locate Source XRef to link to - DISABLED" -->
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.4</version>
+            </plugin>
+        </plugins>
+    </reporting>
 
 </project>

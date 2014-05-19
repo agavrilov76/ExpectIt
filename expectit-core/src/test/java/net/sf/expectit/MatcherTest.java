@@ -390,6 +390,11 @@ public class MatcherTest {
     }
 
     @Test
+    public void testAnyStringInfiniteTimeout() throws IOException {
+        assertTrue(input.expect(ExpectImpl.INFINITE_TIMEOUT, anyString()).isSuccessful());
+    }
+
+    @Test
     public void testAnyString() throws IOException, InterruptedException {
         Result result = input.expect(SMALL_TIMEOUT, anyString());
         assertTrue(result.group().startsWith("a1"));
