@@ -134,7 +134,8 @@ public class AntHarnessTest {
                     public boolean apply(String input) {
                         return !input.isEmpty();
                     }
-                });
+                }
+        );
         return Iterables.transform(filtered, toTargetArray);
     }
 

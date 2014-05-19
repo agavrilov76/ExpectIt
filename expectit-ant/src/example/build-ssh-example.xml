@@ -23,7 +23,7 @@
     <property name="expectit.jar" location="${script.dir}/../../target/expectit-ant-0.3.0-SNAPSHOT.jar"/>
 
     <taskdef classpath="${expectit.jar}"
-             resource="net/sf/expectit/ant/antlib.xml" uri="antlib:net.sf.expectit.ant" />
+             resource="net/sf/expectit/ant/antlib.xml" uri="antlib:net.sf.expectit.ant"/>
 
     <target name="main" xmlns:expect="antlib:net.sf.expectit.ant">
         <expect:ssh host="sdf.org" errorOnTimeout="true" username="new" echoOutput="true">
@@ -57,7 +57,7 @@
             <ex:sequential>
                 <ex:send line="echo hello!"/>
                 <ex:contains string="hello!" resultPrefix="result"/>
-                <echoproperties prefix="result" />
+                <echoproperties prefix="result"/>
                 <ex:send line="exit"/>
                 <ex:eof/>
             </ex:sequential>
@@ -68,7 +68,7 @@
         <ex:socket host="ftp.freebsd.org" port="21" echooutput="true">
             <ex:sequential>
                 <ex:send line="USER ftp"/>
-                <ex:anyString />
+                <ex:anyString/>
                 <ex:send line="PASS anonymous"/>
                 <ex:anyString/>
                 <ex:send line="HELP"/>

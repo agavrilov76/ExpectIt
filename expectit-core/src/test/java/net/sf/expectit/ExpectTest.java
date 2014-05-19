@@ -20,11 +20,11 @@ package net.sf.expectit;
  * #L%
  */
 
-import org.junit.Assert;
 import net.sf.expectit.echo.EchoOutput;
 import net.sf.expectit.filter.Filter;
 import net.sf.expectit.matcher.Matcher;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
