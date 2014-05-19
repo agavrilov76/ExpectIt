@@ -30,6 +30,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import static net.sf.expectit.ExpectBuilder.validateDuration;
+
 /**
  * An implementation of the Expect interface which delegates actual work to SingleInputExpect objects.
  */
@@ -41,6 +43,7 @@ class ExpectImpl extends AbstractExpectImpl {
     private final boolean errorOnTimeout;
     private final ExecutorService executor;
     private final String lineSeparator;
+    static final int INFINITE_TIMEOUT = -1; // value representing infinite timeout
 
     ExpectImpl(long timeout, OutputStream output, SingleInputExpect[] inputs,
                Charset charset, EchoOutput echoOutput, boolean errorOnTimeout, String lineSeparator) {
@@ -71,7 +74,13 @@ class ExpectImpl extends AbstractExpectImpl {
 
     @Override
     public Expect withTimeout(long duration, TimeUnit unit) {
+        validateDuration(duration);
         return new ExpectTimeoutAdapter(this, unit.toMillis(duration));
+    }
+
+    @Override
+    public Expect withInfiniteTimeout() {
+        return new ExpectTimeoutAdapter(this, -1);
     }
 
     @Override

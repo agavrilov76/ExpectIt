@@ -86,6 +86,7 @@
         <module name="JavadocMethod">
             <property name="scope" value="public"/>
             <property name="allowUndeclaredRTE" value="true"/>
+            <property name="allowThrowsTagsForSubclasses" value="true"/>
         </module>
         <module name="JavadocType">
             <property name="scope" value="public"/>
@@ -173,7 +174,9 @@
 
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
-        <module name="AvoidInlineConditionals"/>
+        <!-- Intentionally commented out to allow single-line ternary operator
+            <module name="AvoidInlineConditionals"/>
+        -->
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <!-- Edited by Alexey

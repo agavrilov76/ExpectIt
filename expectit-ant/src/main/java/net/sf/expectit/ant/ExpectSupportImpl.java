@@ -66,7 +66,11 @@ public class ExpectSupportImpl implements Closeable, ExpectSupport {
 
     @Override
     public void setExpectTimeout(long ms) {
-        builder.withTimeout(ms, TimeUnit.MILLISECONDS);
+        if (ms == -1) {
+            builder.withInfiniteTimeout();
+        } else {
+            builder.withTimeout(ms, TimeUnit.MILLISECONDS);
+        }
     }
 
     @Override

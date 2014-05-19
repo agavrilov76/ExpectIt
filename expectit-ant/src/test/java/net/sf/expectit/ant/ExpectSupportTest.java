@@ -37,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.powermock.api.mockito.PowerMockito.mock;
 
 /**
@@ -84,7 +85,9 @@ public class ExpectSupportTest {
         verify(builder).withLineSeparator("ABC");
         verify(builder).withErrorOnTimeout(true);
         verify(builder).withTimeout(400, TimeUnit.MILLISECONDS);
-        //expectSupport.add
-        //verify(builder).
+
+        expectSupport.setExpectTimeout(-1);
+        expectSupport.execute();
+        verify(builder).withInfiniteTimeout();
     }
 }

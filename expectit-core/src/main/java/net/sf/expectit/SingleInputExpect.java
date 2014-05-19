@@ -73,23 +73,31 @@ class SingleInputExpect {
         if (copierFuture == null) {
             throw new IllegalStateException("Not started");
         }
-        long timeToStop = System.currentTimeMillis() + timeoutMs;
+
+        final long timeToStop = System.currentTimeMillis() + timeoutMs;
+        final boolean isInfiniteTimeout = timeoutMs == ExpectImpl.INFINITE_TIMEOUT;
         long timeElapsed = timeoutMs;
         ByteBuffer byteBuffer = ByteBuffer.allocate(BUFFER_SIZE);
         Selector selector = Selector.open();
+
         try {
             source.register(selector, SelectionKey.OP_READ);
-
             R result = matcher.matches(buffer.toString(), copierFuture.isDone());
-            while (!result.isSuccessful() && timeElapsed > 0) {
-                int keys = selector.select(timeElapsed);
-                timeElapsed = timeToStop - System.currentTimeMillis();
+
+            while (!result.isSuccessful() && (isInfiniteTimeout || timeElapsed > 0)) {
+                int keys = isInfiniteTimeout ? selector.select() : selector.select(timeElapsed);
+
+                if (!isInfiniteTimeout) {
+                    timeElapsed = timeToStop - System.currentTimeMillis();
+                }
+
                 if (keys == 0) {
                     continue;
                 }
-                selector.selectedKeys().clear();
 
+                selector.selectedKeys().clear();
                 int len = source.read(byteBuffer);
+
                 if (len > 0) {
                     String string = new String(byteBuffer.array(), 0, len, charset);
                     processString(string);
@@ -98,6 +106,7 @@ class SingleInputExpect {
 
                 result = matcher.matches(buffer.toString(), len == -1);
             }
+
             if (result.isSuccessful()) {
                 buffer.delete(0, result.end());
             } else if (copierFuture.isDone() && buffer.length() == 0) {

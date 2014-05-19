@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit;
 class ExpectTimeoutAdapter extends AbstractExpectImpl {
     private final ExpectImpl delegate;
 
-    ExpectTimeoutAdapter(ExpectImpl delegate, long timeout) {
-        super(timeout);
+    ExpectTimeoutAdapter(ExpectImpl delegate, long timeoutMs) {
+        super(timeoutMs);
         this.delegate = delegate;
     }
 
@@ -24,6 +24,11 @@ class ExpectTimeoutAdapter extends AbstractExpectImpl {
     @Override
     public Expect withTimeout(long duration, TimeUnit unit) {
         return delegate.withTimeout(duration, unit);
+    }
+
+    @Override
+    public Expect withInfiniteTimeout() {
+        return delegate.withInfiniteTimeout();
     }
 
     @Override

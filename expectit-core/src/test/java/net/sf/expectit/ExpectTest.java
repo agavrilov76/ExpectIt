@@ -20,6 +20,7 @@ package net.sf.expectit;
  * #L%
  */
 
+import org.junit.Assert;
 import net.sf.expectit.echo.EchoOutput;
 import net.sf.expectit.filter.Filter;
 import net.sf.expectit.matcher.Matcher;
@@ -34,8 +35,10 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.channels.ClosedByInterruptException;
 import java.nio.charset.Charset;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static net.sf.expectit.Utils.*;
 import static net.sf.expectit.echo.EchoAdapters.adapt;
@@ -68,7 +71,7 @@ public class ExpectTest {
 
         builder.withInputs(mock(InputStream.class));
         expect = builder.build();
-        assertEquals(((ExpectImpl) expect).getTimeout(), 30000);
+        assertEquals(((ExpectImpl) expect).getTimeout(), ExpectBuilder.DEFAULT_TIMEOUT_MS);
 
         try {
             expect.sendBytes("".getBytes());
@@ -78,10 +81,14 @@ public class ExpectTest {
         builder.withInputs();
         expectIllegalState(builder);
 
-        try {
-            builder.withTimeout(-1, TimeUnit.SECONDS);
-            fail();
-        } catch (IllegalArgumentException ok) {
+        long[] invalidTimeouts = {0, -1, -2, -100};
+
+        for (long timeout : invalidTimeouts) {
+            try {
+                builder.withTimeout(timeout, TimeUnit.SECONDS);
+                fail("Should throw IllegalArgumentException for the timeout: " + timeout);
+            } catch (IllegalArgumentException ok) {
+            }
         }
     }
 
@@ -89,10 +96,22 @@ public class ExpectTest {
     public void testTimeUnit() throws IOException {
         expect = new ExpectBuilder().withInputs(mock(InputStream.class))
                 .withTimeout(3, TimeUnit.DAYS).build();
+        assertEquals(((AbstractExpectImpl) expect).getTimeout(), TimeUnit.DAYS.toMillis(3));
         assertEquals(((AbstractExpectImpl) expect).getTimeout(), 259200000);
+        expect = new ExpectBuilder().withInputs(mock(InputStream.class))
+                .withInfiniteTimeout().build();
+        assertEquals(((AbstractExpectImpl) expect).getTimeout(), -1);
+        Expect expect2 = expect.withTimeout(10, TimeUnit.SECONDS);
+        assertEquals(((AbstractExpectImpl) expect2).getTimeout(), 10000);
+        assertEquals(((AbstractExpectImpl) expect).getTimeout(), -1);
 
-        expect = expect.withTimeout(10, TimeUnit.SECONDS);
-        assertEquals(((AbstractExpectImpl) expect).getTimeout(), 10000);
+        assertEquals(((AbstractExpectImpl) expect.withTimeout(3, TimeUnit.MILLISECONDS)).getTimeout(), 3);
+        try {
+            expect.withTimeout(-10, TimeUnit.DAYS);
+            Assert.fail();
+        } catch (IllegalArgumentException ignored) {
+        }
+        assertEquals(((AbstractExpectImpl) expect.withInfiniteTimeout()).getTimeout(), -1);
     }
 
     private void expectIllegalState(ExpectBuilder builder) throws IOException {
@@ -160,6 +179,7 @@ public class ExpectTest {
         expect.send(testString);
         verify(out).write(bytes);
         configureMockInputStream(in, bytes);
+        //noinspection deprecation
         assertTrue(expect.expect(SMALL_TIMEOUT, contains("hello")).isSuccessful());
     }
 
@@ -202,6 +222,7 @@ public class ExpectTest {
 
         String inputStr = "testFilter";
         configureMockInputStream(in, inputStr.getBytes());
+        //noinspection deprecation
         assertTrue(expect.expect(SMALL_TIMEOUT, contains("y")).isSuccessful());
         verify(filter1).beforeAppend(eq(inputStr), any(StringBuilder.class));
         verify(filter2).beforeAppend(eq("xxx"), any(StringBuilder.class));
@@ -213,6 +234,7 @@ public class ExpectTest {
         assertEquals("yyy", echo.toString());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testIOException() throws IOException, InterruptedException {
         ExpectBuilder builder = new ExpectBuilder();
@@ -248,12 +270,15 @@ public class ExpectTest {
         verify(echo).onSend(sentTextLine);
 
         reset(echo);
+        //noinspection deprecation
         assertTrue(expect.expect(LONG_TIMEOUT, times(2, contains(inputText))).isSuccessful());
+        //noinspection deprecation
         assertTrue(expect.expectIn(1, SMALL_TIMEOUT, contains(inputText2)).isSuccessful());
         verify(echo, Mockito.times(2)).onReceive(0, inputText);
         verify(echo).onReceive(eq(1), anyString());
     }
 
+    @SuppressWarnings("deprecation")
     @Test(timeout = 5000)
     public void testExpectMethods() throws IOException {
         ExpectBuilder builder = new ExpectBuilder();
@@ -270,6 +295,104 @@ public class ExpectTest {
         assertTrue(expect.expectIn(1, SMALL_TIMEOUT, contains("input2")).isSuccessful());
         assertFalse(expect.expect(SMALL_TIMEOUT, contains("input2"), contains("input1")).isSuccessful());
         assertTrue(expect.expect(SMALL_TIMEOUT, contains("input"), contains("input")).isSuccessful());
+    }
+
+    @Test(timeout = 5000)
+    public void testClosedByInterruptExceptionIfInterrupted() throws IOException, InterruptedException {
+        expect = new ExpectBuilder().withInputs(mockInputStream(SMALL_TIMEOUT, "input")).build();
+        final CountDownLatch started = new CountDownLatch(1);
+        final CountDownLatch exceptionThrown = new CountDownLatch(1);
+        final AtomicReference<IOException> exceptionRef = new AtomicReference<IOException>();
+
+        Thread expectThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    started.countDown();
+                    //noinspection deprecation
+                    assertFalse(expect.expect(ExpectImpl.INFINITE_TIMEOUT, contains("a")).isSuccessful());
+                    fail();
+                } catch (IOException e) {
+                    exceptionRef.set(e);
+                    exceptionThrown.countDown();
+                }
+            }
+        });
+
+        try {
+            expectThread.start();
+            assertTrue(started.await(SMALL_TIMEOUT * 2, TimeUnit.MILLISECONDS));
+            Thread.sleep(LONG_TIMEOUT);
+            expectThread.interrupt();
+            assertTrue(exceptionThrown.await(LONG_TIMEOUT * 2, TimeUnit.MILLISECONDS));
+            //noinspection ThrowableResultOfMethodCallIgnored
+            assertNotNull(exceptionRef.get() instanceof ClosedByInterruptException);
+        } finally {
+            expectThread.interrupt();
+        }
+    }
+
+    @Test(timeout = 5000)
+    public void testExpectWithInfiniteTimeoutWaiting() throws IOException, InterruptedException, TimeoutException,
+            ExecutionException {
+        expect = new ExpectBuilder().withInputs(mockInputStream(SMALL_TIMEOUT, "input")).build();
+
+        Callable<Void> expectCallable = new Callable<Void>() {
+            @Override
+            public Void call() throws IOException {
+                //noinspection deprecation
+                assertFalse(expect.expect(ExpectImpl.INFINITE_TIMEOUT, contains("a")).isSuccessful());
+                fail();
+                return null;
+            }
+        };
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<Void> result = executor.submit(expectCallable);
+        try {
+            try {
+                result.get(LONG_TIMEOUT, TimeUnit.MILLISECONDS);
+                fail();
+            } catch (TimeoutException ok) {
+            }
+
+            Thread.sleep(SMALL_TIMEOUT * 2);
+            assertFalse(result.isCancelled());
+            assertFalse(result.isDone());
+        } finally {
+            result.cancel(true);
+            executor.shutdownNow();
+        }
+    }
+
+    @Test(timeout = 5000)
+    public void testExpectWithInfiniteTimeoutConsequentlyPassing() throws IOException, InterruptedException {
+        final String inputString = "input";
+        expect = new ExpectBuilder().withInputs(mockInputStream(SMALL_TIMEOUT, inputString)).build();
+        final int iterations = 5;
+        final CountDownLatch successCounter = new CountDownLatch(iterations);
+
+        Callable<Void> expectCallable = new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                for (int i = 0; i < iterations; i++) {
+                    //noinspection deprecation
+                    assertTrue(expect.expect(ExpectImpl.INFINITE_TIMEOUT, contains(inputString)).isSuccessful());
+                    successCounter.countDown();
+                }
+                return null;
+            }
+        };
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<Void> result = executor.submit(expectCallable);
+        try {
+            assertTrue(successCounter.await(2 * SMALL_TIMEOUT * iterations, TimeUnit.MILLISECONDS));
+            assertFalse(result.isCancelled());
+        } finally {
+            result.cancel(true);
+            executor.shutdownNow();
+        }
     }
 
     @Test

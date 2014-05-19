@@ -36,7 +36,7 @@ public interface ExpectSupport {
     /**
      * Sets the global timeout for expect operations.
      *
-     * @param ms the timeout in milliseconds.
+     * @param ms the timeout in milliseconds. -1 indicates that the timeout should be set to infinity.
      * @see net.sf.expectit.ExpectBuilder#withTimeout(long, java.util.concurrent.TimeUnit)
      */
     void setExpectTimeout(long ms);

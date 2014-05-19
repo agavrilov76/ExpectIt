@@ -12,8 +12,13 @@ import static net.sf.expectit.matcher.Matchers.allOf;
 abstract class AbstractExpectImpl implements Expect {
     private final long timeout;
 
-    protected AbstractExpectImpl(long timeout) {
-        this.timeout = timeout;
+    /**
+     * Constructor.
+     *
+     * @param timeoutMs timeout in milliseconds.
+     */
+    AbstractExpectImpl(long timeoutMs) {
+        this.timeout = timeoutMs;
     }
 
     long getTimeout() {
