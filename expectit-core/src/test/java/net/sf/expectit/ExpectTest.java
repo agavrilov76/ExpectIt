@@ -99,7 +99,7 @@ public class ExpectTest {
         assertEquals(((AbstractExpectImpl) expect).getTimeout(), TimeUnit.DAYS.toMillis(3));
         assertEquals(((AbstractExpectImpl) expect).getTimeout(), 259200000);
         expect = new ExpectBuilder().withInputs(mock(InputStream.class))
-                .withInfinitiveTimeout().build();
+                .withInfiniteTimeout().build();
         assertEquals(((AbstractExpectImpl) expect).getTimeout(), -1);
         Expect expect2 = expect.withTimeout(10, TimeUnit.SECONDS);
         assertEquals(((AbstractExpectImpl) expect2).getTimeout(), 10000);
@@ -111,7 +111,7 @@ public class ExpectTest {
             Assert.fail();
         } catch (IllegalArgumentException ignored) {
         }
-        assertEquals(((AbstractExpectImpl) expect.withInfinitiveTimeout()).getTimeout(), -1);
+        assertEquals(((AbstractExpectImpl) expect.withInfiniteTimeout()).getTimeout(), -1);
     }
 
     private void expectIllegalState(ExpectBuilder builder) throws IOException {

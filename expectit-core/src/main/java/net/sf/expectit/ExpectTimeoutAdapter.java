@@ -27,8 +27,8 @@ class ExpectTimeoutAdapter extends AbstractExpectImpl {
     }
 
     @Override
-    public Expect withInfinitiveTimeout() {
-        return delegate.withInfinitiveTimeout();
+    public Expect withInfiniteTimeout() {
+        return delegate.withInfiniteTimeout();
     }
 
     @Override

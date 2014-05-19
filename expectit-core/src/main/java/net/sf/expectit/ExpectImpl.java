@@ -79,7 +79,7 @@ class ExpectImpl extends AbstractExpectImpl {
     }
 
     @Override
-    public Expect withInfinitiveTimeout() {
+    public Expect withInfiniteTimeout() {
         return new ExpectTimeoutAdapter(this, -1);
     }
 

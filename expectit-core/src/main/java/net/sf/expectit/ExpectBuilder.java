@@ -102,7 +102,7 @@ public class ExpectBuilder {
      *
      * @return this
      */
-    public final ExpectBuilder withInfinitiveTimeout() {
+    public final ExpectBuilder withInfiniteTimeout() {
         this.timeout = -1;
         return this;
     }

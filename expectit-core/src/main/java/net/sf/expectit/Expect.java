@@ -228,7 +228,7 @@ public interface Expect extends Closeable {
      *
      * @return an Expect instance with a new default timeout.
      */
-    Expect withInfinitiveTimeout();
+    Expect withInfiniteTimeout();
 
     /**
      * Closes all resources associated with this instance.
