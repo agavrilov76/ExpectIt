@@ -39,19 +39,19 @@ class ExpectImpl extends AbstractExpectImpl {
     private final OutputStream output;
     private final SingleInputExpect[] inputs;
     private final Charset charset;
-    private final EchoOutput echoOutput;
+    private final Appendable echoInput;
     private final boolean errorOnTimeout;
     private final ExecutorService executor;
     private final String lineSeparator;
     static final int INFINITE_TIMEOUT = -1; // value representing infinite timeout
 
     ExpectImpl(long timeout, OutputStream output, SingleInputExpect[] inputs,
-               Charset charset, EchoOutput echoOutput, boolean errorOnTimeout, String lineSeparator) {
+               Charset charset, Appendable echoInput, boolean errorOnTimeout, String lineSeparator) {
         super(timeout);
         this.output = output;
         this.inputs = inputs;
         this.charset = charset;
-        this.echoOutput = echoOutput;
+        this.echoInput = echoInput;
         this.errorOnTimeout = errorOnTimeout;
         this.lineSeparator = lineSeparator;
         executor = Executors.newFixedThreadPool(inputs.length, new NamedExecutorThreadFactory("expect-"));
@@ -114,8 +114,8 @@ class ExpectImpl extends AbstractExpectImpl {
     }
 
     private void echoString(String string) throws IOException {
-        if (echoOutput != null) {
-            echoOutput.onSend(string);
+        if (echoInput != null) {
+            echoInput.append(string);
         }
     }
 

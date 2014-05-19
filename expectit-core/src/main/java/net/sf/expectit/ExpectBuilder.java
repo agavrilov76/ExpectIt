@@ -20,6 +20,7 @@ package net.sf.expectit;
  * #L%
  */
 
+import net.sf.expectit.echo.EchoAdapters;
 import net.sf.expectit.echo.EchoOutput;
 import net.sf.expectit.filter.Filter;
 import net.sf.expectit.filter.Filters;
@@ -43,10 +44,12 @@ public class ExpectBuilder {
     private Filter filter;
     private OutputStream output;
     private long timeout = DEFAULT_TIMEOUT_MS;
-    private EchoOutput echoOutput;
+    private Appendable[] echoOutput;
+    private Appendable echoInput;
     private Charset charset = Charset.defaultCharset();
     private boolean errorOnTimeout;
     private String lineSeparator = System.getProperty("line.separator");
+    private EchoOutput echoOutputOld;
 
     /**
      * Default constructor.
@@ -91,6 +94,9 @@ public class ExpectBuilder {
         return this;
     }
 
+    /**
+     * Verifies that the duration is &gt;= 0.
+     */
     static void validateDuration(long duration) {
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration <= 0");
@@ -116,10 +122,19 @@ public class ExpectBuilder {
      * @return this
      */
     public final ExpectBuilder withEchoOutput(EchoOutput echoOutput) {
+        this.echoOutputOld = echoOutput;
+        return this;
+    }
+
+    public final ExpectBuilder withEchoOutput(Appendable ... echoOutput) {
         this.echoOutput = echoOutput;
         return this;
     }
 
+    public final ExpectBuilder withEchoInput(Appendable echoInput) {
+        this.echoInput = echoInput;
+        return this;
+    }
     /**
      * Sets the character encoding used to covert bytes when working with byte streams. Optional, the default is
      * {@link Charset#defaultCharset}.
@@ -195,12 +210,27 @@ public class ExpectBuilder {
             throw new IllegalStateException("Inputs are null or empty");
         }
 
-        SingleInputExpect[] inputs = new SingleInputExpect[this.inputs.length];
-        for (int i = 0; i < inputs.length; i++) {
-            inputs[i] = new SingleInputExpect(i, this.inputs[i], charset, echoOutput, filter);
+        if (echoOutput != null && inputs.length != echoOutput.length) {
+            throw new IllegalArgumentException("Number of the echo outputs must correspond to " +
+                    "the number of inputs");
         }
 
-        ExpectImpl instance = new ExpectImpl(timeout, output, inputs, charset, echoOutput,
+        if (echoOutputOld != null) {
+            echoOutput = new Appendable[inputs.length];
+            for (int i = 0; i < inputs.length; i++) {
+                echoOutput[i] = EchoAdapters.adaptInput(i, echoOutputOld);
+            }
+        }
+
+        SingleInputExpect[] inputs = new SingleInputExpect[this.inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            Appendable appendable = echoOutput != null ? echoOutput[i] : null;
+            inputs[i] = new SingleInputExpect(i, this.inputs[i], charset, appendable, filter);
+        }
+        if (echoOutputOld != null) {
+            echoInput = EchoAdapters.adaptOutput(echoOutputOld);
+        }
+        ExpectImpl instance = new ExpectImpl(timeout, output, inputs, charset, echoInput,
                 errorOnTimeout, lineSeparator);
         instance.start();
         return instance;

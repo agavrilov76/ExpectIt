@@ -44,7 +44,7 @@ class SingleInputExpect {
     private final InputStream input;
     private final StringBuilder buffer;
     private final Charset charset;
-    private final EchoOutput echoOutput;
+    private final Appendable echoOutput;
     private final Filter filter;
     private Future<Object> copierFuture;
     private final Pipe.SourceChannel source;
@@ -52,7 +52,7 @@ class SingleInputExpect {
     private final int number;
 
     protected SingleInputExpect(int number, InputStream input, Charset charset,
-                                EchoOutput echoOutput, Filter filter) throws IOException {
+                                Appendable echoOutput, Filter filter) throws IOException {
         this.number = number;
         this.input = input;
         this.charset = charset;
@@ -125,7 +125,7 @@ class SingleInputExpect {
 
         if (string != null) {
             if (echoOutput != null) {
-                echoOutput.onReceive(number, string);
+                echoOutput.append(string);
             }
             buffer.append(string);
             if (filter != null) {

@@ -50,4 +50,43 @@ public final class EchoAdapters {
         };
     }
 
+    public static Appendable adaptInput(final int input, final EchoOutput echoOutput) {
+        return new Appendable() {
+            @Override
+            public Appendable append(CharSequence csq) throws IOException {
+                echoOutput.onReceive(input, csq.toString());
+                return this;
+            }
+
+            @Override
+            public Appendable append(CharSequence csq, int start, int end) throws IOException {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public Appendable append(char c) throws IOException {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
+
+    public static Appendable adaptOutput(final EchoOutput echoOutput) {
+        return new Appendable() {
+            @Override
+            public Appendable append(CharSequence csq) throws IOException {
+                echoOutput.onSend(csq.toString());
+                return this;
+            }
+
+            @Override
+            public Appendable append(CharSequence csq, int start, int end) throws IOException {
+                throw new UnsupportedOperationException();
+            }
+
+            @Override
+            public Appendable append(char c) throws IOException {
+                throw new UnsupportedOperationException();
+            }
+        };
+    }
 }
