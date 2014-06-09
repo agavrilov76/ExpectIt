@@ -122,6 +122,7 @@
         <expect:exec executable="/bin/sh">
             <arg line="--help"/>
             <expect:sequential>
+                <sleep seconds="1"/>
                 <expect:send line="echo hi!; exit"/>
             </expect:sequential>
         </expect:exec>
