@@ -56,7 +56,7 @@ public final class Utils {
      * Creates a mock stream that pumps the given text every period of milliseconds.
      */
     public static MockInputStream mockInputStream(String text) throws Exception {
-
+        final CountDownLatch latch = new CountDownLatch(1);
         InputStream mock = mock(InputStream.class);
         final BlockingQueue<String> queue = new LinkedBlockingDeque<String>(1);
         queue.put(text);
@@ -64,8 +64,9 @@ public final class Utils {
 
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
+                latch.countDown();
                 String take = queue.take();
-                if (take == EOF) {
+                if (take.equals(EOF)) {
                     return -1;
                 }
                 byte[] bytes = take.getBytes();
@@ -75,6 +76,6 @@ public final class Utils {
                 return bytes.length;
             }
         });
-        return new MockInputStream(mock, queue);
+        return new MockInputStream(mock, queue, latch);
     }
 }

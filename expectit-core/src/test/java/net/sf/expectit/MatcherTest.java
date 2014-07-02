@@ -66,6 +66,7 @@ public class MatcherTest {
         input = new SingleInputExpect(mock.getStream(), Charset.defaultCharset(), null, null);
         executor = Executors.newSingleThreadExecutor();
         input.start(executor);
+        mock.waitUntilReady();
     }
 
     @After

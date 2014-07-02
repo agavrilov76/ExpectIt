@@ -264,6 +264,8 @@ public class ExpectTest {
         builder.withEchoOutput(echo);
         builder.withOutput(mock(OutputStream.class));
         expect = builder.build();
+        input.waitUntilReady();
+        input2.waitUntilReady();
 
         String sentText = "sentText";
         expect.sendLine(sentText);
@@ -294,6 +296,8 @@ public class ExpectTest {
         builder.withEchoOutput(out);
         builder.withOutput(mock(OutputStream.class));
         expect = builder.build();
+        input.waitUntilReady();
+        input2.waitUntilReady();
 
         String sentText = "sentText";
         expect.sendLine(sentText);
@@ -341,6 +345,8 @@ public class ExpectTest {
         MockInputStream input2 = mockInputStream(inputText2);
         builder.withInputs(input1.getStream(), input2.getStream());
         expect = builder.build();
+        input1.waitUntilReady();
+        input2.waitUntilReady();
 
         assertFalse(expect.expectIn(1, SMALL_TIMEOUT, contains("input1")).isSuccessful());
         assertFalse(expect.expectIn(0, SMALL_TIMEOUT, contains("input2")).isSuccessful());
@@ -355,6 +361,7 @@ public class ExpectTest {
     public void testClosedByInterruptExceptionIfInterrupted() throws Exception {
         MockInputStream input = mockInputStream("input");
         expect = new ExpectBuilder().withInputs(input.getStream()).build();
+        input.waitUntilReady();
         final CountDownLatch started = new CountDownLatch(1);
         final CountDownLatch exceptionThrown = new CountDownLatch(1);
         final AtomicReference<IOException> exceptionRef = new AtomicReference<IOException>();
@@ -388,7 +395,8 @@ public class ExpectTest {
 
     @Test(timeout = 5000)
     public void testExpectWithInfiniteTimeoutWaiting() throws Exception {
-        expect = new ExpectBuilder().withInputs(mockInputStream("input").getStream()).build();
+        MockInputStream input = mockInputStream("input");
+        expect = new ExpectBuilder().withInputs(input.getStream()).build();
 
         Callable<Void> expectCallable = new Callable<Void>() {
             @Override
@@ -399,6 +407,7 @@ public class ExpectTest {
                 return null;
             }
         };
+        input.waitUntilReady();
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<Void> result = executor.submit(expectCallable);
@@ -423,6 +432,7 @@ public class ExpectTest {
         final String inputString = "input";
         final MockInputStream mockInputStream = mockInputStream(inputString);
         expect = new ExpectBuilder().withInputs(mockInputStream.getStream()).build();
+        mockInputStream.waitUntilReady();
         final int iterations = 5;
         final CountDownLatch successCounter = new CountDownLatch(iterations);
 
