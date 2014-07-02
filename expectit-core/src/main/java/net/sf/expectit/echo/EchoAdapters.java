@@ -25,6 +25,7 @@ import java.io.IOException;
 /**
  * Echo adapter factory.
  */
+@Deprecated
 public final class EchoAdapters {
 
     private EchoAdapters() {
@@ -36,6 +37,7 @@ public final class EchoAdapters {
      * @param appendable the delegate
      * @return the instance
      */
+    @Deprecated
     public static EchoOutput adapt(final Appendable appendable) {
         return new EchoOutput() {
             @Override

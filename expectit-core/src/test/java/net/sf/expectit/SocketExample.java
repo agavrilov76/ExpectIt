@@ -36,7 +36,8 @@ public class SocketExample {
         Expect expect = new ExpectBuilder()
                 .withInputs(socket.getInputStream())
                 .withOutput(socket.getOutputStream())
-                        //         .withEchoOutput(adapt(System.err))
+                .withEchoInput(System.out)
+                .withEchoOutput(System.err)
                 .build();
         expect.sendLine("GET");
         String result = expect.expect(contains("\n")).getBefore();

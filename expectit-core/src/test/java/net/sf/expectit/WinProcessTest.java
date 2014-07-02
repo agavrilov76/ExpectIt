@@ -61,8 +61,9 @@ public class WinProcessTest {
                 .withInputs(process.getInputStream(), process.getErrorStream())
                 .withOutput(process.getOutputStream())
                 .withInputFilters(removeNonPrintable())
-                .withEchoOutput(adapt(System.err))
-                        // sets cyrillic DOS encoding to verify that
+                .withEchoInput(System.out)
+                .withEchoOutput(System.err)
+                 // sets cyrillic DOS encoding to verify that
                 .withCharset(Charset.forName("cp866"))
                 .build();
     }

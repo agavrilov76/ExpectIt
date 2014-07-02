@@ -20,7 +20,6 @@ package net.sf.expectit;
  * #L%
  */
 
-import net.sf.expectit.echo.EchoOutput;
 import net.sf.expectit.filter.Filter;
 import net.sf.expectit.matcher.Matcher;
 
@@ -44,19 +43,17 @@ class SingleInputExpect {
     private final InputStream input;
     private final StringBuilder buffer;
     private final Charset charset;
-    private final EchoOutput echoOutput;
+    private final Appendable echoInput;
     private final Filter filter;
     private Future<Object> copierFuture;
     private final Pipe.SourceChannel source;
     private final Pipe.SinkChannel sink;
-    private final int number;
 
-    protected SingleInputExpect(int number, InputStream input, Charset charset,
-                                EchoOutput echoOutput, Filter filter) throws IOException {
-        this.number = number;
+    protected SingleInputExpect(InputStream input, Charset charset,
+                                Appendable echoInput, Filter filter) throws IOException {
         this.input = input;
         this.charset = charset;
-        this.echoOutput = echoOutput;
+        this.echoInput = echoInput;
         this.filter = filter;
         Pipe pipe = Pipe.open();
         source = pipe.source();
@@ -124,8 +121,8 @@ class SingleInputExpect {
         }
 
         if (string != null) {
-            if (echoOutput != null) {
-                echoOutput.onReceive(number, string);
+            if (echoInput != null) {
+                echoInput.append(string);
             }
             buffer.append(string);
             if (filter != null) {

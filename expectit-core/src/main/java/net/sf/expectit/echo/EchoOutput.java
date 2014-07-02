@@ -25,6 +25,7 @@ import java.io.IOException;
 /**
  * A callback interface for capturing input and output from expect operations.
  */
+@Deprecated
 public interface EchoOutput {
     /**
      * A callback method called when the data is received from the given input.
