@@ -40,8 +40,11 @@ import static net.sf.expectit.Utils.SMALL_TIMEOUT;
 import static net.sf.expectit.matcher.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.reset;
+
 
 /**
  * Unit tests for basic single operation matchers.
@@ -59,9 +62,10 @@ public class MatcherTest {
     @Before
     public void setup() throws IOException {
         mock = Utils.mockInputStream(SMALL_TIMEOUT / 2, "a1b2c3_");
-        input = new SingleInputExpect(0, mock, Charset.defaultCharset(), null, null);
+        input = new SingleInputExpect(mock, Charset.defaultCharset(), null, null);
         executor = Executors.newSingleThreadExecutor();
         input.start(executor);
+        verify(mock, timeout((int) SMALL_TIMEOUT).atLeast(1)).read(any(byte[].class));
     }
 
     @After

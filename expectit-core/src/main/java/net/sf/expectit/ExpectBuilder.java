@@ -43,10 +43,13 @@ public class ExpectBuilder {
     private Filter filter;
     private OutputStream output;
     private long timeout = DEFAULT_TIMEOUT_MS;
-    private EchoOutput echoOutput;
+    private EchoOutput echoOutputOld;
     private Charset charset = Charset.defaultCharset();
     private boolean errorOnTimeout;
     private String lineSeparator = System.getProperty("line.separator");
+    private Appendable echoOutput;
+    private Appendable echoInput;
+    private Appendable[] echoInputs;
 
     /**
      * Default constructor.
@@ -115,8 +118,42 @@ public class ExpectBuilder {
      *                   static methods for common use cases.
      * @return this
      */
+    @Deprecated
     public final ExpectBuilder withEchoOutput(EchoOutput echoOutput) {
+        this.echoOutputOld = echoOutput;
+        return this;
+    }
+
+    /**
+     * Enables printing of all the sent data. Useful for debugging to monitor I/O activity.
+     * Optional, by default is unset.
+     *
+     * @param echoOutput where to echo the sent data.
+     * @return this
+     */
+    public final ExpectBuilder withEchoOutput(Appendable echoOutput) {
         this.echoOutput = echoOutput;
+        return this;
+    }
+
+    /**
+     * Enables printing of all the received data. Useful for debugging to monitor I/O activity.
+     * Optional, by default is unset.
+     * <p/>
+     * If the only {@code firstInput} is specified then the data received from all the inputs is echoed to it.
+     * <p/>
+     * The build method throws an {@link java.lang.IllegalArgumentException} if the number of the {@code otherInputs}
+     * parameters does not correspond to the number of the input streams. That is, if {@code otherInputs}
+     * is specified, the number of them must be equal to the number of inputs minus 1.
+     *
+     * @param firstInput  where to echo the received data for the first input. If {@code otherInputs} are empty, then
+     *                    all the data will be echoed to it.
+     * @param otherInputs where to echo the received data for other inputs.
+     * @return this
+     */
+    public final ExpectBuilder withEchoInput(Appendable firstInput, Appendable... otherInputs) {
+        this.echoInput = firstInput;
+        this.echoInputs = otherInputs;
         return this;
     }
 
@@ -195,15 +232,48 @@ public class ExpectBuilder {
             throw new IllegalStateException("Inputs are null or empty");
         }
 
-        SingleInputExpect[] inputs = new SingleInputExpect[this.inputs.length];
-        for (int i = 0; i < inputs.length; i++) {
-            inputs[i] = new SingleInputExpect(i, this.inputs[i], charset, echoOutput, filter);
+        if (echoInputs != null && echoInputs.length != 0 && echoInputs.length != inputs.length - 1) {
+            throw new IllegalArgumentException("The number of echo input does not correspond to the total "
+                    + "number of the input streams");
         }
 
+        SingleInputExpect[] inputs = new SingleInputExpect[this.inputs.length];
+        for (int i = 0; i < inputs.length; i++) {
+            inputs[i] = new SingleInputExpect(this.inputs[i], charset, getEchoInputForIndex(i), filter);
+        }
+
+        if (echoOutputOld != null) {
+            echoOutput = new AppendableAdapter() {
+                @Override
+                public Appendable append(CharSequence csq) throws IOException {
+                    echoOutputOld.onSend(csq.toString());
+                    return this;
+                }
+            };
+        }
         ExpectImpl instance = new ExpectImpl(timeout, output, inputs, charset, echoOutput,
                 errorOnTimeout, lineSeparator);
         instance.start();
         return instance;
+    }
+
+    private Appendable getEchoInputForIndex(final int i) {
+        if (echoOutputOld != null) {
+            return new AppendableAdapter() {
+                @Override
+                public Appendable append(CharSequence csq) throws IOException {
+                    echoOutputOld.onReceive(i, csq.toString());
+                    return this;
+                }
+            };
+        }
+        if (echoInput == null) {
+            return null;
+        } else if (echoInputs.length == 0 || i == 0) {
+            return echoInput;
+        } else {
+            return echoInputs[i - 1];
+        }
     }
 
 }

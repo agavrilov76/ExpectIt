@@ -278,6 +278,53 @@ public class ExpectTest {
         verify(echo).onReceive(eq(1), anyString());
     }
 
+    @Test
+    public void expectEchoOutput2() throws IOException {
+        ExpectBuilder builder = new ExpectBuilder();
+        Appendable out = mock(Appendable.class);
+        Appendable in1 = mock(Appendable.class);
+        Appendable in2 = mock(Appendable.class);
+        String inputText = "input";
+        InputStream input = mockInputStream(SMALL_TIMEOUT, inputText);
+        String inputText2 = "number2";
+        InputStream input2 = mockInputStream(SMALL_TIMEOUT, inputText2);
+        builder.withInputs(input, input2);
+        builder.withEchoOutput(out);
+        builder.withOutput(mock(OutputStream.class));
+        expect = builder.build();
+
+        String sentText = "sentText";
+        expect.sendLine(sentText);
+        String sentTextLine = sentText + System.getProperty("line.separator");
+        verify(out).append(sentTextLine);
+
+        builder.withEchoInput(in1);
+        expect.close();
+        expect = builder.build();
+        //noinspection deprecation
+        assertTrue(expect.expect(LONG_TIMEOUT, times(2, contains(inputText))).isSuccessful());
+        //noinspection deprecation
+        assertTrue(expect.expectIn(1, SMALL_TIMEOUT, contains(inputText2)).isSuccessful());
+        verify(in1, Mockito.times(2)).append(inputText);
+
+        reset(in1);
+        builder.withEchoInput(in1, in2);
+        expect.close();
+        expect = builder.build();
+        //noinspection deprecation
+        assertTrue(expect.expectIn(1, LONG_TIMEOUT, contains(inputText2)).isSuccessful());
+        verify(in2).append(inputText2);
+        verifyNoMoreInteractions(in1);
+
+        try {
+            builder.withEchoInput(in1, in2, in1);
+            builder.build();
+            fail();
+        } catch (IllegalArgumentException ignore) {
+        }
+    }
+
+
     @SuppressWarnings("deprecation")
     @Test(timeout = 5000)
     public void testExpectMethods() throws IOException {

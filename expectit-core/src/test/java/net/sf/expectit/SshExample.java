@@ -50,7 +50,8 @@ public class SshExample {
         Expect expect = new ExpectBuilder()
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
-                .withEchoOutput(adapt(System.out))
+                .withEchoInput(System.out)
+                .withEchoOutput(System.err)
                 .withInputFilters(removeColors(), removeNonPrintable())
                 .withErrorOnTimeout(true)
                 .build();

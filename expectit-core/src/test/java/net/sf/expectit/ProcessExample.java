@@ -38,7 +38,8 @@ public class ProcessExample {
                 .withInputs(process.getInputStream())
                 .withOutput(process.getOutputStream())
                 .withTimeout(1, TimeUnit.SECONDS)
-                .withEchoOutput(adapt(System.out))
+                .withEchoInput(System.out)
+                .withEchoOutput(System.err)
                 .withErrorOnTimeout(true)
                 .build();
         // try-with-resources is omitted for simplicity
