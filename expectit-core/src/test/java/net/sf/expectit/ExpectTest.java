@@ -343,7 +343,6 @@ public class ExpectTest {
         expect = builder.build();
         input.waitUntilReady();
         input2.waitUntilReady();
-        input2.push(inputText2);
         //noinspection deprecation
         assertTrue(expect.expectIn(1, LONG_TIMEOUT, contains(inputText2)).isSuccessful());
         verify(in2).append(inputText2);
