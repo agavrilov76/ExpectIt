@@ -24,6 +24,7 @@ The ExpectIt project is a modern alternative to other popular 'Expect for Java' 
 I believe that none of the projects above has all the features that ExpectIt has. So if you are looking for a Java
 expect library please give ExpectIt a try.
 
+The API javadoc documentation is available [here](http://alexey1gavrilov.github.io/ExpectIt/0.4.0-SNAPSHOT/apidocs/).
 ## Quick start
 
 The library is available on [the Maven central](http://search.maven.org/#search|gav|1|g%3A%22net.sf.expectit%22%20AND%20a%3A%22expectit-core%22).
@@ -38,8 +39,6 @@ Add the following Maven dependency to your project:
 ```
 You can also download the ``expectit-core.jar`` file from the release project page at
 [sourceforge.net](https://sourceforge.net/projects/expectit/files/releases/) and add it to your classpath.
-
-The API javadoc documentation is available [here](http://alexey1gavrilov.github.io/ExpectIt/0.4.0-SNAPSHOT/apidocs/). 
 
 To begin with you need to construct an instance of ``net.sf.expectit.Expect`` and set the input and output streams as
 follows:
