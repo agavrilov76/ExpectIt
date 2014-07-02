@@ -336,7 +336,13 @@ public class ExpectTest {
         reset(in1);
         builder.withEchoInput(in1, in2);
         expect.close();
+
+        input = mockInputStream(inputText);
+        input2 = mockInputStream(inputText2);
+        builder.withInputs(input.getStream(), input2.getStream());
         expect = builder.build();
+        input.waitUntilReady();
+        input2.waitUntilReady();
         input2.push(inputText2);
         //noinspection deprecation
         assertTrue(expect.expectIn(1, LONG_TIMEOUT, contains(inputText2)).isSuccessful());
