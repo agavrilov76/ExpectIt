@@ -39,6 +39,8 @@ Add the following Maven dependency to your project:
 You can also download the ``expectit-core.jar`` file from the release project page at
 [sourceforge.net](https://sourceforge.net/projects/expectit/files/releases/) and add it to your classpath.
 
+The API javadoc documentation is available [here](http://alexey1gavrilov.github.io/ExpectIt/0.4.0-SNAPSHOT/apidocs/). 
+
 To begin with you need to construct an instance of ``net.sf.expectit.Expect`` and set the input and output streams as
 follows:
 
