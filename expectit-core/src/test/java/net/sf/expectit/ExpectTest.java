@@ -165,7 +165,7 @@ public class ExpectTest {
     }
 
     @Test
-    public void testCharset() throws IOException {
+    public void testCharset() throws IOException, InterruptedException {
         ExpectBuilder builder = new ExpectBuilder();
         InputStream in = mock(InputStream.class);
         builder.withInputs(in);
@@ -184,10 +184,12 @@ public class ExpectTest {
         assertTrue(expect.expect(SMALL_TIMEOUT, contains("hello")).isSuccessful());
     }
 
-    private void configureMockInputStream(InputStream in, final byte[] bytes) throws IOException {
+    private void configureMockInputStream(InputStream in, final byte[] bytes) throws IOException, InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
         when(in.read(any(byte[].class))).then(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
+                latch.countDown();
                 if (mockInputReadCalled) {
                     return -1;
                 }
@@ -197,10 +199,11 @@ public class ExpectTest {
                 return bytes.length;
             }
         });
+        latch.await();
     }
 
     @Test
-    public void testFilters() throws IOException {
+    public void testFilters() throws IOException, InterruptedException {
         ExpectBuilder builder = new ExpectBuilder();
         InputStream in = mock(InputStream.class);
         StringBuilder echo = new StringBuilder();
