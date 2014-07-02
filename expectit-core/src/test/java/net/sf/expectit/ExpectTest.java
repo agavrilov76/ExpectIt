@@ -306,8 +306,13 @@ public class ExpectTest {
 
         builder.withEchoInput(in1);
         expect.close();
+        input = mockInputStream(inputText);
+        input2 = mockInputStream(inputText2);
+        builder.withInputs(input.getStream(), input2.getStream());
         expect = builder.build();
-        input.push(inputText);
+        input.waitUntilReady();
+        input2.waitUntilReady();
+
         input.push(inputText);
         input2.push(inputText2);
         //noinspection deprecation

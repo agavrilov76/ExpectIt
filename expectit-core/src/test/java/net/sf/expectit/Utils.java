@@ -58,7 +58,7 @@ public final class Utils {
     public static MockInputStream mockInputStream(String text) throws Exception {
         final CountDownLatch latch = new CountDownLatch(1);
         InputStream mock = mock(InputStream.class);
-        final BlockingQueue<String> queue = new LinkedBlockingDeque<String>(1);
+        final BlockingQueue<String> queue = new LinkedBlockingDeque<String>();
         queue.put(text);
         when(mock.read(any(byte[].class))).then(new Answer<Object>() {
 
