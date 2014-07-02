@@ -54,18 +54,18 @@ import static org.mockito.Mockito.reset;
 public class MatcherTest {
     private SingleInputExpect input;
     private ExecutorService executor;
-    private InputStream mock;
+    private MockInputStream mock;
+    private final String text = "a1b2c3_";
 
     /**
      * Creates a mock input stream which send some data every SMALL_TIMEOUT ms.
      */
     @Before
-    public void setup() throws IOException {
-        mock = Utils.mockInputStream(SMALL_TIMEOUT / 2, "a1b2c3_");
-        input = new SingleInputExpect(mock, Charset.defaultCharset(), null, null);
+    public void setup() throws Exception {
+        mock = Utils.mockInputStream(text);
+        input = new SingleInputExpect(mock.getStream(), Charset.defaultCharset(), null, null);
         executor = Executors.newSingleThreadExecutor();
         input.start(executor);
-        verify(mock, timeout((int) SMALL_TIMEOUT).atLeast(1)).read(any(byte[].class));
     }
 
     @After
@@ -78,7 +78,7 @@ public class MatcherTest {
      * Basic expect string tests
      */
     @Test
-    public void testExpectString() throws IOException {
+    public void testExpectString() throws IOException, InterruptedException {
         Result result = input.expect(LONG_TIMEOUT, contains("b2"));
         assertTrue(result.isSuccessful());
         assertEquals(result.groupCount(), 0);
@@ -100,6 +100,7 @@ public class MatcherTest {
         checkIllegalState(result);
         checkIllegalState(result, 0);
         assertEquals(result.groupCount(), 0);
+        mock.push(text);
         // expecting that mocking input stream goes circles
         assertTrue(input.expect(LONG_TIMEOUT, contains("c3_a")).isSuccessful());
         buffer = input.getBuffer();
@@ -146,7 +147,7 @@ public class MatcherTest {
      * Tests for regexp matcher
      */
     @Test
-    public void testExpectRegexp() throws IOException {
+    public void testExpectRegexp() throws IOException, InterruptedException {
         Result result = input.expect(LONG_TIMEOUT, regexp(".b.c"));
         assertTrue(result.isSuccessful());
         assertEquals(result.getBefore(), "a");
@@ -164,16 +165,19 @@ public class MatcherTest {
         assertFalse(result.isSuccessful());
         checkIllegalState(result);
 
+        mock.push(text);
         result = input.expect(LONG_TIMEOUT, regexp("3_([^_]*)c3"));
         assertEquals(result.group(0), "3_a1b2c3");
         assertEquals(result.group(1), "a1b2");
 
+        mock.push(text);
         result = input.expect(LONG_TIMEOUT, regexp("a(.)b(.)c(.)"));
         assertEquals(result.group(1), "1");
         assertEquals(result.group(3), "3");
         assertEquals(result.groupCount(), 3);
         assertEquals(result.end(), 7);
 
+        mock.push(text);
         // sanity check for Pattern instance
         result = input.expect(LONG_TIMEOUT, regexp(Pattern.compile("a(.*)")));
         assertTrue(result.isSuccessful());
@@ -183,15 +187,18 @@ public class MatcherTest {
      * Tests for exact match.
      */
     @Test
-    public void testExpectMatch() throws IOException {
+    public void testExpectMatch() throws IOException, InterruptedException {
+        mock.push(text);
         Result result = input.expect(LONG_TIMEOUT, matches(".*a1b2.*"));
         assertTrue(result.isSuccessful());
         assertEquals(result.getBefore(), "");
         checkIndexOutOfBound(result, 1);
         assertEquals(result.groupCount(), 0);
         assertEquals(input.getBuffer().length(), 0);
+        mock.push(text);
         //await for some data
         input.expect(LONG_TIMEOUT, contains("_a"));
+        mock.push(text);
         assertTrue(input.expect(LONG_TIMEOUT, contains("_a")).isSuccessful());
 
         result = input.expect(SMALL_TIMEOUT, matches("a(.)b(.)c(.)"));
@@ -210,6 +217,7 @@ public class MatcherTest {
         assertEquals(result.group(2), "3");
         checkIndexOutOfBound(result, 3);
 
+        mock.push(text);
         // sanity check for Pattern instance
         result = input.expect(LONG_TIMEOUT, matches(Pattern.compile("^a(.*)")));
         assertTrue(result.isSuccessful());
@@ -220,12 +228,12 @@ public class MatcherTest {
      * Tests for the 'allOf' matcher
      */
     @Test
-    public void testAllOf() throws IOException {
+    public void testAllOf() throws IOException, InterruptedException {
         MultiResult result = input.expect(LONG_TIMEOUT, allOf(contains("b")));
         assertTrue(result.isSuccessful());
         assertEquals(result.start(), 2);
         assertEquals(result.end(), 3);
-
+        mock.push(text);
         result = input.expect(LONG_TIMEOUT, allOf(contains("a"), contains("b"), regexp("a1")));
         assertTrue(result.isSuccessful());
         assertEquals(result.start(), 6);
@@ -239,6 +247,7 @@ public class MatcherTest {
         assertEquals(result.getResults().get(2).start(), 4);
         assertEquals(result.getResults().get(2).end(), 6);
 
+        mock.push(text);
         // one negative
         result = input.expect(SMALL_TIMEOUT, allOf(contains("a"), contains("b"), regexp("XXX")));
         assertFalse(result.isSuccessful());
@@ -272,7 +281,7 @@ public class MatcherTest {
     }
 
     @Test
-    public void testAnyOf() throws IOException {
+    public void testAnyOf() throws IOException, InterruptedException {
         try {
             input.expect(LONG_TIMEOUT, anyOf());
             fail();
@@ -289,6 +298,7 @@ public class MatcherTest {
         assertEquals(result.start(), 2);
         assertEquals(result.end(), 3);
 
+        mock.push(text);
         result = input.expect(LONG_TIMEOUT, anyOf(contains("x"), contains("b"), contains("zzz")));
         assertTrue(result.isSuccessful());
         assertEquals(result.start(), 6);
@@ -298,6 +308,7 @@ public class MatcherTest {
         result = input.expect(SMALL_TIMEOUT, anyOf(contains("ttt"), contains("zzz")));
         assertFalse(result.isSuccessful());
 
+        mock.push(text);
         // test for combination of matchers
         result = input.expect(LONG_TIMEOUT, anyOf(allOf(contains("1"), contains("2")), contains("FFFF")));
         assertTrue(result.isSuccessful());
@@ -325,12 +336,12 @@ public class MatcherTest {
     @Test
     public void testEofMatcher() throws IOException, InterruptedException {
         assertTrue(input.expect(SMALL_TIMEOUT, contains("a1")).isSuccessful());
-        when(mock.read(any(byte[].class))).thenThrow(new EOFException(""));
         assertTrue(input.expect(SMALL_TIMEOUT, contains("_")).isSuccessful());
         // make sure that all the data received
         input.expect(SMALL_TIMEOUT, times(3, contains("_")));
         // make sure the buffer is cleaned
         assertTrue(input.expect(SMALL_TIMEOUT, matches(".*")).isSuccessful());
+        mock.push(Utils.EOF);
         try {
             // now the buffer is empty
             input.expect(SMALL_TIMEOUT, contains("xxx"));
@@ -345,8 +356,7 @@ public class MatcherTest {
     @Test
     public void testEofMultiMatcher1() throws IOException, InterruptedException {
         assertTrue(input.expect(SMALL_TIMEOUT, contains("a1")).isSuccessful());
-        when(mock.read(any(byte[].class))).thenThrow(new EOFException(""));
-
+        mock.push(Utils.EOF);
         MultiResult result = input.expect(SMALL_TIMEOUT, allOf(contains("b"), eof()));
         assertTrue(result.isSuccessful());
         assertFalse(result.getBefore().isEmpty());
@@ -356,8 +366,7 @@ public class MatcherTest {
     @Test
     public void testEofMultiMatcher2() throws IOException, InterruptedException {
         assertTrue(input.expect(SMALL_TIMEOUT, contains("a1")).isSuccessful());
-        when(mock.read(any(byte[].class))).thenThrow(new EOFException(""));
-
+        mock.push(Utils.EOF);
         MultiResult result = input.expect(SMALL_TIMEOUT, anyOf(contains("wrong"), eof()));
         assertTrue(result.isSuccessful());
         assertFalse(result.getBefore().isEmpty());
@@ -366,7 +375,7 @@ public class MatcherTest {
 
     @Test
 
-    public void testTimes() throws IOException {
+    public void testTimes() throws IOException, InterruptedException {
         MultiResult result = input.expect(SMALL_TIMEOUT, times(1, contains("b")));
         assertEquals("a1", result.getBefore());
         assertEquals(result.getBefore(), "a1");
@@ -380,6 +389,7 @@ public class MatcherTest {
         result = times(3, contains("abc")).matches("ZabcXabcY", false);
         assertFalse(result.isSuccessful());
 
+        mock.push(text);
         result = input.expect(2 * SMALL_TIMEOUT, times(3, contains("_")));
         for (Result r : result.getResults()) {
             assertTrue(r.isSuccessful());
@@ -400,15 +410,17 @@ public class MatcherTest {
 
     @Test
     public void testAnyString() throws IOException, InterruptedException {
+
         Result result = input.expect(SMALL_TIMEOUT, anyString());
         assertTrue(result.group().startsWith("a1"));
         assertTrue(result.group().endsWith("_"));
         assertEquals(result.getBefore(), "");
+        mock.push(text);
         assertTrue(input.expect(SMALL_TIMEOUT, contains("a1b2")).getBefore().isEmpty());
 
         // stop producing new input
-        reset(mock);
-        when(mock.read(any(byte[].class))).thenReturn(0);
+        reset(mock.getStream());
+        when(mock.getStream().read(any(byte[].class))).thenReturn(0);
 
         // just to make sure that the buffer is clean
         input.expect(SMALL_TIMEOUT, anyString());
