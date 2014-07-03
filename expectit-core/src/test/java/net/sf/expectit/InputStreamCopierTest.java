@@ -36,6 +36,7 @@ import java.util.concurrent.Executors;
 
 import static com.google.common.io.Resources.getResource;
 import static com.google.common.io.Resources.toByteArray;
+import static net.sf.expectit.ExpectBuilder.DEFAULT_BUFFER_SIZE;
 import static org.junit.Assert.*;
 
 /**
@@ -64,7 +65,7 @@ public class InputStreamCopierTest {
 
     @Test
     public void testCopy() throws IOException, ExecutionException, InterruptedException {
-        executor.submit(new InputStreamCopier(input, channel)).get();
+        executor.submit(new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE)).get();
         assertArrayEquals(toByteArray(resource), sink.toByteArray());
     }
 
@@ -72,7 +73,7 @@ public class InputStreamCopierTest {
     public void testClosedStream() throws IOException, ExecutionException, InterruptedException {
         input.close();
         try {
-            executor.submit(new InputStreamCopier(input, channel)).get();
+            executor.submit(new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE)).get();
             fail();
         } catch (ExecutionException e) {
             assertTrue(e.getCause() instanceof IOException);

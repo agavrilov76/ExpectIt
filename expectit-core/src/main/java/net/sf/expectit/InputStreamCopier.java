@@ -29,19 +29,19 @@ import java.util.concurrent.Callable;
  * Performs copy from an input stream to a WritableByteChannel.
  */
 class InputStreamCopier implements Callable<Object> {
-    private static final int BUFFER_SIZE = 1024;
-
     private final InputStream from;
     private final WritableByteChannel to;
+    private final int bufferSize;
 
-    InputStreamCopier(InputStream from, WritableByteChannel to) {
+    InputStreamCopier(WritableByteChannel to, InputStream from, int bufferSize) {
         this.from = from;
         this.to = to;
+        this.bufferSize = bufferSize;
     }
 
     @Override
     public Object call() throws Exception {
-        byte[] buffer = new byte[BUFFER_SIZE];
+        byte[] buffer = new byte[bufferSize];
         int bytesRead;
         try {
             while ((bytesRead = from.read(buffer)) != -1) {

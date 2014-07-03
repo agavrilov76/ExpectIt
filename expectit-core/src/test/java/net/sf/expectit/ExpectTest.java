@@ -525,4 +525,26 @@ public class ExpectTest {
             return argument.toString().equals(contents);
         }
     }
+
+    @Test
+    public void testBufferSize() throws IOException {
+        ExpectBuilder builder = new ExpectBuilder();
+        InputStream mock = mock(InputStream.class);
+        builder.withInputs(mock);
+        builder.withOutput(mock(OutputStream.class));
+        try {
+            builder.withBufferSize(0);
+            Assert.fail();
+        } catch (IllegalArgumentException ignore) {
+        }
+        builder.withBufferSize(20);
+        expect = builder.build();
+        verify(mock, atLeastOnce()).read(argThat(new ArgumentMatcher<byte[]>() {
+
+            @Override
+            public boolean matches(Object o) {
+                return o instanceof byte[] && ((byte[]) o).length == 20;
+            }
+        }));
+    }
 }

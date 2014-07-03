@@ -38,6 +38,10 @@ public class ExpectBuilder {
      * The default timeout value of 30000 milliseconds.
      */
     public static final int DEFAULT_TIMEOUT_MS = 30000;
+    /**
+     * The default buffer size in bytes.
+     */
+    public static final int DEFAULT_BUFFER_SIZE = 1024;
 
     private InputStream[] inputs;
     private Filter filter;
@@ -50,6 +54,7 @@ public class ExpectBuilder {
     private Appendable echoOutput;
     private Appendable echoInput;
     private Appendable[] echoInputs;
+    private int bufferSize = DEFAULT_BUFFER_SIZE;
 
     /**
      * Default constructor.
@@ -216,6 +221,21 @@ public class ExpectBuilder {
     }
 
     /**
+     * Sets the size of the input buffer in bytes. Optional, default is 1024.
+     *
+     * @param bufferSize the buffer size
+     * @return this
+     * @throws java.lang.IllegalArgumentException if {@code bufferSize} is <= 0
+     */
+    public final ExpectBuilder withBufferSize(int bufferSize) {
+        if (bufferSize <= 0) {
+            throw new IllegalArgumentException("bufferSize must be > 0");
+        }
+        this.bufferSize = bufferSize;
+        return this;
+    }
+
+    /**
      * Creates a ready to use {@link Expect} instance.
      * <p/>
      * This method creates an instance and starts background threads that receive input data through NIO pipes. The
@@ -239,7 +259,8 @@ public class ExpectBuilder {
 
         SingleInputExpect[] inputs = new SingleInputExpect[this.inputs.length];
         for (int i = 0; i < inputs.length; i++) {
-            inputs[i] = new SingleInputExpect(this.inputs[i], charset, getEchoInputForIndex(i), filter);
+            inputs[i] = new SingleInputExpect(this.inputs[i], charset,
+                    getEchoInputForIndex(i), filter, bufferSize);
         }
 
         if (echoOutputOld != null) {

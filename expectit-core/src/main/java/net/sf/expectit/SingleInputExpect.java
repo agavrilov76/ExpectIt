@@ -48,13 +48,16 @@ class SingleInputExpect {
     private Future<Object> copierFuture;
     private final Pipe.SourceChannel source;
     private final Pipe.SinkChannel sink;
+    private final int bufferSize;
 
     protected SingleInputExpect(InputStream input, Charset charset,
-                                Appendable echoInput, Filter filter) throws IOException {
+                                Appendable echoInput, Filter filter,
+                                int bufferSize) throws IOException {
         this.input = input;
         this.charset = charset;
         this.echoInput = echoInput;
         this.filter = filter;
+        this.bufferSize = bufferSize;
         Pipe pipe = Pipe.open();
         source = pipe.source();
         sink = pipe.sink();
@@ -63,7 +66,7 @@ class SingleInputExpect {
     }
 
     public void start(ExecutorService executor) {
-        copierFuture = executor.submit(new InputStreamCopier(input, sink));
+        copierFuture = executor.submit(new InputStreamCopier(sink, input, bufferSize));
     }
 
     public <R extends Result> R expect(long timeoutMs, Matcher<R> matcher) throws IOException {

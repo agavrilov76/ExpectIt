@@ -28,19 +28,18 @@ import org.junit.Test;
 
 import java.io.EOFException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
+import static net.sf.expectit.ExpectBuilder.DEFAULT_BUFFER_SIZE;
 import static net.sf.expectit.Utils.LONG_TIMEOUT;
 import static net.sf.expectit.Utils.SMALL_TIMEOUT;
 import static net.sf.expectit.matcher.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.reset;
@@ -63,7 +62,8 @@ public class MatcherTest {
     @Before
     public void setup() throws Exception {
         mock = Utils.mockInputStream(text);
-        input = new SingleInputExpect(mock.getStream(), Charset.defaultCharset(), null, null);
+        input = new SingleInputExpect(mock.getStream(),
+                Charset.defaultCharset(), null, null, DEFAULT_BUFFER_SIZE);
         executor = Executors.newSingleThreadExecutor();
         input.start(executor);
         mock.waitUntilReady();
