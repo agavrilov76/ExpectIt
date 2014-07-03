@@ -27,6 +27,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.ArgumentMatcher;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -164,7 +165,7 @@ public class ExpectTest {
     }
 
     @Test
-    public void testCharset() throws IOException {
+    public void testCharset() throws IOException, InterruptedException {
         ExpectBuilder builder = new ExpectBuilder();
         InputStream in = mock(InputStream.class);
         builder.withInputs(in);
@@ -183,10 +184,12 @@ public class ExpectTest {
         assertTrue(expect.expect(SMALL_TIMEOUT, contains("hello")).isSuccessful());
     }
 
-    private void configureMockInputStream(InputStream in, final byte[] bytes) throws IOException {
+    private void configureMockInputStream(InputStream in, final byte[] bytes) throws IOException, InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
         when(in.read(any(byte[].class))).then(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
+                latch.countDown();
                 if (mockInputReadCalled) {
                     return -1;
                 }
@@ -196,10 +199,11 @@ public class ExpectTest {
                 return bytes.length;
             }
         });
+        latch.await();
     }
 
     @Test
-    public void testFilters() throws IOException {
+    public void testFilters() throws IOException, InterruptedException {
         ExpectBuilder builder = new ExpectBuilder();
         InputStream in = mock(InputStream.class);
         StringBuilder echo = new StringBuilder();
@@ -252,17 +256,19 @@ public class ExpectTest {
     }
 
     @Test
-    public void expectEchoOutput() throws IOException {
+    public void expectEchoOutput() throws Exception {
         ExpectBuilder builder = new ExpectBuilder();
         EchoOutput echo = mock(EchoOutput.class);
         String inputText = "input";
-        InputStream input = mockInputStream(SMALL_TIMEOUT, inputText);
+        MockInputStream input = mockInputStream(inputText);
         String inputText2 = "number2";
-        InputStream input2 = mockInputStream(SMALL_TIMEOUT, inputText2);
-        builder.withInputs(input, input2);
+        MockInputStream input2 = mockInputStream(inputText2);
+        builder.withInputs(input.getStream(), input2.getStream());
         builder.withEchoOutput(echo);
         builder.withOutput(mock(OutputStream.class));
         expect = builder.build();
+        input.waitUntilReady();
+        input2.waitUntilReady();
 
         String sentText = "sentText";
         expect.sendLine(sentText);
@@ -270,28 +276,35 @@ public class ExpectTest {
         verify(echo).onSend(sentTextLine);
 
         reset(echo);
+        input.push(inputText);
         //noinspection deprecation
         assertTrue(expect.expect(LONG_TIMEOUT, times(2, contains(inputText))).isSuccessful());
         //noinspection deprecation
         assertTrue(expect.expectIn(1, SMALL_TIMEOUT, contains(inputText2)).isSuccessful());
-        verify(echo, Mockito.times(2)).onReceive(0, inputText);
+        try {
+            verify(echo, Mockito.times(2)).onReceive(0, inputText);
+        } catch (AssertionError ignore) {
+            verify(echo, Mockito.times(1)).onReceive(0, inputText + inputText);
+        }
         verify(echo).onReceive(eq(1), anyString());
     }
 
     @Test
-    public void expectEchoOutput2() throws IOException {
+    public void expectEchoOutput2() throws Exception {
         ExpectBuilder builder = new ExpectBuilder();
         Appendable out = mock(Appendable.class);
         Appendable in1 = mock(Appendable.class);
         Appendable in2 = mock(Appendable.class);
         String inputText = "input";
-        InputStream input = mockInputStream(SMALL_TIMEOUT, inputText);
+        MockInputStream input = mockInputStream(inputText);
         String inputText2 = "number2";
-        InputStream input2 = mockInputStream(SMALL_TIMEOUT, inputText2);
-        builder.withInputs(input, input2);
+        MockInputStream input2 = mockInputStream(inputText2);
+        builder.withInputs(input.getStream(), input2.getStream());
         builder.withEchoOutput(out);
         builder.withOutput(mock(OutputStream.class));
         expect = builder.build();
+        input.waitUntilReady();
+        input2.waitUntilReady();
 
         String sentText = "sentText";
         expect.sendLine(sentText);
@@ -300,17 +313,36 @@ public class ExpectTest {
 
         builder.withEchoInput(in1);
         expect.close();
+        input = mockInputStream(inputText);
+        input2 = mockInputStream(inputText2);
+        builder.withInputs(input.getStream(), input2.getStream());
         expect = builder.build();
+        input.waitUntilReady();
+        input2.waitUntilReady();
+
+        input.push(inputText);
+        input2.push(inputText2);
         //noinspection deprecation
         assertTrue(expect.expect(LONG_TIMEOUT, times(2, contains(inputText))).isSuccessful());
         //noinspection deprecation
         assertTrue(expect.expectIn(1, SMALL_TIMEOUT, contains(inputText2)).isSuccessful());
-        verify(in1, Mockito.times(2)).append(inputText);
+
+        try {
+            verify(in1, Mockito.times(2)).append(inputText);
+        } catch (AssertionError ignore) {
+            verify(in1, Mockito.times(1)).append(inputText + inputText);
+        }
 
         reset(in1);
         builder.withEchoInput(in1, in2);
         expect.close();
+
+        input = mockInputStream(inputText);
+        input2 = mockInputStream(inputText2);
+        builder.withInputs(input.getStream(), input2.getStream());
         expect = builder.build();
+        input.waitUntilReady();
+        input2.waitUntilReady();
         //noinspection deprecation
         assertTrue(expect.expectIn(1, LONG_TIMEOUT, contains(inputText2)).isSuccessful());
         verify(in2).append(inputText2);
@@ -327,26 +359,31 @@ public class ExpectTest {
 
     @SuppressWarnings("deprecation")
     @Test(timeout = 5000)
-    public void testExpectMethods() throws IOException {
+    public void testExpectMethods() throws Exception {
         ExpectBuilder builder = new ExpectBuilder();
         String inputText1 = "input1";
         String inputText2 = "input2";
-        InputStream input1 = mockInputStream(SMALL_TIMEOUT, inputText1);
-        InputStream input2 = mockInputStream(SMALL_TIMEOUT, inputText2);
-        builder.withInputs(input1, input2);
+        MockInputStream input1 = mockInputStream(inputText1);
+        MockInputStream input2 = mockInputStream(inputText2);
+        builder.withInputs(input1.getStream(), input2.getStream());
         expect = builder.build();
+        input1.waitUntilReady();
+        input2.waitUntilReady();
 
         assertFalse(expect.expectIn(1, SMALL_TIMEOUT, contains("input1")).isSuccessful());
         assertFalse(expect.expectIn(0, SMALL_TIMEOUT, contains("input2")).isSuccessful());
         assertTrue(expect.expect(SMALL_TIMEOUT, contains("input1")).isSuccessful());
         assertTrue(expect.expectIn(1, SMALL_TIMEOUT, contains("input2")).isSuccessful());
         assertFalse(expect.expect(SMALL_TIMEOUT, contains("input2"), contains("input1")).isSuccessful());
+        input1.push(inputText1);
         assertTrue(expect.expect(SMALL_TIMEOUT, contains("input"), contains("input")).isSuccessful());
     }
 
-    @Test(timeout = 5000)
-    public void testClosedByInterruptExceptionIfInterrupted() throws IOException, InterruptedException {
-        expect = new ExpectBuilder().withInputs(mockInputStream(SMALL_TIMEOUT, "input")).build();
+    @Test(timeout = 10000)
+    public void testClosedByInterruptExceptionIfInterrupted() throws Exception {
+        MockInputStream input = mockInputStream("input");
+        expect = new ExpectBuilder().withInputs(input.getStream()).build();
+        input.waitUntilReady();
         final CountDownLatch started = new CountDownLatch(1);
         final CountDownLatch exceptionThrown = new CountDownLatch(1);
         final AtomicReference<IOException> exceptionRef = new AtomicReference<IOException>();
@@ -368,10 +405,10 @@ public class ExpectTest {
 
         try {
             expectThread.start();
-            assertTrue(started.await(SMALL_TIMEOUT * 2, TimeUnit.MILLISECONDS));
-            Thread.sleep(LONG_TIMEOUT);
+            assertTrue(started.await(SMALL_TIMEOUT, TimeUnit.MILLISECONDS));
             expectThread.interrupt();
-            assertTrue(exceptionThrown.await(LONG_TIMEOUT * 2, TimeUnit.MILLISECONDS));
+            expectThread.join();
+            assertTrue(exceptionThrown.await(LONG_TIMEOUT, TimeUnit.MILLISECONDS));
             //noinspection ThrowableResultOfMethodCallIgnored
             assertNotNull(exceptionRef.get() instanceof ClosedByInterruptException);
         } finally {
@@ -380,9 +417,9 @@ public class ExpectTest {
     }
 
     @Test(timeout = 5000)
-    public void testExpectWithInfiniteTimeoutWaiting() throws IOException, InterruptedException, TimeoutException,
-            ExecutionException {
-        expect = new ExpectBuilder().withInputs(mockInputStream(SMALL_TIMEOUT, "input")).build();
+    public void testExpectWithInfiniteTimeoutWaiting() throws Exception {
+        MockInputStream input = mockInputStream("input");
+        expect = new ExpectBuilder().withInputs(input.getStream()).build();
 
         Callable<Void> expectCallable = new Callable<Void>() {
             @Override
@@ -393,6 +430,7 @@ public class ExpectTest {
                 return null;
             }
         };
+        input.waitUntilReady();
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<Void> result = executor.submit(expectCallable);
@@ -413,9 +451,11 @@ public class ExpectTest {
     }
 
     @Test(timeout = 5000)
-    public void testExpectWithInfiniteTimeoutConsequentlyPassing() throws IOException, InterruptedException {
+    public void testExpectWithInfiniteTimeoutConsequentlyPassing() throws Exception {
         final String inputString = "input";
-        expect = new ExpectBuilder().withInputs(mockInputStream(SMALL_TIMEOUT, inputString)).build();
+        final MockInputStream mockInputStream = mockInputStream(inputString);
+        expect = new ExpectBuilder().withInputs(mockInputStream.getStream()).build();
+        mockInputStream.waitUntilReady();
         final int iterations = 5;
         final CountDownLatch successCounter = new CountDownLatch(iterations);
 
@@ -423,6 +463,7 @@ public class ExpectTest {
             @Override
             public Void call() throws Exception {
                 for (int i = 0; i < iterations; i++) {
+                    mockInputStream.push(inputString);
                     //noinspection deprecation
                     assertTrue(expect.expect(ExpectImpl.INFINITE_TIMEOUT, contains(inputString)).isSuccessful());
                     successCounter.countDown();
@@ -434,7 +475,7 @@ public class ExpectTest {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Future<Void> result = executor.submit(expectCallable);
         try {
-            assertTrue(successCounter.await(2 * SMALL_TIMEOUT * iterations, TimeUnit.MILLISECONDS));
+            assertTrue(successCounter.await(SMALL_TIMEOUT * iterations, TimeUnit.MILLISECONDS));
             assertFalse(result.isCancelled());
         } finally {
             result.cancel(true);

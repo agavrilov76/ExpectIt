@@ -20,10 +20,7 @@ package net.sf.expectit;
  * #L%
  */
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +28,7 @@ import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 import static net.sf.expectit.Utils.LONG_TIMEOUT;
+import static net.sf.expectit.Utils.SMALL_TIMEOUT;
 import static net.sf.expectit.echo.EchoAdapters.adapt;
 import static net.sf.expectit.filter.Filters.removeNonPrintable;
 import static net.sf.expectit.matcher.Matchers.contains;
@@ -77,6 +75,11 @@ public class WinProcessTest {
 
     @Test
     public void test() throws IOException, InterruptedException {
+        Thread.sleep(SMALL_TIMEOUT);
+        try {
+            Assume.assumeTrue(process.exitValue() != Integer.MAX_VALUE);
+        } catch (IllegalThreadStateException ignore) {
+        }
         System.out.println(expect.expect(contains(">")).getBefore());
         expect.sendLine("echo test-123");
         assertTrue(expect.expect(contains("test-123")).isSuccessful());

@@ -25,7 +25,9 @@ import org.mockito.stubbing.Answer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -35,6 +37,8 @@ import static org.mockito.Mockito.when;
  * Constants and method used in all the tests.
  */
 public final class Utils {
+    public static final String EOF = "EOF";
+
     private Utils() {
     }
 
@@ -51,31 +55,27 @@ public final class Utils {
     /**
      * Creates a mock stream that pumps the given text every period of milliseconds.
      */
-    public static InputStream mockInputStream(final long period, final String text) throws IOException {
-        if (period <= 0) {
-            throw new IllegalArgumentException("Period should be a non-negative number");
-        }
-
+    public static MockInputStream mockInputStream(String text) throws Exception {
+        final CountDownLatch latch = new CountDownLatch(1);
         InputStream mock = mock(InputStream.class);
+        final BlockingQueue<String> queue = new LinkedBlockingDeque<String>();
+        queue.put(text);
         when(mock.read(any(byte[].class))).then(new Answer<Object>() {
-            private boolean firstTime = true;
 
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
-                if (!firstTime) {
-                    Thread.sleep(period);
-                }
-                firstTime = false;
-                byte[] bytes = text.getBytes();
-                //noinspection MismatchedReadAndWriteOfArray
-                byte[] dest = (byte[]) invocation.getArguments()[0];
-                if (dest == null) {
+                latch.countDown();
+                String take = queue.take();
+                if (take.equals(EOF)) {
                     return -1;
                 }
+                byte[] bytes = take.getBytes();
+                //noinspection MismatchedReadAndWriteOfArray
+                byte[] dest = (byte[]) invocation.getArguments()[0];
                 System.arraycopy(bytes, 0, dest, 0, bytes.length);
                 return bytes.length;
             }
         });
-        return mock;
+        return new MockInputStream(mock, queue, latch);
     }
 }
