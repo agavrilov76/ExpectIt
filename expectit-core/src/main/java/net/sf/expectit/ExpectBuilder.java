@@ -50,7 +50,7 @@ public class ExpectBuilder {
     private EchoOutput echoOutputOld;
     private Charset charset = Charset.defaultCharset();
     private boolean errorOnTimeout;
-    private String lineSeparator = System.getProperty("line.separator");
+    private String lineSeparator = "\n";
     private Appendable echoOutput;
     private Appendable echoInput;
     private Appendable[] echoInputs;
@@ -210,7 +210,13 @@ public class ExpectBuilder {
     }
 
     /**
-     * Sets the line separator used by the {@link Expect#sendLine()} method. Optional, default is the system default.
+     * Sets the line separator used by the {@link Expect#sendLine()} method. Optional, default
+     * is '\n'.
+     * <p>
+     * The default line separator was intentionally made non-system specific to avoid issues like
+     * when the tool is running on Windows and sending {@code CRLF} to a Unix system which threats
+     * them as two new lines.
+     * </p>
      *
      * @param lineSeparator the line separator
      * @return this

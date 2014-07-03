@@ -272,7 +272,7 @@ public class ExpectTest {
 
         String sentText = "sentText";
         expect.sendLine(sentText);
-        String sentTextLine = sentText + System.getProperty("line.separator");
+        String sentTextLine = sentText + "\n";
         verify(echo).onSend(sentTextLine);
 
         reset(echo);
@@ -308,7 +308,7 @@ public class ExpectTest {
 
         String sentText = "sentText";
         expect.sendLine(sentText);
-        String sentTextLine = sentText + System.getProperty("line.separator");
+        String sentTextLine = sentText + "\n";
         verify(out).append(sentTextLine);
 
         builder.withEchoInput(in1);
@@ -510,7 +510,7 @@ public class ExpectTest {
         builder.withOutput(mock);
         expect = builder.build();
         expect.sendLine();
-        verify(mock).write((System.getProperty("line.separator")).getBytes());
+        verify(mock).write("\n".getBytes());
     }
 
     private static class StringBuilderArgumentMatcher extends ArgumentMatcher<StringBuilder> {
