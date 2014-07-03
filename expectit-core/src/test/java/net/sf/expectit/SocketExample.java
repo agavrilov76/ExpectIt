@@ -39,14 +39,17 @@ public class SocketExample {
                 .withEchoInput(System.out)
                 .withEchoOutput(System.err)
                 .build();
-        expect.sendLine("GET");
-        String result = expect.expect(contains("\n")).getBefore();
-        System.out.println("Result: " + result);
-        expect.expect(contains("<H1>302 Moved</H1>"));
-        String url = expect.expect(regexp("<A HREF=\"([^\"]*)")).group(1);
-        System.out.println("Redirect url from html: " + url);
-        // finally omitted
-        expect.close();
-        socket.close();
+        try {
+            expect.sendLine("GET");
+            String result = expect.expect(contains("\n")).getBefore();
+            System.out.println("Result: " + result);
+            expect.expect(contains("<H1>302 Moved</H1>"));
+            String url = expect.expect(regexp("<A HREF=\"([^\"]*)")).group(1);
+            System.out.println("Redirect url from html: " + url);
+        } finally {
+            expect.close();
+            socket.close();
+            socket.close();
+        }
     }
 }

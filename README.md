@@ -193,6 +193,7 @@ Note that you may need to add static import of the filter factory methods in you
 
 * [Socket Example: parsing HTTP response](expectit-core/src/test/java/net/sf/expectit/SocketExample.java)
 * [Complete SSH example](expectit-core/src/test/java/net/sf/expectit/SshExample.java)
+* [Complete SSH example using the sshj library](expectit-core/src/test/java/net/sf/expectit/SshJExample.java)
 * [Interacting with the Apache Karaf remote shell](expectit-core/src/test/java/net/sf/expectit/KarafExample.java)
 * [Expect for Ant example](expectit-ant/src/example/build-ssh-example.xml)
  

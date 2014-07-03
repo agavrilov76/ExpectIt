@@ -55,27 +55,28 @@ public class SshExample {
                 .withInputFilters(removeColors(), removeNonPrintable())
                 .withErrorOnTimeout(true)
                 .build();
-        // try-with-resources is omitted for simplicity
-        channel.connect();
-        expect.expect(contains("[RETURN]"));
-        expect.sendLine();
-        String ipAddress = expect.expect(regexp("Trying (.*)\\.\\.\\.")).group(1);
-        System.out.println("Captured IP: " + ipAddress);
-        expect.expect(contains("login:"));
-        expect.sendLine("new");
-        expect.expect(contains("(Y/N)"));
-        expect.send("N");
-        expect.expect(regexp(": $"));
-        expect.send("\b");
-        expect.expect(regexp("\\(y\\/n\\)"));
-        expect.sendLine("y");
-        expect.expect(contains("Would you like to sign the guestbook?"));
-        expect.send("n");
-        expect.expect(contains("[RETURN]"));
-        expect.sendLine();
-        // finally is omitted
-        channel.disconnect();
-        session.disconnect();
-        expect.close();
+        try {
+            channel.connect();
+            expect.expect(contains("[RETURN]"));
+            expect.sendLine();
+            String ipAddress = expect.expect(regexp("Trying (.*)\\.\\.\\.")).group(1);
+            System.out.println("Captured IP: " + ipAddress);
+            expect.expect(contains("login:"));
+            expect.sendLine("new");
+            expect.expect(contains("(Y/N)"));
+            expect.send("N");
+            expect.expect(regexp(": $"));
+            expect.send("\b");
+            expect.expect(regexp("\\(y\\/n\\)"));
+            expect.sendLine("y");
+            expect.expect(contains("Would you like to sign the guestbook?"));
+            expect.send("n");
+            expect.expect(contains("[RETURN]"));
+            expect.sendLine();
+        } finally {
+            channel.disconnect();
+            session.disconnect();
+            expect.close();
+        }
     }
 }

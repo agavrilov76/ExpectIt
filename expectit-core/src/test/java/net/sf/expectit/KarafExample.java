@@ -55,21 +55,24 @@ public class KarafExample {
                 .withErrorOnTimeout(true)
                 .build();
         channel.connect();
-        expect.expect(regexp("karaf@root\\(\\)> "));
-        expect.send("\t");
-        expect.expect(contains("y or n)"));
-        expect.send("y");
-        String list = expect.expect(regexp("karaf@root\\(\\)> ")).getBefore();
-        System.err.println(list);
-        expect.sendLine("list");
-        System.err.println(expect.expect(regexp("karaf@root\\(\\)> ")).getBefore());
-        filter.setEnabled(false);
-        expect.sendLine("bundle:info --help");
-        System.err.println(expect.expect(regexp(".*root\\(\\)>")).getBefore());
-        expect.sendLine("logout");
-        expect.expect(eof());
-        channel.disconnect();
-        session.disconnect();
-        expect.close();
+        try {
+            expect.expect(regexp("karaf@root\\(\\)> "));
+            expect.send("\t");
+            expect.expect(contains("y or n)"));
+            expect.send("y");
+            String list = expect.expect(regexp("karaf@root\\(\\)> ")).getBefore();
+            System.err.println(list);
+            expect.sendLine("list");
+            System.err.println(expect.expect(regexp("karaf@root\\(\\)> ")).getBefore());
+            filter.setEnabled(false);
+            expect.sendLine("bundle:info --help");
+            System.err.println(expect.expect(regexp(".*root\\(\\)>")).getBefore());
+            expect.sendLine("logout");
+            expect.expect(eof());
+        } finally {
+            channel.disconnect();
+            session.disconnect();
+            expect.close();
+        }
     }
 }
