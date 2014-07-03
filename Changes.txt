@@ -1,3 +1,11 @@
+0.4.0
+----------
+    #15 sendLine should not use default system line separator
+    #13 ExpectBuilder ability to set ​BUFFER_SIZE (reported by syepes)
+    #12 Unstable tests on slow machines
+    #6 ability to change the timeout after the first command (reported by davecramer)
+    #5 Ability to set infinitive timeout (requested by jtorr...@gmail.com)
+    #4 Provide EchoOutput adapters that handle input and output separately.
 0.3.1
 ----------
     #8 Bug: Resource leak (reported by neilgierman)
