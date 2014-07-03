@@ -379,7 +379,7 @@ public class ExpectTest {
         assertTrue(expect.expect(SMALL_TIMEOUT, contains("input"), contains("input")).isSuccessful());
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 10000)
     public void testClosedByInterruptExceptionIfInterrupted() throws Exception {
         MockInputStream input = mockInputStream("input");
         expect = new ExpectBuilder().withInputs(input.getStream()).build();
@@ -407,6 +407,7 @@ public class ExpectTest {
             expectThread.start();
             assertTrue(started.await(SMALL_TIMEOUT, TimeUnit.MILLISECONDS));
             expectThread.interrupt();
+            expectThread.join();
             assertTrue(exceptionThrown.await(LONG_TIMEOUT, TimeUnit.MILLISECONDS));
             //noinspection ThrowableResultOfMethodCallIgnored
             assertNotNull(exceptionRef.get() instanceof ClosedByInterruptException);
