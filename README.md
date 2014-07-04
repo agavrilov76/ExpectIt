@@ -121,7 +121,8 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
         Expect expect = new ExpectBuilder()
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
-                .withEchoOutput(adapt(System.out))
+                .withEchoOutput(System.out)
+                .withEchoInput(System.err)
         //        .withInputFilters(removeColors(), removeNonPrintable())
                 .withErrorOnTimeout(true)
                 .build();
