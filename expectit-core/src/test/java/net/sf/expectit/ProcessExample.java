@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import static net.sf.expectit.echo.EchoAdapters.adapt;
+import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.eof;
 import static net.sf.expectit.matcher.Matchers.regexp;
 
@@ -42,6 +43,7 @@ public class ProcessExample {
                 .withEchoOutput(System.err)
                 .withErrorOnTimeout(true)
                 .build();
+        System.out.println("PWD:" + expect.sendLine("pwd").expect(contains("\n")).getBefore());
         // try-with-resources is omitted for simplicity
         expect.sendLine("ls -lh");
         // capture the total
