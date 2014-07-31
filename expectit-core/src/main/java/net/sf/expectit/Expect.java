@@ -33,6 +33,10 @@ import java.util.concurrent.TimeUnit;
  * the underlying input stream.
  * A successful match operation updates the buffer by removing a part from the begging until the end position of the
  * match.
+ * <p/>
+ * The send methods are thread safe as long as the underlying output streams
+ * are thread safe. In other words it is safe to send data from one thread and expect the
+ * results in another.
  */
 public interface Expect extends Closeable {
     /**

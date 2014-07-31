@@ -75,6 +75,13 @@ expression matching results. If the match was successful, then the corresponding
 characters before the match including the matching string are removed. The next match is performed for the updated
 buffer.
 
+## Thread safety notes
+
+The send methods are generally thread safe as long as the underlying output streams are thread safe
+to. In other words it is safe to send data from one thread and expect the results in another.
+
+The expect methods are not thread safe since they mutate the state of the expect buffers.
+
 ## Interacting with OS process
 
 Here is an example of interacting with a spawn process:
