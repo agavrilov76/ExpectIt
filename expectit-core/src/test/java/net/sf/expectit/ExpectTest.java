@@ -379,7 +379,7 @@ public class ExpectTest {
         assertTrue(expect.expect(SMALL_TIMEOUT, contains("input"), contains("input")).isSuccessful());
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 20000)
     public void testClosedByInterruptExceptionIfInterrupted() throws Exception {
         MockInputStream input = mockInputStream("input");
         expect = new ExpectBuilder().withInputs(input.getStream()).build();
@@ -416,7 +416,7 @@ public class ExpectTest {
         }
     }
 
-    @Test(timeout = 5000)
+    @Test(timeout = 20000)
     public void testExpectWithInfiniteTimeoutWaiting() throws Exception {
         MockInputStream input = mockInputStream("input");
         expect = new ExpectBuilder().withInputs(input.getStream()).build();
@@ -539,7 +539,8 @@ public class ExpectTest {
         }
         builder.withBufferSize(20);
         expect = builder.build();
-        verify(mock, atLeastOnce()).read(argThat(new ArgumentMatcher<byte[]>() {
+        verify(mock, timeout((int) LONG_TIMEOUT).atLeastOnce())
+                .read(argThat(new ArgumentMatcher<byte[]>() {
 
             @Override
             public boolean matches(Object o) {
