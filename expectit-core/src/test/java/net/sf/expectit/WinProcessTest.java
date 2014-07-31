@@ -33,6 +33,7 @@ import static net.sf.expectit.echo.EchoAdapters.adapt;
 import static net.sf.expectit.filter.Filters.removeNonPrintable;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.eof;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 
@@ -52,7 +53,7 @@ public class WinProcessTest {
 
     @Before
     public void setup() throws IOException {
-        ProcessBuilder builder = new ProcessBuilder(WIN_CMD);
+        ProcessBuilder builder = new ProcessBuilder(WIN_CMD, "/Q");
         process = builder.start();
         expect = new ExpectBuilder()
                 .withTimeout(LONG_TIMEOUT, TimeUnit.MILLISECONDS)
@@ -82,9 +83,12 @@ public class WinProcessTest {
         }
         System.out.println(expect.expect(contains(">")).getBefore());
         expect.sendLine("echo test-123");
-        assertTrue(expect.expect(contains("test-123")).isSuccessful());
+        Result res = expect.expect(contains("test-123"));
+        assertTrue(res.isSuccessful());
+        assertFalse(res.getBefore().contains("echo"));
         assertTrue(expect.expect(contains(">")).isSuccessful());
-
+        expect.sendLine("echo %cd%");
+        System.err.println("pwd: " + expect.expect(contains("\n")).getBefore());
         expect.sendLine("exit");
         assertTrue(expect.expect(eof()).isSuccessful());
     }
