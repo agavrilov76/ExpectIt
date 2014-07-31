@@ -27,6 +27,7 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.ClosedByInterruptException;
 import java.nio.channels.Pipe;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -86,6 +87,11 @@ class SingleInputExpect {
 
             while (!result.isSuccessful() && (isInfiniteTimeout || timeElapsed > 0)) {
                 int keys = isInfiniteTimeout ? selector.select() : selector.select(timeElapsed);
+                // if thread was interrupted the selector returns immediately
+                // and keep the thread status, so we need to check it
+                if (Thread.currentThread().isInterrupted()) {
+                    throw new ClosedByInterruptException();
+                }
 
                 if (!isInfiniteTimeout) {
                     timeElapsed = timeToStop - System.currentTimeMillis();
