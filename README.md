@@ -77,10 +77,11 @@ buffer.
 
 ## Thread safety notes
 
-The send methods are generally thread safe as long as the underlying output streams are thread safe
-to. In other words it is safe to send data from one thread and expect the results in another.
+The send methods are generally thread safe as long as the underlying output streams are. In other words it is safe 
+to send data from one thread and expect the results in another.
 
-The expect methods are not thread safe since they mutate the state of the expect buffers.
+The expect methods are not thread safe since they mutate the state of the expect buffers. The expect operaiton must
+not be performed concurrently.
 
 ## Interacting with OS process
 
