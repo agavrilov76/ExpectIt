@@ -21,10 +21,7 @@ package net.sf.expectit;
  */
 
 import com.google.common.io.Files;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +52,11 @@ public class ProcessTest {
     @Before
     public void setup() throws IOException {
         ProcessBuilder builder = new ProcessBuilder(BIN_SH);
-        process = builder.start();
+        try {
+            process = builder.start();
+        } catch (IOException e) {
+            Assume.assumeNoException("Unable to start shell", e);
+        }
         expect = new ExpectBuilder()
                 .withTimeout(LONG_TIMEOUT, TimeUnit.MILLISECONDS)
                 .withInputs(process.getInputStream(), process.getErrorStream())
@@ -65,9 +66,13 @@ public class ProcessTest {
 
     @After
     public void cleanup() throws IOException, InterruptedException {
-        process.destroy();
-        process.waitFor();
-        expect.close();
+        if (process != null) {
+            process.destroy();
+            process.waitFor();
+        }
+        if (expect != null) {
+            expect.close();
+        }
     }
 
     @Test
