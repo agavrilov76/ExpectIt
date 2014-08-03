@@ -205,29 +205,42 @@ public final class Matchers {
      * @return the result
      */
     public static Matcher<MultiResult> times(final int number, final Matcher<?> matcher) {
-        return new Matcher<MultiResult>() {
-            private int matchCount = number;
-            private Result[] results = new Result[number];
+        Matcher<?>[] matchers = new Matcher[number];
+        Arrays.fill(matchers, matcher);
+        return sequence(matchers);
+    }
 
+    /**
+     * Matches the given matchers one by one. Every successful matches updates the internal buffer. The consequent
+     * match operation is performed after the previous match has succeeded.
+     *
+     * @param matchers the collection of matchers.
+     * @return the matcher.
+     */
+    public static Matcher<MultiResult> sequence(final Matcher<?> ... matchers) {
+        return new Matcher<MultiResult>() {
             @Override
             public MultiResult matches(String input, boolean isEof) {
+                int matchCount = 0;
+                Result[] results = new Result[matchers.length];
+                Arrays.fill(results, SimpleResult.NEGATIVE);
                 int beginIndex = 0;
-                while (true) {
-                    Result result = matcher.matches(input.substring(beginIndex), isEof);
-                    int index = number - matchCount;
+                for (int i = 0; i < matchers.length; i++) {
+                    Result result = matchers[i].matches(input.substring(beginIndex), isEof);
                     if (result.isSuccessful()) {
                         beginIndex += result.end();
-                        results[index] = result;
-                        if (--matchCount == 0) {
-                            return new MultiResultImpl(result, Arrays.asList(results));
+                        results[i] = result;
+                        if (++matchCount == matchers.length) {
+                            String group = result.group();
+                            Result finalResult = new SimpleResult(
+                                    true,
+                                    input.substring(0, beginIndex - group.length()),
+                                    group);
+                            return new MultiResultImpl(finalResult, Arrays.asList(results));
                         }
-                    } else {
-                        if (index < results.length - 1) {
-                            Arrays.fill(results, index + 1, number, SimpleResult.NEGATIVE);
-                        }
-                        return new MultiResultImpl(SimpleResult.NEGATIVE, Arrays.asList(results));
                     }
                 }
+                return new MultiResultImpl(SimpleResult.NEGATIVE, Arrays.asList(results));
             }
         };
     }

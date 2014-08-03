@@ -55,11 +55,14 @@ public class SshLocalhostExample {
             channel.connect();
             expect.expect(contains("$"));
             expect.sendLine("pwd");
+            System.out.println("pwd1:" + expect.expect(times(2, contains("\n"))).getResults().get(1).getBefore());
+            expect.sendLine("pwd");
             // a regexp which captures the output of pwd
-            System.out.println(expect.expect(regexp("(?m)\\n([^\\n]*)\\n")).group(1));
+            System.out.println("pwd2:" + expect.expect(regexp("(?m)\\n([^\\n]*)\\n")).group(1));
+            expect.expect(contains("$"));
             expect.sendLine("ls -l");
             // skipping the echo command
-            expect.expect(contains("\n"));
+            expect.expect(times(2, contains("\n")));
             // getting the output of ls
             System.out.println(expect.expect(regexp(".*\\$")).getBefore().trim());
             expect.sendLine("exit");

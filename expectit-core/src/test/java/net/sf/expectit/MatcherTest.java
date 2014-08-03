@@ -40,9 +40,8 @@ import static net.sf.expectit.Utils.SMALL_TIMEOUT;
 import static net.sf.expectit.matcher.Matchers.*;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
 
 /**
@@ -379,29 +378,42 @@ public class MatcherTest {
     public void testTimes() throws IOException, InterruptedException {
         MultiResult result = input.expect(SMALL_TIMEOUT, times(1, contains("b")));
         assertEquals("a1", result.getBefore());
-        assertEquals(result.getBefore(), "a1");
+        assertEquals(result.group(), "b");
 
         result = times(2, contains("abc")).matches("ZabcXabcY", false);
         assertTrue(result.isSuccessful());
-        assertEquals(result.getBefore(), "X");
+        assertEquals(result.getBefore(), "ZabcX");
         assertEquals(result.getResults().get(0).getBefore(), "Z");
         assertEquals(result.getResults().get(1).getBefore(), "X");
 
         result = times(3, contains("abc")).matches("ZabcXabcY", false);
         assertFalse(result.isSuccessful());
-
-        mock.push(text);
+        mock.push(text + text);
         result = input.expect(2 * SMALL_TIMEOUT, times(3, contains("_")));
+        assertTrue(result.isSuccessful());
+        assertEquals(result.getBefore(), "2c3_a1b2c3_a1b2c3");
+        assertEquals(result.group(), "_");
         for (Result r : result.getResults()) {
             assertTrue(r.isSuccessful());
             assertTrue(r.getBefore().endsWith("2c3"));
         }
-
+        mock.push(text);
         result = input.expect(SMALL_TIMEOUT, times(10, contains("c")));
         assertTrue(result.getResults().get(0).isSuccessful());
         assertFalse(result.getResults().get(8).isSuccessful());
         assertFalse(result.getResults().get(9).isSuccessful());
         assertFalse(result.isSuccessful());
+    }
+
+    @Test
+    public void testSequence() throws IOException, InterruptedException {
+        MultiResult result = input.expect(SMALL_TIMEOUT, sequence(contains("b")));
+        assertEquals("a1", result.getBefore());
+        mock.push(text);
+        result = input.expect(SMALL_TIMEOUT, sequence(contains("c"), contains("b")));
+        assertEquals("2c3_a1", result.getBefore());
+        assertEquals(result.group(), "b");
+        assertEquals(result.getResults().get(0).group(), "c");
     }
 
     @Test
