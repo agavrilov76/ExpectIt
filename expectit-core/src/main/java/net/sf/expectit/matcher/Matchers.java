@@ -238,9 +238,9 @@ public final class Matchers {
                                     group);
                             return new MultiResultImpl(finalResult, Arrays.asList(results));
                         }
-                        continue;
+                    } else {
+                        break;
                     }
-                    break;
                 }
                 return new MultiResultImpl(SimpleResult.NEGATIVE, Arrays.asList(results));
             }
