@@ -120,7 +120,7 @@ public class ProcessTest {
         expect.sendLine("echo Line1");
         expect.sendLine("echo Line2");
         expect.sendLine("sleep " + LONG_TIMEOUT / 1000 + "; echo Line3; exit");
-        Result result = expect.expect(3 * LONG_TIMEOUT, eof());
+        Result result = expect.expect(5 * LONG_TIMEOUT, eof());
         assertEquals(result.getBefore(),"Line1\nLine2\nLine3\n", result.getBefore());
     }
 }

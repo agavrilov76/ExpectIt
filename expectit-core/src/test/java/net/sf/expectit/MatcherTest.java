@@ -414,6 +414,10 @@ public class MatcherTest {
         assertEquals("2c3_a1", result.getBefore());
         assertEquals(result.group(), "b");
         assertEquals(result.getResults().get(0).group(), "c");
+
+        mock.push(text);
+        result = input.expect(SMALL_TIMEOUT, sequence(contains("a"), contains("Z"), contains("c")));
+        assertFalse(result.isSuccessful());
     }
 
     @Test

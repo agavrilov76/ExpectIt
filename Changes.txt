@@ -1,6 +1,7 @@
-Unreleased
+0.5.0
+-------
+    #17 times matcher is not working as expected
     #18 Add sequence matcher
-    #19 Provide the way to ignore the command echo
     Fix expect thread interrupt issue
 
 0.4.0

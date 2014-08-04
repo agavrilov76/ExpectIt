@@ -28,14 +28,12 @@ import com.jcraft.jsch.Session;
 import java.io.IOException;
 import java.util.Properties;
 
-import static net.sf.expectit.filter.Filters.removeColors;
-import static net.sf.expectit.filter.Filters.removeNonPrintable;
 import static net.sf.expectit.matcher.Matchers.*;
 
 /**
  * An example of interacting with the local SSH server
  */
-public class SshLocalhostExample {
+public class SshLocalhostNoEchoExample {
     public static void main(String[] args) throws JSchException, IOException {
         JSch jSch = new JSch();
         Session session = jSch.getSession(System.getenv("USER"), "localhost");
@@ -53,17 +51,10 @@ public class SshLocalhostExample {
         try {
             channel.connect();
             expect.expect(contains("$"));
-            expect.sendLine("pwd");
-            System.out.println("pwd1:" + expect.expect(times(2, contains("\n"))).getResults().get(1).getBefore());
-            expect.sendLine("pwd");
-            // a regexp which captures the output of pwd
-            System.out.println("pwd2:" + expect.expect(regexp("(?m)\\n([^\\n]*)\\n")).group(1));
+            expect.sendLine("stty -echo");
             expect.expect(contains("$"));
-            expect.sendLine("ls -l");
-            // skipping the echo command
-            expect.expect(times(2, contains("\n")));
-            // getting the output of ls
-            System.out.println(expect.expect(regexp(".*\\$")).getBefore().trim());
+            expect.sendLine("pwd");
+            System.out.println("pwd1:" + expect.expect(contains("\n")).getBefore());
             expect.sendLine("exit");
         } finally {
             channel.disconnect();
