@@ -150,6 +150,7 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
         session.disconnect();
         expect.close();
 ```
+Note that SSH servers normally echo the received commands. The echo can be diabled by sending the `stty -echo` command. [Here](expectit-core/src/test/java/net/sf/expectit/SshLocalhostNoEchoExample.java) is an example of capturing the result of the `pwd` command when command echo is off.
 
 ## Using different type of matchers
 
@@ -205,6 +206,8 @@ Note that you may need to add static import of the filter factory methods in you
 * [Complete SSH example using SshJ](expectit-core/src/test/java/net/sf/expectit/SshJExample.java)
 * [Interacting with the Apache Karaf remote shell](expectit-core/src/test/java/net/sf/expectit/KarafExample.java)
 * [Expect for Ant example](expectit-ant/src/example/build-ssh-example.xml)
+* [Capture the command result from SSH session](expectit-core/src/test/java/net/sf/expectit/SshLocalhostExample.java)
+* [Disable SSH server echo](expectit-core/src/test/java/net/sf/expectit/SshLocalhostNoEchoExample.java)
  
 ## Questions
 
