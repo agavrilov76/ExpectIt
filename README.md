@@ -150,7 +150,7 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
         session.disconnect();
         expect.close();
 ```
-Note that SSH servers normally echo the received commands. The echo can be diabled by sending the `stty -echo` command. [Here](expectit-core/src/test/java/net/sf/expectit/SshLocalhostNoEchoExample.java) is an example of capturing the result of the `pwd` command when command echo is off.
+Note that SSH servers normally echo the received commands. The echo can be diabled by sending the `stty -echo` command. [This](expectit-core/src/test/java/net/sf/expectit/SshLocalhostNoEchoExample.java) is an example of capturing the result of the `pwd` command when command echo is off.
 
 ## Using different type of matchers
 
