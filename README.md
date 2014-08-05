@@ -24,7 +24,7 @@ The ExpectIt project is a modern alternative to other popular 'Expect for Java' 
 I believe that none of the projects above has all the features that ExpectIt has. So if you are looking for a Java
 expect library please give ExpectIt a try.
 
-The API javadoc documentation is available [here](http://alexey1gavrilov.github.io/ExpectIt/0.4.0/apidocs/).
+The API javadoc documentation is available [here](http://alexey1gavrilov.github.io/ExpectIt/0.5.0/apidocs/).
 ## Quick start
 
 The library is available on [the Maven central](http://search.maven.org/#search|gav|1|g%3A%22net.sf.expectit%22%20AND%20a%3A%22expectit-core%22).
@@ -34,7 +34,7 @@ Add the following Maven dependency to your project:
     <dependency>
         <groupId>net.sf.expectit</groupId>
         <artifactId>expectit-core</artifactId>
-        <version>0.4.0</version>
+        <version>0.5.0</version>
     </dependency>
 ```
 You can also download the ``expectit-core.jar`` file from the release project page at
@@ -87,7 +87,7 @@ not be performed concurrently.
 
 Here is an example of interacting with a spawn process:
 
-```java
+```jav/a
         Process process = Runtime.getRuntime().exec("/bin/sh");
 
         Expect expect = new ExpectBuilder()
@@ -150,7 +150,7 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
         session.disconnect();
         expect.close();
 ```
-Note that SSH servers normally echo the received commands. The echo can be diabled by sending the `stty -echo` command. [This](expectit-core/src/test/java/net/sf/expectit/SshLocalhostNoEchoExample.java) is an example of capturing the result of the `pwd` command when command echo is off.
+Note that SSH servers normally echo the received commands. The echo can be disabled by sending the `stty -echo` command. [This](expectit-core/src/test/java/net/sf/expectit/SshLocalhostNoEchoExample.java) is an example of capturing the result of the `pwd` command when the command echo is switched off.
 
 ## Using different type of matchers
 
