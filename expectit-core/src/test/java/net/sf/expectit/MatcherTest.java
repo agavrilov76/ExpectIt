@@ -407,6 +407,12 @@ public class MatcherTest {
 
     @Test
     public void testSequence() throws IOException, InterruptedException {
+        try {
+            sequence();
+            fail();
+        } catch (IllegalArgumentException ignore) {
+
+        }
         MultiResult result = input.expect(SMALL_TIMEOUT, sequence(contains("b")));
         assertEquals("a1", result.getBefore());
         mock.push(text);
@@ -418,6 +424,12 @@ public class MatcherTest {
         mock.push(text);
         result = input.expect(SMALL_TIMEOUT, sequence(contains("a"), contains("Z"), contains("c")));
         assertFalse(result.isSuccessful());
+
+        result = input.expect(SMALL_TIMEOUT, sequence(contains("3"), anyOf(contains("Z"), contains("c"))));
+        assertTrue(result.isSuccessful());
+        assertEquals(result.getBefore(), "2c3_a1b2");
+        assertEquals(result.getResults().get(0).getBefore(), "2c");
+        assertEquals(result.getResults().get(1).getBefore(), "_a1b2");
     }
 
     @Test

@@ -218,6 +218,7 @@ public final class Matchers {
      * @return the matcher.
      */
     public static Matcher<MultiResult> sequence(final Matcher<?> ... matchers) {
+        checkNotEmpty(matchers);
         return new Matcher<MultiResult>() {
             @Override
             public MultiResult matches(String input, boolean isEof) {
