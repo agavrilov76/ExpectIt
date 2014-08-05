@@ -424,6 +424,9 @@ public class MatcherTest {
         mock.push(text);
         result = input.expect(SMALL_TIMEOUT, sequence(contains("a"), contains("Z"), contains("c")));
         assertFalse(result.isSuccessful());
+        assertTrue(result.getResults().get(0).isSuccessful());
+        assertEquals(result.getResults().get(0).getBefore(), "2c3_");
+
 
         result = input.expect(SMALL_TIMEOUT, sequence(contains("3"), anyOf(contains("Z"), contains("c"))));
         assertTrue(result.isSuccessful());
