@@ -87,7 +87,7 @@ not be performed concurrently.
 
 Here is an example of interacting with a spawn process:
 
-```jav/a
+```java
         Process process = Runtime.getRuntime().exec("/bin/sh");
 
         Expect expect = new ExpectBuilder()
@@ -167,6 +167,8 @@ methods):
         expect.expect(times(3, contains("string")));
         // expect any non-empty string match
         expect.expect(anyString());
+        // expect the input to contains "a" and then "b"
+        expect.sequence(contains("a"), contains("b"));
 ```
 ## Filtering the input
 
