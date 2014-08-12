@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  */
 public final class Filters {
 
-    private static final String COLORS_REGEXP_STRING = "\\x1b[^m]*m";
+    private static final String COLORS_REGEXP_STRING = "\\x1b\\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]";
     /**
      * The regular expression which matches <a href="http://en.wikipedia.org/wiki/ANSI_escape_code#Colors">ANSI escape
      * sequences for colors</a>.

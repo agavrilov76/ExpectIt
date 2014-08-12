@@ -40,11 +40,11 @@ public class FilterTest {
 
     @Test
     public void testNoColors() {
-        String str = "abc\u001b[31m\u001B[7mdef";
+        String str = "abc\u001b[31m\u001B[7mdef\u001B[01;31m\u001B[KX\u001B[m\u001B[K";
         StringBuilder buffer = new StringBuilder(str);
         assertFalse(removeColors().afterAppend(buffer));
         assertEquals(buffer.toString(), str);
-        assertEquals("abcdef", removeColors().beforeAppend(str, new StringBuilder()));
+        assertEquals("abcdefX", removeColors().beforeAppend(str, new StringBuilder()));
     }
 
     @Test

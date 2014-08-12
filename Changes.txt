@@ -1,3 +1,6 @@
+Unreleased
+-------
+   #26 Colors filter is buggy
 0.5.0
 -------
     #17 times matcher is not working as expected
