@@ -168,7 +168,7 @@ methods):
         // expect any non-empty string match
         expect.expect(anyString());
         // expect to contain "a" and after that "b"
-        expect.sequence(contains("a"), contains("b"));
+        expect.expect(sequence(contains("a"), contains("b")));
 ```
 ## Filtering the input
 
