@@ -183,7 +183,7 @@ public final class Matchers {
         return new Matcher<Result>() {
             @Override
             public Result matches(String input, boolean isEof) {
-                return new SimpleResult(isEof, input, "");
+                return SimpleResult.valueOf(isEof, input, "");
             }
 
             @Override
@@ -260,10 +260,7 @@ public final class Matchers {
         return new Matcher<Result>() {
             @Override
             public Result matches(String input, boolean isEof) {
-                if (input.length() > 0) {
-                    return new SimpleResult(true, "", input);
-                }
-                return SimpleResult.NEGATIVE;
+                return SimpleResult.valueOf(input.length() > 0, "", input);
             }
 
             @Override
@@ -282,6 +279,30 @@ public final class Matchers {
 
     static String generateToString(String name, Object parameter) {
         return String.format("%s('%s')", name, parameter);
+    }
+
+    /**
+     * Creates a matcher that matches when the given string is equal to the
+     * input buffer contents.
+     * <p/>
+     * If the result is successful, the {@link net.sf.expectit.Result#getBefore()} returns an
+     * empty string, the {@link net.sf.expectit.Result#group()} returns the entire input buffer.
+     *
+     * @param exact the string to match.
+     * @return the result.
+     */
+    public static Matcher<Result> exact(final String exact) {
+        return new Matcher<Result>() {
+            @Override
+            public Result matches(String input, boolean isEof) {
+                return SimpleResult.valueOf(exact.equals(input), "", input);
+            }
+
+            @Override
+            public String toString() {
+                return "exact";
+            }
+        };
     }
 
 }

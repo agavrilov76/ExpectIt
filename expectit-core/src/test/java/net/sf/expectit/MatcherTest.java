@@ -442,7 +442,6 @@ public class MatcherTest {
 
     @Test
     public void testAnyString() throws IOException, InterruptedException {
-
         Result result = input.expect(SMALL_TIMEOUT, anyString());
         assertTrue(result.group().startsWith("a1"));
         assertTrue(result.group().endsWith("_"));
@@ -528,5 +527,17 @@ public class MatcherTest {
             fail();
         } catch (IllegalStateException ignore) {
         }
+    }
+
+    @Test
+    public void testExact() throws IOException, InterruptedException {
+        Result result = input.expect(SMALL_TIMEOUT, exact("a1"));
+        assertFalse(result.isSuccessful());
+        result = input.expect(SMALL_TIMEOUT, exact(text));
+        assertTrue(result.isSuccessful());
+        assertEquals(result.getBefore(), "");
+        assertEquals(result.groupCount(), 0);
+        assertEquals(result.group(), text);
+        assertFalse(input.expect(SMALL_TIMEOUT, exact(text)).isSuccessful());
     }
 }

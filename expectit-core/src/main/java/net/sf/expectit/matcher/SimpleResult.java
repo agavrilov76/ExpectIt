@@ -23,15 +23,25 @@ package net.sf.expectit.matcher;
 import net.sf.expectit.Result;
 
 /**
- * A result of string matching..
+ * A result of string matching.
  */
-class SimpleResult implements Result {
+public class SimpleResult implements Result {
+    /**
+     * A constant representing unsuccessful match.
+     */
     public static final Result NEGATIVE = new SimpleResult(false, null, null);
 
     private final boolean succeeded;
     private final String before;
     private final String group;
 
+    /**
+     * Creates an instance with the initial field values.
+     *
+     * @param succeeded the success flag.
+     * @param before the string before match, not {@code null}.
+     * @param group the string group, not {@code null}.
+     */
     public SimpleResult(boolean succeeded, String before, String group) {
         this.succeeded = succeeded;
         this.before = before;
@@ -97,6 +107,23 @@ class SimpleResult implements Result {
     private void checkSucceeded() {
         if (!succeeded) {
             throw new IllegalStateException();
+        }
+    }
+
+    /**
+     * Creates an instance with the initial field values.
+     *
+     * @param succeeded the success flag.
+     * @param before the string before match, not {@code null}.
+     * @param group the string group, not {@code null}.
+     * @return the instance. if {@code succeeded} is false, returns the
+     * {@link net.sf.expectit.matcher.SimpleResult#NEGATIVE} constant.
+     */
+    public static Result valueOf(boolean succeeded, String before, String group) {
+        if (succeeded) {
+            return new SimpleResult(true, before, group);
+        } else {
+            return NEGATIVE;
         }
     }
 }
