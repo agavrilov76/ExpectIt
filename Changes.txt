@@ -1,5 +1,6 @@
 Unreleased
 -------
+   #27 SimpleResult public?
    #26 Colors filter is buggy
 0.5.0
 -------
