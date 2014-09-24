@@ -95,16 +95,21 @@ class MultiMatcher implements Matcher<MultiResult> {
 
     @Override
     public String toString() {
+        StringBuilder matchersString = matchersToString(matchers);
+        if (allOperation) {
+            return String.format("allOf(%s)", matchersString);
+        }
+        return String.format("anyOf(%s)", matchersString);
+    }
+
+    static StringBuilder matchersToString(final Matcher ... matchers) {
         StringBuilder matchersString = new StringBuilder();
         for (Matcher<?> matcher : matchers) {
             if (matchersString.length() > 0) {
                 matchersString.append(',');
             }
-            matchersString.append(matcher.toString());
+            matchersString.append(String.valueOf(matcher));
         }
-        if (allOperation) {
-            return String.format("allOf(%s)", matchersString);
-        }
-        return String.format("anyOf(%s)", matchersString);
+        return matchersString;
     }
 }

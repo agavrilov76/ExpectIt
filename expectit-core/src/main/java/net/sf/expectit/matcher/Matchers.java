@@ -270,6 +270,11 @@ public final class Matchers {
                 }
                 return new MultiResultImpl(SimpleResult.NEGATIVE, Arrays.asList(results));
             }
+
+            @Override
+            public String toString() {
+                return String.format("sequence(%s)", MultiMatcher.matchersToString(matchers));
+            }
         };
     }
 

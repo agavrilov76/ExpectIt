@@ -438,7 +438,9 @@ public class MatcherTest {
         assertEquals(result.getResults().get(0).group(), "c");
 
         mock.push(text);
-        result = input.expect(SMALL_TIMEOUT, sequence(contains("a"), contains("Z"), contains("c")));
+        final Matcher<MultiResult> sequence = sequence(contains("a"), contains("Z"), contains("c"));
+        assertEquals(sequence.toString(), "sequence(contains('a'),contains('Z'),contains('c'))");
+        result = input.expect(SMALL_TIMEOUT, sequence);
         assertFalse(result.isSuccessful());
         assertTrue(result.getResults().get(0).isSuccessful());
         assertEquals(result.getResults().get(0).getBefore(), "2c3_");
