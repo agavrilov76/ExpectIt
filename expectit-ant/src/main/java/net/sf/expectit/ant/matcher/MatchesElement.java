@@ -20,10 +20,10 @@ package net.sf.expectit.ant.matcher;
  * #L%
  */
 
+import static net.sf.expectit.matcher.Matchers.matches;
+
 import net.sf.expectit.Result;
 import net.sf.expectit.matcher.Matcher;
-
-import static net.sf.expectit.matcher.Matchers.matches;
 
 /**
  * An element that corresponds to {@link net.sf.expectit.matcher.Matchers#matches(String)}.

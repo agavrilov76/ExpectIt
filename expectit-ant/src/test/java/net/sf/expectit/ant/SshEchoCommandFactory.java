@@ -20,17 +20,16 @@ package net.sf.expectit.ant;
  * #L%
  */
 
-import org.apache.sshd.common.Factory;
-import org.apache.sshd.server.Command;
-import org.apache.sshd.server.Environment;
-import org.apache.sshd.server.ExitCallback;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import org.apache.sshd.common.Factory;
+import org.apache.sshd.server.Command;
+import org.apache.sshd.server.Environment;
+import org.apache.sshd.server.ExitCallback;
 
 /**
  * An echo command which pipes the input to the output.
@@ -79,7 +78,11 @@ class SshEchoCommandFactory implements Factory<Command>, Runnable {
 
             @Override
             public void start(Environment env) throws IOException {
-                executor.scheduleWithFixedDelay(SshEchoCommandFactory.this, 0, 100, TimeUnit.MILLISECONDS);
+                executor.scheduleWithFixedDelay(
+                        SshEchoCommandFactory.this,
+                        0,
+                        100,
+                        TimeUnit.MILLISECONDS);
             }
 
             @Override

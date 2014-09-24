@@ -20,11 +20,6 @@ package net.sf.expectit.ant;
  * #L%
  */
 
-import net.sf.expectit.Expect;
-import net.sf.expectit.ExpectBuilder;
-import net.sf.expectit.ant.filter.FiltersElement;
-import org.apache.tools.ant.Task;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,6 +27,10 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import net.sf.expectit.Expect;
+import net.sf.expectit.ExpectBuilder;
+import net.sf.expectit.ant.filter.FiltersElement;
+import org.apache.tools.ant.Task;
 
 /**
  * An implementation of the export support.

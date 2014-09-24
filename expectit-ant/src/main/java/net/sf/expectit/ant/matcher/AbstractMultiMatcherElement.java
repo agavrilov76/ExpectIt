@@ -20,18 +20,18 @@ package net.sf.expectit.ant.matcher;
  * #L%
  */
 
+import java.util.ArrayList;
+import java.util.List;
 import net.sf.expectit.MultiResult;
 import net.sf.expectit.Result;
 import net.sf.expectit.matcher.Matcher;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An abstract base element that represents a composite matcher.
  */
 public abstract class AbstractMultiMatcherElement extends AbstractMatcherElement<MultiResult> {
-    private final List<AbstractMatcherElement<Result>> tasks = new ArrayList<AbstractMatcherElement<Result>>();
+    private final List<AbstractMatcherElement<Result>> tasks = new
+            ArrayList<AbstractMatcherElement<Result>>();
 
     /**
      * Adds a child matcher element.
@@ -45,8 +45,10 @@ public abstract class AbstractMultiMatcherElement extends AbstractMatcherElement
     /**
      * {@inheritDoc}
      * <p/>
-     * In addition, this method exports the children results. They are exported using their {@code resultPrefix}, and
-     * via shortcut {@code prefix + "." + &lt;number&gt;}, where the number here is the result index.
+     * In addition, this method exports the children results. They are exported using their
+     * {@code resultPrefix}, and
+     * via shortcut {@code prefix + "." + &lt;number&gt;}, where the number here is the result
+     * index.
      *
      * @param prefix the property prefix
      * @param result the result

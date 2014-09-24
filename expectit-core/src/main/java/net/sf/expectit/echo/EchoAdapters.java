@@ -32,7 +32,8 @@ public final class EchoAdapters {
     }
 
     /**
-     * Creates an instance of {@link EchoOutput} which appends all the input and output data to the given appender.
+     * Creates an instance of {@link EchoOutput} which appends all the input and output data to
+     * the given appender.
      *
      * @param appendable the delegate
      * @return the instance

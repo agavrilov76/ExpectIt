@@ -20,14 +20,18 @@ package net.sf.expectit.ant;
  * #L%
  */
 
-import net.sf.expectit.ant.matcher.*;
+import java.io.IOException;
+import java.util.Arrays;
+import net.sf.expectit.ant.matcher.AllOfElement;
+import net.sf.expectit.ant.matcher.AnyOfElement;
+import net.sf.expectit.ant.matcher.ContainsElement;
+import net.sf.expectit.ant.matcher.MatchesElement;
+import net.sf.expectit.ant.matcher.RegexpElement;
+import net.sf.expectit.ant.matcher.TimesElement;
 import org.apache.tools.ant.Task;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.io.IOException;
-import java.util.Arrays;
 
 /**
  * Tests that elements throw illegal argument exception.
@@ -42,14 +46,15 @@ public class MatcherRequiredValueTest {
 
     @Parameterized.Parameters(name = "{0}")
     public static Iterable<Object[]> data() throws IOException {
-        return Arrays.asList(new Object[][]{
-                {new ContainsElement()},
-                {new AllOfElement()},
-                {new RegexpElement()},
-                {new MatchesElement()},
-                {new AnyOfElement()},
-                {new TimesElement()}
-        });
+        return Arrays.asList(
+                new Object[][]{
+                        {new ContainsElement()},
+                        {new AllOfElement()},
+                        {new RegexpElement()},
+                        {new MatchesElement()},
+                        {new AnyOfElement()},
+                        {new TimesElement()}
+                });
     }
 
     @Test(expected = IllegalArgumentException.class)

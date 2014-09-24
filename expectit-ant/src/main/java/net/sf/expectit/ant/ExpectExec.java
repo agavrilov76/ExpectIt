@@ -20,6 +20,9 @@ package net.sf.expectit.ant;
  * #L%
  */
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import net.sf.expectit.ant.filter.FiltersElement;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Project;
@@ -27,10 +30,6 @@ import org.apache.tools.ant.taskdefs.ExecTask;
 import org.apache.tools.ant.taskdefs.Execute;
 import org.apache.tools.ant.taskdefs.ExecuteStreamHandler;
 import org.apache.tools.ant.types.RedirectorElement;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * An expect implementation of the exec task.
@@ -91,7 +90,8 @@ public class ExpectExec extends ExecTask implements ExecuteStreamHandler, Expect
     /**
      * {@inheritDoc}
      * <p/>
-     * Upon creation, configure the input and output streams for the {@link ExpectSupportImpl} instance and
+     * Upon creation, configure the input and output streams for the {@link ExpectSupportImpl}
+     * instance and
      * call the {@link ExpectSupportImpl#execute()} method.
      *
      * @return an execute instance
@@ -154,7 +154,8 @@ public class ExpectExec extends ExecTask implements ExecuteStreamHandler, Expect
     }
 
     /**
-     * Set the flag indicating if the underlying process should be destroyed after the task is finished.
+     * Set the flag indicating if the underlying process should be destroyed after the task is
+     * finished.
      * <p/>
      * By default is {@code false}, meaning that the task will block until the process finishes.
      *

@@ -1,330 +1,334 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>net.sf.expectit</groupId>
-    <artifactId>expectit-parent</artifactId>
-    <version>0.5.1-SNAPSHOT</version>
-    <modules>
-        <module>expectit-core</module>
-        <module>expectit-ant</module>
-    </modules>
-    <packaging>pom</packaging>
-    <name>Expectit :: Parent</name>
-    <description>
-        Yet another pure Java(tm) implementation of the Unix Expect tool. It designed to be simple, easy to
-        use and extensible.
-    </description>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>net.sf.expectit</groupId>
+  <artifactId>expectit-parent</artifactId>
+  <version>0.5.1-SNAPSHOT</version>
+  <modules>
+    <module>expectit-core</module>
+    <module>expectit-ant</module>
+  </modules>
+  <packaging>pom</packaging>
+  <name>Expectit :: Parent</name>
+  <description>
+    Yet another pure Java(tm) implementation of the Unix Expect tool. It designed to be simple, easy
+    to
+    use and extensible.
+  </description>
+  <url>https://github.com/Alexey1Gavrilov/expectit</url>
+  <organization>
+    <name>Alexey Gavrilov and contributors</name>
+    <url>mailto:Alexey1.Gavrilov@gmail.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://apache.org/licenses/LICENSE-2.0.html</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <inceptionYear>2014</inceptionYear>
+
+  <issueManagement>
+    <url>https://github.com/Alexey1Gavrilov/expectit/issues</url>
+    <system>GitHub Issues</system>
+  </issueManagement>
+
+  <scm>
     <url>https://github.com/Alexey1Gavrilov/expectit</url>
-    <organization>
-        <name>Alexey Gavrilov and contributors</name>
-        <url>mailto:Alexey1.Gavrilov@gmail.com</url>
-    </organization>
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://apache.org/licenses/LICENSE-2.0.html</url>
-            <distribution>repo</distribution>
-        </license>
-    </licenses>
-    <inceptionYear>2014</inceptionYear>
+    <connection>scm:git:git://github.com/Alexey1Gavrilov/expectit.git</connection>
+    <developerConnection>scm:git:git@github.com:Alexey1Gavrilov/expectit.git</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
 
-    <issueManagement>
-        <url>https://github.com/Alexey1Gavrilov/expectit/issues</url>
-        <system>GitHub Issues</system>
-    </issueManagement>
+  <developers>
+    <developer>
+      <email>Alexey1.Gavrilov@gmail.com</email>
+      <name>Alexey Gavrilov</name>
+      <url>https://github.com/Alexey1Gavrilov</url>
+      <id>alexey1gavrilov</id>
+    </developer>
+  </developers>
 
-    <scm>
-        <url>https://github.com/Alexey1Gavrilov/expectit</url>
-        <connection>scm:git:git://github.com/Alexey1Gavrilov/expectit.git</connection>
-        <developerConnection>scm:git:git@github.com:Alexey1Gavrilov/expectit.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
+  <repositories>
+    <repository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
-    <developers>
-        <developer>
-            <email>Alexey1.Gavrilov@gmail.com</email>
-            <name>Alexey Gavrilov</name>
-            <url>https://github.com/Alexey1Gavrilov</url>
-            <id>alexey1gavrilov</id>
-        </developer>
-    </developers>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>sonatype-nexus-snapshots</id>
+      <name>Sonatype Nexus Snapshots</name>
+      <url>${sonatypeOssDistMgmtSnapshotsUrl}</url>
+    </snapshotRepository>
+    <repository>
+      <id>sonatype-nexus-staging</id>
+      <name>Nexus Release Repository</name>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
-    <repositories>
-        <repository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <sourceAnalysisPhase>process-sources</sourceAnalysisPhase>
+    <binariesAnalysisPhase>verify</binariesAnalysisPhase>
+    <sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/
+    </sonatypeOssDistMgmtSnapshotsUrl>
 
-    <distributionManagement>
-        <snapshotRepository>
-            <id>sonatype-nexus-snapshots</id>
-            <name>Sonatype Nexus Snapshots</name>
-            <url>${sonatypeOssDistMgmtSnapshotsUrl}</url>
-        </snapshotRepository>
-        <repository>
-            <id>sonatype-nexus-staging</id>
-            <name>Nexus Release Repository</name>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
+    <powermock.version>1.5.4</powermock.version>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sourceAnalysisPhase>process-sources</sourceAnalysisPhase>
-        <binariesAnalysisPhase>verify</binariesAnalysisPhase>
-        <sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/
-        </sonatypeOssDistMgmtSnapshotsUrl>
+  </properties>
 
-        <powermock.version>1.5.4</powermock.version>
-
-    </properties>
-
-    <profiles>
-        <profile>
-            <id>skipAnalysis</id>
-            <activation>
-                <property>
-                    <name>skipAnalysis</name>
-                </property>
-            </activation>
-            <properties>
-                <sourceAnalysisPhase>none</sourceAnalysisPhase>
-                <binariesAnalysisPhase>none</binariesAnalysisPhase>
-            </properties>
-        </profile>
-        <profile>
-            <id>sonatype-oss-release</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-gpg-plugin</artifactId>
-                        <version>1.4</version>
-                        <executions>
-                            <execution>
-                                <id>sign-artifacts</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>sign</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>junit</groupId>
-                <artifactId>junit</artifactId>
-                <version>4.11</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>15.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>1.9.5</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-module-junit4</artifactId>
-                <version>${powermock.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-api-mockito</artifactId>
-                <version>${powermock.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.jcraft</groupId>
-                <artifactId>jsch</artifactId>
-                <version>0.1.50</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.ant</groupId>
-                <artifactId>ant-jsch</artifactId>
-                <version>1.9.3</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.ftpserver</groupId>
-                <artifactId>ftpserver-core</artifactId>
-                <version>1.0.6</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.apache.sshd</groupId>
-                <artifactId>sshd-core</artifactId>
-                <version>0.9.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>net.schmizz</groupId>
-                <artifactId>sshj</artifactId>
-                <version>0.9.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-simple</artifactId>
-                <version>1.7.7</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <artifactId>maven-deploy-plugin</artifactId>
-                    <version>2.8.1</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-source-plugin</artifactId>
-                    <version>2.2.1</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>2.9.1</version>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.16</version>
-                    <configuration>
-                        <reuseForks>false</reuseForks>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.1</version>
-                    <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
-                        <compilerArgument>-Xlint:all</compilerArgument>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>2.11</version>
-                    <executions>
-                        <execution>
-                            <phase>${sourceAnalysisPhase}</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <configLocation>../checkstyle/checkstyle.xml</configLocation>
-                        <consoleOutput>true</consoleOutput>
-                        <failsOnError>true</failsOnError>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-pmd-plugin</artifactId>
-                    <version>3.0.1</version>
-                    <executions>
-                        <execution>
-                            <phase>${sourceAnalysisPhase}</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <printFailingErrors>true</printFailingErrors>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>findbugs-maven-plugin</artifactId>
-                    <version>2.5.3</version>
-                    <executions>
-                        <execution>
-                            <phase>${binariesAnalysisPhase}</phase>
-                            <goals>
-                                <goal>check</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                    <configuration>
-                        <effort>Max</effort>
-                        <threshold>Low</threshold>
-                        <xmlOutput>true</xmlOutput>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>license-maven-plugin</artifactId>
-                    <version>1.5</version>
-                    <configuration>
-                        <licenseName>apache_v2</licenseName>
-                        <projectName>ExpectIt</projectName>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>2.5</version>
-                    <configuration>
-                        <generateBackupPoms>false</generateBackupPoms>
-                        <mavenExecutorId>forked-path</mavenExecutorId>
-                        <useReleaseProfile>false</useReleaseProfile>
-                        <localCheckout>true</localCheckout>
-                        <arguments>-Psonatype-oss-release -DskipTests -DskipAnalysis -DperformRelease</arguments>
-                        <pushChanges>false</pushChanges>
-                        <tagNameFormat>v@{project.version}</tagNameFormat>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>2.16</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>integration-test</goal>
-                                <goal>verify</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-shade-plugin</artifactId>
-                    <version>2.2</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-
-    <!-- to resolve the PMD warning "[WARNING] Unable to locate Source XRef to link to - DISABLED" -->
-    <reporting>
+  <profiles>
+    <profile>
+      <id>skipAnalysis</id>
+      <activation>
+        <property>
+          <name>skipAnalysis</name>
+        </property>
+      </activation>
+      <properties>
+        <sourceAnalysisPhase>none</sourceAnalysisPhase>
+        <binariesAnalysisPhase>none</binariesAnalysisPhase>
+      </properties>
+    </profile>
+    <profile>
+      <id>sonatype-oss-release</id>
+      <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.4</version>
-            </plugin>
+          <plugin>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.4</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
         </plugins>
-    </reporting>
+      </build>
+    </profile>
+  </profiles>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.11</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>15.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-all</artifactId>
+        <version>1.9.5</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-module-junit4</artifactId>
+        <version>${powermock.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.powermock</groupId>
+        <artifactId>powermock-api-mockito</artifactId>
+        <version>${powermock.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.jcraft</groupId>
+        <artifactId>jsch</artifactId>
+        <version>0.1.50</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.ant</groupId>
+        <artifactId>ant-jsch</artifactId>
+        <version>1.9.3</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.ftpserver</groupId>
+        <artifactId>ftpserver-core</artifactId>
+        <version>1.0.6</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.apache.sshd</groupId>
+        <artifactId>sshd-core</artifactId>
+        <version>0.9.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>net.schmizz</groupId>
+        <artifactId>sshj</artifactId>
+        <version>0.9.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>1.7.7</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>2.8.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>2.2.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>2.9.1</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>2.16</version>
+          <configuration>
+            <reuseForks>false</reuseForks>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.1</version>
+          <configuration>
+            <source>1.6</source>
+            <target>1.6</target>
+            <compilerArgument>-Xlint:all</compilerArgument>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-checkstyle-plugin</artifactId>
+          <version>2.11</version>
+          <executions>
+            <execution>
+              <phase>${sourceAnalysisPhase}</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <configLocation>../checkstyle/checkstyle.xml</configLocation>
+            <consoleOutput>true</consoleOutput>
+            <failsOnError>true</failsOnError>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>3.0.1</version>
+          <executions>
+            <execution>
+              <phase>${sourceAnalysisPhase}</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <printFailingErrors>true</printFailingErrors>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>findbugs-maven-plugin</artifactId>
+          <version>2.5.3</version>
+          <executions>
+            <execution>
+              <phase>${binariesAnalysisPhase}</phase>
+              <goals>
+                <goal>check</goal>
+              </goals>
+            </execution>
+          </executions>
+          <configuration>
+            <effort>Max</effort>
+            <threshold>Low</threshold>
+            <xmlOutput>true</xmlOutput>
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>license-maven-plugin</artifactId>
+          <version>1.5</version>
+          <configuration>
+            <licenseName>apache_v2</licenseName>
+            <projectName>ExpectIt</projectName>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5</version>
+          <configuration>
+            <generateBackupPoms>false</generateBackupPoms>
+            <mavenExecutorId>forked-path</mavenExecutorId>
+            <useReleaseProfile>false</useReleaseProfile>
+            <localCheckout>true</localCheckout>
+            <arguments>-Psonatype-oss-release -DskipTests -DskipAnalysis -DperformRelease
+            </arguments>
+            <pushChanges>false</pushChanges>
+            <tagNameFormat>v@{project.version}</tagNameFormat>
+          </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>2.16</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>2.2</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+  <!-- to resolve the PMD warning "[WARNING] Unable to locate Source XRef to link to - DISABLED" -->
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.4</version>
+      </plugin>
+    </plugins>
+  </reporting>
 
 </project>

@@ -36,7 +36,8 @@ public interface Result extends MatchResult {
     boolean isSuccessful();
 
     /**
-     * Returns a part of the input string from the beginning until the starting position of the match.
+     * Returns a part of the input string from the beginning until the starting position of the
+     * match.
      * Never returns {@code null}.
      *
      * @return the string before the match

@@ -20,10 +20,9 @@ package net.sf.expectit.ant;
  * #L%
  */
 
+import java.io.IOException;
 import net.sf.expectit.ant.matcher.AbstractTaskElement;
 import org.apache.tools.ant.BuildException;
-
-import java.io.IOException;
 
 /**
  * An element that corresponds to the {@link net.sf.expectit.Expect}'s send methods.
@@ -49,7 +48,8 @@ public class SendElement extends AbstractTaskElement {
     }
 
     /**
-     * Sets the string that will be passed to {@link net.sf.expectit.Expect#sendLine(java.lang.String)}}.
+     * Sets the string that will be passed to {@link net.sf.expectit.Expect#sendLine(java.lang
+     * .String)}}.
      *
      * @param line the string.
      */

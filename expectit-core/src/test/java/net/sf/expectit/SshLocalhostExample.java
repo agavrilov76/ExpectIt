@@ -20,17 +20,16 @@ package net.sf.expectit;
  * #L%
  */
 
+import static net.sf.expectit.matcher.Matchers.contains;
+import static net.sf.expectit.matcher.Matchers.regexp;
+import static net.sf.expectit.matcher.Matchers.times;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-
 import java.io.IOException;
 import java.util.Properties;
-
-import static net.sf.expectit.filter.Filters.removeColors;
-import static net.sf.expectit.filter.Filters.removeNonPrintable;
-import static net.sf.expectit.matcher.Matchers.*;
 
 /**
  * An example of interacting with the local SSH server
@@ -54,7 +53,11 @@ public class SshLocalhostExample {
             channel.connect();
             expect.expect(contains("$"));
             expect.sendLine("pwd");
-            System.out.println("pwd1:" + expect.expect(times(2, contains("\n"))).getResults().get(1).getBefore());
+            System.out.println(
+                    "pwd1:" + expect.expect(times(2, contains("\n")))
+                            .getResults()
+                            .get(1)
+                            .getBefore());
             expect.sendLine("pwd");
             // a regexp which captures the output of pwd
             System.out.println("pwd2:" + expect.expect(regexp("(?m)\\n([^\\n]*)\\n")).group(1));

@@ -20,11 +20,10 @@ package net.sf.expectit.matcher;
  * #L%
  */
 
-import net.sf.expectit.MultiResult;
-import net.sf.expectit.Result;
-
 import java.util.Collections;
 import java.util.List;
+import net.sf.expectit.MultiResult;
+import net.sf.expectit.Result;
 
 /**
  * A matcher implementation for multiple operations.

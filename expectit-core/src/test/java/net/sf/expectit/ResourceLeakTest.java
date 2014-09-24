@@ -20,19 +20,18 @@ package net.sf.expectit;
  * #L%
  */
 
-import org.junit.Assume;
-import org.junit.Test;
+import static net.sf.expectit.matcher.Matchers.contains;
+import static org.junit.Assert.assertEquals;
 
-import javax.management.AttributeNotFoundException;
-import javax.management.MBeanServer;
-import javax.management.ObjectName;
 import java.io.ByteArrayInputStream;
 import java.lang.management.ManagementFactory;
 import java.nio.channels.Selector;
 import java.util.concurrent.TimeUnit;
-
-import static net.sf.expectit.matcher.Matchers.contains;
-import static org.junit.Assert.assertEquals;
+import javax.management.AttributeNotFoundException;
+import javax.management.MBeanServer;
+import javax.management.ObjectName;
+import org.junit.Assume;
+import org.junit.Test;
 
 /**
  * Verifies that there is no resource leaks after using an instance of Expect.

@@ -32,21 +32,25 @@ public final class Filters {
 
     private static final String COLORS_REGEXP_STRING = "\\x1b\\[([0-9]{1,2}(;[0-9]{1,2})?)?[m|K]";
     /**
-     * The regular expression which matches <a href="http://en.wikipedia.org/wiki/ANSI_escape_code#Colors">ANSI escape
+     * The regular expression which matches <a href="http://en.wikipedia
+     * .org/wiki/ANSI_escape_code#Colors">ANSI escape
      * sequences for colors</a>.
      */
     public static final Pattern COLORS_PATTERN = Pattern.compile(COLORS_REGEXP_STRING);
 
     /**
-     * The regular expression which matches non printable characters: {@code [\x00\x08\x0B\x0C\x0E-\x1F]}.
+     * The regular expression which matches non printable characters: {@code
+     * [\x00\x08\x0B\x0C\x0E-\x1F]}.
      */
-    public static final Pattern NON_PRINTABLE_PATTERN = Pattern.compile("[\\x00\\x08\\x0B\\x0C\\x0E-\\x1F]");
+    public static final Pattern NON_PRINTABLE_PATTERN = Pattern.compile(
+            "[\\x00\\x08\\x0B\\x0C\\x0E-\\x1F]");
 
     private Filters() {
     }
 
     /**
-     * Creates a filter which removes all the non-printable characters matching {@link #NON_PRINTABLE_PATTERN} in the
+     * Creates a filter which removes all the non-printable characters matching {@link
+     * #NON_PRINTABLE_PATTERN} in the
      * input string.
      *
      * @return the filter
@@ -56,7 +60,8 @@ public final class Filters {
     }
 
     /**
-     * Creates a filter which replaces every substring in the input string that matches the given regular expression
+     * Creates a filter which replaces every substring in the input string that matches the given
+     * regular expression
      * and replaces it with given replacement.
      * <p/>
      * The method just calls {@link String#replaceAll(String, String)} for the input string.
@@ -75,7 +80,8 @@ public final class Filters {
     }
 
     /**
-     * Equivalent to {@link #replaceInString(java.util.regex.Pattern, String)} but takes the regular expression
+     * Equivalent to {@link #replaceInString(java.util.regex.Pattern,
+     * String)} but takes the regular expression
      * as string.
      *
      * @param regexp      the regular expression
@@ -87,7 +93,8 @@ public final class Filters {
     }
 
     /**
-     * Creates a filter which removes <a href="http://en.wikipedia.org/wiki/ANSI_escape_code#Colors">ANSI
+     * Creates a filter which removes <a href="http://en.wikipedia
+     * .org/wiki/ANSI_escape_code#Colors">ANSI
      * escape sequences for colors</a> in the input.
      *
      * @return the filter
@@ -97,7 +104,8 @@ public final class Filters {
     }
 
     /**
-     * Equivalent to {@link #replaceInBuffer(java.util.regex.Pattern, String)} but takes the regular expression
+     * Equivalent to {@link #replaceInBuffer(java.util.regex.Pattern,
+     * String)} but takes the regular expression
      * as string.
      *
      * @param regexp      the regular expression
@@ -109,10 +117,12 @@ public final class Filters {
     }
 
     /**
-     * Creates a filter which replaces every substring in the input buffer that matches the given regular expression
+     * Creates a filter which replaces every substring in the input buffer that matches the given
+     * regular expression
      * and replaces it with given replacement.
      * <p/>
-     * The method just calls {@link String#replaceAll(String, String)} for the entire buffer contents every time new
+     * The method just calls {@link String#replaceAll(String, String)} for the entire buffer
+     * contents every time new
      * data arrives,
      *
      * @param regexp      the regular expression
@@ -134,14 +144,18 @@ public final class Filters {
     /**
      * Combines the filters in a filter chain.
      * <p/>
-     * The given filters are applied one by one in the order that hey appear in the method argument list.
+     * The given filters are applied one by one in the order that hey appear in the method
+     * argument list.
      * <p/>
      * The string returns by the
      * {@link Filter#beforeAppend(String, StringBuilder)} method of one filter is passed a
-     * parameter to the next one if it is not {@code null}. If it is {@code null}, then the {@code beforeAppend}
-     * won't be called any more and the latest non-null result is appended to the expect internal buffer.
+     * parameter to the next one if it is not {@code null}. If it is {@code null},
+     * then the {@code beforeAppend}
+     * won't be called any more and the latest non-null result is appended to the expect internal
+     * buffer.
      * <p/>
-     * If the return value of the {@link Filter#afterAppend(StringBuilder)} method is true, then all the calls
+     * If the return value of the {@link Filter#afterAppend(StringBuilder)} method is true,
+     * then all the calls
      * of this method on the consequent filters will be suppressed.
      *
      * @param filters the filters, not {@code null}

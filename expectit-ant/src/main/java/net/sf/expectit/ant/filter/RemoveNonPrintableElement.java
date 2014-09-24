@@ -20,12 +20,13 @@ package net.sf.expectit.ant.filter;
  * #L%
  */
 
-import net.sf.expectit.filter.Filter;
-
 import static net.sf.expectit.filter.Filters.removeNonPrintable;
 
+import net.sf.expectit.filter.Filter;
+
 /**
- * An element corresponding to the {@link net.sf.expectit.filter.Filters#removeNonPrintable()} filter.
+ * An element corresponding to the {@link net.sf.expectit.filter.Filters#removeNonPrintable()}
+ * filter.
  */
 public class RemoveNonPrintableElement extends AbstractFilterElement {
 

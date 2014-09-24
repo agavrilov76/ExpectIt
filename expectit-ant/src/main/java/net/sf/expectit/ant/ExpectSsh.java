@@ -23,11 +23,10 @@ package net.sf.expectit.ant;
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
+import java.io.IOException;
 import net.sf.expectit.ant.filter.FiltersElement;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.taskdefs.optional.ssh.SSHBase;
-
-import java.io.IOException;
 
 /**
  * An expect task implementation for a ssh connection.

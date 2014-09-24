@@ -20,10 +20,9 @@ package net.sf.expectit;
  * #L%
  */
 
-import net.sf.expectit.matcher.Matcher;
-
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import net.sf.expectit.matcher.Matcher;
 
 /**
  * An adapter for an expect instance which overrides the default timeout.
@@ -37,7 +36,8 @@ class ExpectTimeoutAdapter extends AbstractExpectImpl {
     }
 
     @Override
-    public <R extends Result> R expectIn(int input, long timeoutMs, Matcher<R> matcher) throws IOException {
+    public <R extends Result> R expectIn(int input, long timeoutMs, Matcher<R> matcher)
+            throws IOException {
         return delegate.expectIn(input, timeoutMs, matcher);
     }
 

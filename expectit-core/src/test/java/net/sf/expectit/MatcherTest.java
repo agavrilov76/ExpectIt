@@ -20,11 +20,26 @@ package net.sf.expectit;
  * #L%
  */
 
-import net.sf.expectit.matcher.Matcher;
-import net.sf.expectit.matcher.Matchers;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static net.sf.expectit.ExpectBuilder.DEFAULT_BUFFER_SIZE;
+import static net.sf.expectit.Utils.LONG_TIMEOUT;
+import static net.sf.expectit.Utils.SMALL_TIMEOUT;
+import static net.sf.expectit.matcher.Matchers.allOf;
+import static net.sf.expectit.matcher.Matchers.anyOf;
+import static net.sf.expectit.matcher.Matchers.anyString;
+import static net.sf.expectit.matcher.Matchers.contains;
+import static net.sf.expectit.matcher.Matchers.eof;
+import static net.sf.expectit.matcher.Matchers.exact;
+import static net.sf.expectit.matcher.Matchers.matches;
+import static net.sf.expectit.matcher.Matchers.regexp;
+import static net.sf.expectit.matcher.Matchers.sequence;
+import static net.sf.expectit.matcher.Matchers.times;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -33,15 +48,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
-
-import static net.sf.expectit.ExpectBuilder.DEFAULT_BUFFER_SIZE;
-import static net.sf.expectit.Utils.LONG_TIMEOUT;
-import static net.sf.expectit.Utils.SMALL_TIMEOUT;
-import static net.sf.expectit.matcher.Matchers.*;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.when;
+import net.sf.expectit.matcher.Matcher;
+import net.sf.expectit.matcher.Matchers;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 
 /**
@@ -61,7 +72,8 @@ public class MatcherTest {
     @Before
     public void setup() throws Exception {
         mock = Utils.mockInputStream(text);
-        input = new SingleInputExpect(mock.getStream(),
+        input = new SingleInputExpect(
+                mock.getStream(),
                 Charset.defaultCharset(), null, null, DEFAULT_BUFFER_SIZE);
         executor = Executors.newSingleThreadExecutor();
         input.start(executor);
@@ -310,7 +322,9 @@ public class MatcherTest {
 
         mock.push(text);
         // test for combination of matchers
-        result = input.expect(LONG_TIMEOUT, anyOf(allOf(contains("1"), contains("2")), contains("FFFF")));
+        result = input.expect(
+                LONG_TIMEOUT,
+                anyOf(allOf(contains("1"), contains("2")), contains("FFFF")));
         assertTrue(result.isSuccessful());
         assertTrue(result.getResults().get(0) instanceof MultiResult);
         assertEquals(result.getResults().size(), 2);
@@ -326,7 +340,9 @@ public class MatcherTest {
 
         Matcher<Result> m = matches("xyz");
         assertEquals(m.toString(), "matches('xyz')");
-        assertEquals(anyOf(c, r, m).toString(), "anyOf(contains('xyz'),regexp('xyz'),matches('xyz'))");
+        assertEquals(
+                anyOf(c, r, m).toString(),
+                "anyOf(contains('xyz'),regexp('xyz'),matches('xyz'))");
         assertEquals(allOf(c).toString(), "allOf(contains('xyz'))");
 
         Matcher<?> e = Matchers.eof();
@@ -428,7 +444,9 @@ public class MatcherTest {
         assertEquals(result.getResults().get(0).getBefore(), "2c3_");
 
 
-        result = input.expect(SMALL_TIMEOUT, sequence(contains("3"), anyOf(contains("Z"), contains("c"))));
+        result = input.expect(
+                SMALL_TIMEOUT,
+                sequence(contains("3"), anyOf(contains("Z"), contains("c"))));
         assertTrue(result.isSuccessful());
         assertEquals(result.getBefore(), "2c3_a1b2");
         assertEquals(result.getResults().get(0).getBefore(), "2c");
@@ -488,7 +506,8 @@ public class MatcherTest {
     }
 
     /**
-     * Verifies that all the result methods that take the index throws IndexOutOfBoundException for the given index.
+     * Verifies that all the result methods that take the index throws IndexOutOfBoundException
+     * for the given index.
      */
     private static void checkIndexOutOfBound(Result result, int index) {
         try {

@@ -32,7 +32,8 @@ public interface EchoOutput {
      *
      * @param input  the input number starting from 0
      * @param string the input data converted from bytes using the charset specified in the
-     *               {@link net.sf.expectit.ExpectBuilder#withCharset(java.nio.charset.Charset)} method
+     *               {@link net.sf.expectit.ExpectBuilder#withCharset(java.nio.charset.Charset)}
+     *               method
      * @throws IOException if an I/O error occurs
      */
     void onReceive(int input, String string) throws IOException;
@@ -41,7 +42,8 @@ public interface EchoOutput {
      * A callback method called when the data has just been sent to the output.
      *
      * @param string the received data converted from bytes using the charset specified in the
-     *               {@link net.sf.expectit.ExpectBuilder#withCharset(java.nio.charset.Charset)} method
+     *               {@link net.sf.expectit.ExpectBuilder#withCharset(java.nio.charset.Charset)}
+     *               method
      * @throws IOException if an I/O error occurs
      */
     void onSend(String string) throws IOException;

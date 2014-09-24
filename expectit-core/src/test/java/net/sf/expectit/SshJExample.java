@@ -21,18 +21,17 @@ package net.sf.expectit;
  */
 
 
-import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.connection.channel.direct.Session;
-import net.schmizz.sshj.transport.verification.HostKeyVerifier;
-
-import java.io.IOException;
-import java.security.PublicKey;
-
 import static net.schmizz.sshj.connection.channel.direct.Session.Shell;
 import static net.sf.expectit.filter.Filters.removeColors;
 import static net.sf.expectit.filter.Filters.removeNonPrintable;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.regexp;
+
+import java.io.IOException;
+import java.security.PublicKey;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.transport.verification.HostKeyVerifier;
 
 /**
  * A ExpectIt example using sshj library.
@@ -40,12 +39,13 @@ import static net.sf.expectit.matcher.Matchers.regexp;
 public class SshJExample {
     public static void main(String[] args) throws IOException {
         SSHClient ssh = new SSHClient();
-        ssh.addHostKeyVerifier(new HostKeyVerifier() {
-            @Override
-            public boolean verify(String s, int i, PublicKey publicKey) {
-                return true;
-            }
-        });
+        ssh.addHostKeyVerifier(
+                new HostKeyVerifier() {
+                    @Override
+                    public boolean verify(String s, int i, PublicKey publicKey) {
+                        return true;
+                    }
+                });
         ssh.connect("sdf.org");
         ssh.authPassword("new", "");
         Session session = ssh.startSession();

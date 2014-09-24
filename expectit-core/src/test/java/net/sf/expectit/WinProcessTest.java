@@ -20,13 +20,6 @@ package net.sf.expectit;
  * #L%
  */
 
-import org.junit.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.concurrent.TimeUnit;
-
 import static net.sf.expectit.Utils.LONG_TIMEOUT;
 import static net.sf.expectit.Utils.SMALL_TIMEOUT;
 import static net.sf.expectit.filter.Filters.removeNonPrintable;
@@ -35,6 +28,16 @@ import static net.sf.expectit.matcher.Matchers.eof;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
+import org.junit.After;
+import org.junit.Assume;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * A test for interacting with Windows OS shell.
@@ -61,7 +64,7 @@ public class WinProcessTest {
                 .withInputFilters(removeNonPrintable())
                 .withEchoInput(System.out)
                 .withEchoOutput(System.err)
-                 // sets cyrillic DOS encoding to verify that
+                        // sets cyrillic DOS encoding to verify that
                 .withCharset(Charset.forName("cp866"))
                 .build();
     }

@@ -20,13 +20,18 @@ package net.sf.expectit;
  * #L%
  */
 
-import net.sf.expectit.filter.Filter;
-import org.junit.Test;
+import static net.sf.expectit.filter.Filters.chain;
+import static net.sf.expectit.filter.Filters.removeColors;
+import static net.sf.expectit.filter.Filters.removeNonPrintable;
+import static net.sf.expectit.filter.Filters.replaceInBuffer;
+import static net.sf.expectit.filter.Filters.replaceInString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.regex.Pattern;
-
-import static net.sf.expectit.filter.Filters.*;
-import static org.junit.Assert.*;
+import net.sf.expectit.filter.Filter;
+import org.junit.Test;
 
 /**
  * Filter tests.
@@ -35,7 +40,9 @@ public class FilterTest {
 
     @Test
     public void testNonPrintable() {
-        assertTrue(removeNonPrintable().beforeAppend("\u0000\u0008", new StringBuilder()).isEmpty());
+        assertTrue(
+                removeNonPrintable().beforeAppend("\u0000\u0008", new StringBuilder())
+                        .isEmpty());
     }
 
     @Test

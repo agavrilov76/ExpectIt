@@ -20,12 +20,11 @@ package net.sf.expectit.ant;
  * #L%
  */
 
+import java.io.IOException;
+import java.net.Socket;
 import net.sf.expectit.ant.filter.FiltersElement;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
-
-import java.io.IOException;
-import java.net.Socket;
 
 /**
  * An expect task implementation for a socket connection.

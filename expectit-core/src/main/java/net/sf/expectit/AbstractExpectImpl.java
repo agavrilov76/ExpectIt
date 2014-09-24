@@ -20,14 +20,14 @@ package net.sf.expectit;
  * #L%
  */
 
-import net.sf.expectit.matcher.Matcher;
-
-import java.io.IOException;
-
 import static net.sf.expectit.matcher.Matchers.allOf;
 
+import java.io.IOException;
+import net.sf.expectit.matcher.Matcher;
+
 /**
- * An abstract Expect class that implements the expect methods in a way to redirect the call to one abstract method.
+ * An abstract Expect class that implements the expect methods in a way to redirect the call to
+ * one abstract method.
  */
 abstract class AbstractExpectImpl implements Expect {
     private final long timeout;
@@ -45,9 +45,11 @@ abstract class AbstractExpectImpl implements Expect {
         return timeout;
     }
 
-    public abstract <R extends Result> R expectIn(int input, long timeoutMs, Matcher<R> matcher) throws IOException;
+    public abstract <R extends Result> R expectIn(int input, long timeoutMs, Matcher<R> matcher)
+            throws IOException;
 
-    public MultiResult expectIn(int input, long timeoutMs, Matcher<?>... matchers) throws IOException {
+    public MultiResult expectIn(int input, long timeoutMs, Matcher<?>... matchers)
+            throws IOException {
         return expectIn(input, timeoutMs, allOf(matchers));
     }
 

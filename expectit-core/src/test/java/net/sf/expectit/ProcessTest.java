@@ -20,20 +20,26 @@ package net.sf.expectit;
  * #L%
  */
 
-import com.google.common.io.Files;
-import org.junit.*;
+import static net.sf.expectit.Utils.LONG_TIMEOUT;
+import static net.sf.expectit.Utils.SMALL_TIMEOUT;
+import static net.sf.expectit.matcher.Matchers.allOf;
+import static net.sf.expectit.matcher.Matchers.contains;
+import static net.sf.expectit.matcher.Matchers.eof;
+import static net.sf.expectit.matcher.Matchers.regexp;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
+import com.google.common.io.Files;
 import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-
-import static net.sf.expectit.Utils.LONG_TIMEOUT;
-import static net.sf.expectit.Utils.SMALL_TIMEOUT;
-import static net.sf.expectit.matcher.Matchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.junit.Assume.assumeTrue;
+import org.junit.After;
+import org.junit.Assume;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
  * Convert to integration test
@@ -121,6 +127,6 @@ public class ProcessTest {
         expect.sendLine("echo Line2");
         expect.sendLine("sleep " + LONG_TIMEOUT / 1000 + "; echo Line3; exit");
         Result result = expect.expect(5 * LONG_TIMEOUT, eof());
-        assertEquals(result.getBefore(),"Line1\nLine2\nLine3\n", result.getBefore());
+        assertEquals(result.getBefore(), "Line1\nLine2\nLine3\n", result.getBefore());
     }
 }

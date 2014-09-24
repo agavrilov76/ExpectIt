@@ -20,13 +20,12 @@ package net.sf.expectit.matcher;
  * #L%
  */
 
-import net.sf.expectit.MultiResult;
-import net.sf.expectit.Result;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import net.sf.expectit.MultiResult;
+import net.sf.expectit.Result;
 
 /**
  * A class to accommodate results of the multiple matches.
@@ -85,12 +84,13 @@ class MultiMatcher implements Matcher<MultiResult> {
      * Find the result with the maximum end position and use it as delegate.
      */
     private static Result findResultWithMaxEnd(List<Result> successResults) {
-        return Collections.max(successResults, new Comparator<Result>() {
-            @Override
-            public int compare(Result o1, Result o2) {
-                return Integer.valueOf(o1.end()).compareTo(o2.end());
-            }
-        });
+        return Collections.max(
+                successResults, new Comparator<Result>() {
+                    @Override
+                    public int compare(Result o1, Result o2) {
+                        return Integer.valueOf(o1.end()).compareTo(o2.end());
+                    }
+                });
     }
 
     @Override

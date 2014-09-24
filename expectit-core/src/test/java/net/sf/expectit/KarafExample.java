@@ -20,17 +20,20 @@ package net.sf.expectit;
  * #L%
  */
 
+import static net.sf.expectit.filter.Filters.chain;
+import static net.sf.expectit.filter.Filters.removeColors;
+import static net.sf.expectit.filter.Filters.removeNonPrintable;
+import static net.sf.expectit.matcher.Matchers.contains;
+import static net.sf.expectit.matcher.Matchers.eof;
+import static net.sf.expectit.matcher.Matchers.regexp;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import net.sf.expectit.filter.Filter;
-
 import java.io.IOException;
 import java.util.Properties;
-
-import static net.sf.expectit.filter.Filters.*;
-import static net.sf.expectit.matcher.Matchers.*;
+import net.sf.expectit.filter.Filter;
 
 /**
  * An example to interacting with the Karaf shell.

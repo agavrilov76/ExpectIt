@@ -20,7 +20,7 @@ package net.sf.expectit;
  * #L%
  */
 
-import net.sf.expectit.matcher.Matcher;
+import static net.sf.expectit.ExpectBuilder.validateDuration;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -28,11 +28,11 @@ import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
-import static net.sf.expectit.ExpectBuilder.validateDuration;
+import net.sf.expectit.matcher.Matcher;
 
 /**
- * An implementation of the Expect interface which delegates actual work to SingleInputExpect objects.
+ * An implementation of the Expect interface which delegates actual work to SingleInputExpect
+ * objects.
  */
 class ExpectImpl extends AbstractExpectImpl {
     private final OutputStream output;
@@ -44,8 +44,9 @@ class ExpectImpl extends AbstractExpectImpl {
     private final String lineSeparator;
     static final int INFINITE_TIMEOUT = -1; // value representing infinite timeout
 
-    ExpectImpl(long timeout, OutputStream output, SingleInputExpect[] inputs,
-               Charset charset, Appendable echoOutput, boolean errorOnTimeout, String lineSeparator) {
+    ExpectImpl(
+            long timeout, OutputStream output, SingleInputExpect[] inputs,
+            Charset charset, Appendable echoOutput, boolean errorOnTimeout, String lineSeparator) {
         super(timeout);
         this.output = output;
         this.inputs = inputs;
@@ -53,7 +54,9 @@ class ExpectImpl extends AbstractExpectImpl {
         this.echoOutput = echoOutput;
         this.errorOnTimeout = errorOnTimeout;
         this.lineSeparator = lineSeparator;
-        executor = Executors.newFixedThreadPool(inputs.length, new NamedExecutorThreadFactory("expect-"));
+        executor = Executors.newFixedThreadPool(
+                inputs.length,
+                new NamedExecutorThreadFactory("expect-"));
     }
 
     void start() {
@@ -63,10 +66,12 @@ class ExpectImpl extends AbstractExpectImpl {
     }
 
     @Override
-    public <R extends Result> R expectIn(int input, long timeoutMs, Matcher<R> matcher) throws IOException {
+    public <R extends Result> R expectIn(int input, long timeoutMs, Matcher<R> matcher)
+            throws IOException {
         R result = inputs[input].expect(timeoutMs, matcher);
         if (errorOnTimeout && !result.isSuccessful()) {
-            throw new AssertionError("Expect timeout (" + timeoutMs + " ms) for matcher: " + matcher);
+            throw new AssertionError(
+                    "Expect timeout (" + timeoutMs + " ms) for matcher: " + matcher);
         }
         return result;
     }

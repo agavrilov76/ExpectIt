@@ -20,11 +20,11 @@ package net.sf.expectit;
  * #L%
  */
 
-import java.io.IOException;
-import java.net.Socket;
-
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.regexp;
+
+import java.io.IOException;
+import java.net.Socket;
 
 /**
  * Socket example.

@@ -20,9 +20,9 @@ package net.sf.expectit.ant.filter;
  * #L%
  */
 
-import net.sf.expectit.filter.Filter;
-
 import static net.sf.expectit.filter.Filters.removeColors;
+
+import net.sf.expectit.filter.Filter;
 
 /**
  * An element corresponding to the {@link net.sf.expectit.filter.Filters#removeColors()} filter.

@@ -20,10 +20,19 @@ package net.sf.expectit.ant;
  * #L%
  */
 
+import static org.junit.Assert.fail;
+import static org.junit.runners.Parameterized.Parameters;
+
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.io.Resources;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.URL;
+import java.util.TreeSet;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
 import org.apache.ftpserver.ftplet.FtpException;
@@ -43,16 +52,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.URL;
-import java.util.TreeSet;
-
-import static org.junit.Assert.fail;
-import static org.junit.runners.Parameterized.Parameters;
 
 /**
  * A test harness for running Ant targets.
@@ -90,12 +89,16 @@ public class AntHarnessTest {
         sshPort = serverSocket.getLocalPort();
         serverSocket.close();
         sshServer.setPort(sshPort);
-        sshServer.setPasswordAuthenticator(new PasswordAuthenticator() {
-            @Override
-            public boolean authenticate(String username, String password, ServerSession session) {
-                return "ssh".equals(username) && "secret".equals(password);
-            }
-        });
+        sshServer.setPasswordAuthenticator(
+                new PasswordAuthenticator() {
+                    @Override
+                    public boolean authenticate(
+                            String username,
+                            String password,
+                            ServerSession session) {
+                        return "ssh".equals(username) && "secret".equals(password);
+                    }
+                });
         sshServer.setShellFactory(new SshEchoCommandFactory());
         sshServer.setKeyPairProvider(new SimpleGeneratorHostKeyProvider());
         sshServer.start();
@@ -128,7 +131,8 @@ public class AntHarnessTest {
                 return new Object[]{input};
             }
         };
-        Iterable<String> filtered = Iterables.filter(new TreeSet<String>(project.getTargets().keySet()),
+        Iterable<String> filtered = Iterables.filter(
+                new TreeSet<String>(project.getTargets().keySet()),
                 new Predicate<String>() {
                     @Override
                     public boolean apply(String input) {

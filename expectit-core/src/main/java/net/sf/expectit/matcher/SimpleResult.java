@@ -39,8 +39,8 @@ public class SimpleResult implements Result {
      * Creates an instance with the initial field values.
      *
      * @param succeeded the success flag.
-     * @param before the string before match, not {@code null}.
-     * @param group the string group, not {@code null}.
+     * @param before    the string before match, not {@code null}.
+     * @param group     the string group, not {@code null}.
      */
     public SimpleResult(boolean succeeded, String before, String group) {
         this.succeeded = succeeded;
@@ -114,8 +114,8 @@ public class SimpleResult implements Result {
      * Creates an instance with the initial field values.
      *
      * @param succeeded the success flag.
-     * @param before the string before match, not {@code null}.
-     * @param group the string group, not {@code null}.
+     * @param before    the string before match, not {@code null}.
+     * @param group     the string group, not {@code null}.
      * @return the instance. if {@code succeeded} is false, returns the
      * {@link net.sf.expectit.matcher.SimpleResult#NEGATIVE} constant.
      */

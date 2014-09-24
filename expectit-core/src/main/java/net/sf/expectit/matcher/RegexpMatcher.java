@@ -20,14 +20,14 @@ package net.sf.expectit.matcher;
  * #L%
  */
 
-import net.sf.expectit.Result;
-
-import java.util.regex.Pattern;
-
 import static net.sf.expectit.matcher.Matchers.generateToString;
 
+import java.util.regex.Pattern;
+import net.sf.expectit.Result;
+
 /**
- * A result type that represents the match of a regular expression based on {@link java.util.regex.Matcher}.
+ * A result type that represents the match of a regular expression based on {@link java.util
+ * .regex.Matcher}.
  *
  * @author Alexey Gavrilov
  */
@@ -39,7 +39,8 @@ class RegexpMatcher implements Matcher<Result> {
      * The constructor.
      *
      * @param pattern the pattern
-     * @param useFind when <tt>true</tt> the {@link java.util.regex.Matcher#find()} method is used to create a result,
+     * @param useFind when <tt>true</tt> the {@link java.util.regex.Matcher#find()} method is
+     *                used to create a result,
      *                otherwise the {@link java.util.regex.Matcher#matches()} method is used.
      */
     public RegexpMatcher(Pattern pattern, boolean useFind) {

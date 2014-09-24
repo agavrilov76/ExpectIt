@@ -20,15 +20,14 @@ package net.sf.expectit;
  * #L%
  */
 
-import net.sf.expectit.echo.EchoOutput;
-import net.sf.expectit.filter.Filter;
-import net.sf.expectit.filter.Filters;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
+import net.sf.expectit.echo.EchoOutput;
+import net.sf.expectit.filter.Filter;
+import net.sf.expectit.filter.Filters;
 
 /**
  * A class used to construct {@link Expect} instances.
@@ -63,7 +62,8 @@ public class ExpectBuilder {
     }
 
     /**
-     * Sets the output stream where {@link Expect} sends command to. Optional, if not set then all the
+     * Sets the output stream where {@link Expect} sends command to. Optional,
+     * if not set then all the
      * send method are expected to throw {@link NullPointerException}.
      *
      * @param output the output stream
@@ -86,7 +86,8 @@ public class ExpectBuilder {
     }
 
     /**
-     * Sets the default timeout in the given unit for expect operations. Optional, the default value is 30 seconds.
+     * Sets the default timeout in the given unit for expect operations. Optional,
+     * the default value is 30 seconds.
      *
      * @param duration the timeout value
      * @param unit     the time unit
@@ -116,10 +117,12 @@ public class ExpectBuilder {
     }
 
     /**
-     * Sets the echo output to print all the sent and received data. Useful for debugging to monitor I/O activity.
+     * Sets the echo output to print all the sent and received data. Useful for debugging to
+     * monitor I/O activity.
      * Optional, by default is unset.
      *
-     * @param echoOutput an instance of echo output. Refer to {@link net.sf.expectit.echo.EchoAdapters} for adapter
+     * @param echoOutput an instance of echo output. Refer to {@link net.sf.expectit.echo
+     *                   .EchoAdapters} for adapter
      *                   static methods for common use cases.
      * @return this
      */
@@ -145,13 +148,17 @@ public class ExpectBuilder {
      * Enables printing of all the received data. Useful for debugging to monitor I/O activity.
      * Optional, by default is unset.
      * <p/>
-     * If the only {@code firstInput} is specified then the data received from all the inputs is echoed to it.
+     * If the only {@code firstInput} is specified then the data received from all the inputs is
+     * echoed to it.
      * <p/>
-     * The build method throws an {@link java.lang.IllegalArgumentException} if the number of the {@code otherInputs}
-     * parameters does not correspond to the number of the input streams. That is, if {@code otherInputs}
+     * The build method throws an {@link java.lang.IllegalArgumentException} if the number of the
+     * {@code otherInputs}
+     * parameters does not correspond to the number of the input streams. That is,
+     * if {@code otherInputs}
      * is specified, the number of them must be equal to the number of inputs minus 1.
      *
-     * @param firstInput  where to echo the received data for the first input. If {@code otherInputs} are empty, then
+     * @param firstInput  where to echo the received data for the first input. If {@code
+     *                    otherInputs} are empty, then
      *                    all the data will be echoed to it.
      * @param otherInputs where to echo the received data for other inputs.
      * @return this
@@ -163,7 +170,8 @@ public class ExpectBuilder {
     }
 
     /**
-     * Sets the character encoding used to covert bytes when working with byte streams. Optional, the default is
+     * Sets the character encoding used to covert bytes when working with byte streams. Optional,
+     * the default is
      * {@link Charset#defaultCharset}.
      *
      * @param charset the charset
@@ -177,11 +185,14 @@ public class ExpectBuilder {
     /**
      * Sets a filter for the input. Optional, by default no filter is applied.
      * <p/>
-     * Filters can be used to modify the input before performing expect operations. For example, to remove
-     * non-printable characters. Filters can be switched on and off while working with the expect instance.
+     * Filters can be used to modify the input before performing expect operations. For example,
+     * to remove
+     * non-printable characters. Filters can be switched on and off while working with the expect
+     * instance.
      *
      * @param filter      the filter
-     * @param moreFilters more filter to apply. if specified then all the filters are combined using the
+     * @param moreFilters more filter to apply. if specified then all the filters are combined
+     *                    using the
      *                    {@link Filters#chain(Filter...)} method.s
      * @return this
      */
@@ -244,8 +255,10 @@ public class ExpectBuilder {
     /**
      * Creates a ready to use {@link Expect} instance.
      * <p/>
-     * This method creates an instance and starts background threads that receive input data through NIO pipes. The
-     * created instance must be disposed after use by calling the {@link net.sf.expectit.Expect#close()}  method,
+     * This method creates an instance and starts background threads that receive input data
+     * through NIO pipes. The
+     * created instance must be disposed after use by calling the {@link net.sf.expectit
+     * .Expect#close()}  method,
      * <p/>
      * The instance is not thread safe and intended to be used in a single thread.
      *
@@ -258,14 +271,17 @@ public class ExpectBuilder {
             throw new IllegalStateException("Inputs are null or empty");
         }
 
-        if (echoInputs != null && echoInputs.length != 0 && echoInputs.length != inputs.length - 1) {
-            throw new IllegalArgumentException("The number of echo input does not correspond to the total "
-                    + "number of the input streams");
+        if (echoInputs != null && echoInputs.length != 0
+                && echoInputs.length != inputs.length - 1) {
+            throw new IllegalArgumentException(
+                    "The number of echo input does not correspond to the total "
+                            + "number of the input streams");
         }
 
         SingleInputExpect[] inputs = new SingleInputExpect[this.inputs.length];
         for (int i = 0; i < inputs.length; i++) {
-            inputs[i] = new SingleInputExpect(this.inputs[i], charset,
+            inputs[i] = new SingleInputExpect(
+                    this.inputs[i], charset,
                     getEchoInputForIndex(i), filter, bufferSize);
         }
 
@@ -278,7 +294,8 @@ public class ExpectBuilder {
                 }
             };
         }
-        ExpectImpl instance = new ExpectImpl(timeout, output, inputs, charset, echoOutput,
+        ExpectImpl instance = new ExpectImpl(
+                timeout, output, inputs, charset, echoOutput,
                 errorOnTimeout, lineSeparator);
         instance.start();
         return instance;

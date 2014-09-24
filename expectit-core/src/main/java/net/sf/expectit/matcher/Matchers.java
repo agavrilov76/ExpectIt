@@ -20,11 +20,10 @@ package net.sf.expectit.matcher;
  * #L%
  */
 
-import net.sf.expectit.MultiResult;
-import net.sf.expectit.Result;
-
 import java.util.Arrays;
 import java.util.regex.Pattern;
+import net.sf.expectit.MultiResult;
+import net.sf.expectit.Result;
 
 
 /**
@@ -41,10 +40,12 @@ public final class Matchers {
     }
 
     /**
-     * Creates a matcher of {@code String} that matches when examined input fully <b>matches</b> the given regular
+     * Creates a matcher of {@code String} that matches when examined input fully <b>matches</b>
+     * the given regular
      * expression.
      * <p/>
-     * This method simply compiles the given pattern to a {@link java.util.regex.Pattern} and passes it to the
+     * This method simply compiles the given pattern to a {@link java.util.regex.Pattern} and
+     * passes it to the
      * {@link #matches(java.util.regex.Pattern)} method.
      *
      * @param pattern the pattern that represents regular expression
@@ -56,13 +57,17 @@ public final class Matchers {
     }
 
     /**
-     * Creates a matcher of {@code Pattern} that matches when examined input fully <b>matches</b> the given regular
-     * expression. The operation is equivalent to the {@link java.util.regex.Matcher#matches()} method.
+     * Creates a matcher of {@code Pattern} that matches when examined input fully <b>matches</b>
+     * the given regular
+     * expression. The operation is equivalent to the {@link java.util.regex.Matcher#matches()}
+     * method.
      * <p/>
-     * The returning {@code Result} implements the {@link java.util.regex.MatchResult} methods to query the results
+     * The returning {@code Result} implements the {@link java.util.regex.MatchResult} methods to
+     * query the results
      * of the regular expression match.
      * <p/>
-     * If the match succeeded, the input buffer is cleared and {@link net.sf.expectit.Result#getBefore()} returns
+     * If the match succeeded, the input buffer is cleared and {@link net.sf.expectit
+     * .Result#getBefore()} returns
      * an empty string.
      *
      * @param pattern the representation of a regular expression
@@ -73,10 +78,12 @@ public final class Matchers {
     }
 
     /**
-     * Creates a matcher of {@code String} that matches when examined input <b>contains</b> the given regular
+     * Creates a matcher of {@code String} that matches when examined input <b>contains</b> the
+     * given regular
      * expression.
      * <p/>
-     * This method simply compiles the given string to a {@link java.util.regex.Pattern} and passes it to the
+     * This method simply compiles the given string to a {@link java.util.regex.Pattern} and
+     * passes it to the
      * {@link #regexp(java.util.regex.Pattern)} method.
      *
      * @param pattern the string that represents regular expression
@@ -88,13 +95,16 @@ public final class Matchers {
     }
 
     /**
-     * Creates a matcher of {@code Pattern} that matches when examined input <b>contains</b> the given regular
+     * Creates a matcher of {@code Pattern} that matches when examined input <b>contains</b> the
+     * given regular
      * expression. The operation is equivalent to the {@link java.util.regex.Matcher#find()} method.
      * <p/>
-     * The returning {@code Result} implements the {@link java.util.regex.MatchResult} methods to query the results
+     * The returning {@code Result} implements the {@link java.util.regex.MatchResult} methods to
+     * query the results
      * of the regular expression match.
      * <p/>
-     * If the match succeeded, the input buffer is updated: the input part from the beginning until the end
+     * If the match succeeded, the input buffer is updated: the input part from the beginning
+     * until the end
      * position of the match is removed.
      *
      * @param pattern the representation of a regular expression
@@ -105,12 +115,15 @@ public final class Matchers {
     }
 
     /**
-     * Creates a matcher of {@code String} that matches when examined input contains the given substring.
+     * Creates a matcher of {@code String} that matches when examined input contains the given
+     * substring.
      * <p/>
-     * The returning {@code Result} has no groups except the one with {@code 0} index which represents the exact
+     * The returning {@code Result} has no groups except the one with {@code 0} index which
+     * represents the exact
      * string match.
      * <p/>
-     * If the match succeeded, the input buffer is updated: the input part from the beginning until the end
+     * If the match succeeded, the input buffer is updated: the input part from the beginning
+     * until the end
      * position of the match is removed.
      *
      * @param string the string to search for
@@ -136,14 +149,18 @@ public final class Matchers {
     }
 
     /**
-     * Creates a matcher that matches if the examined input matches <b>all</b> of the specified matchers. This method
+     * Creates a matcher that matches if the examined input matches <b>all</b> of the specified
+     * matchers. This method
      * evaluates all the matchers regardless intermediate results.
      * <p/>
-     * The match result represents a combination of all match operations. If succeeded, the match result with the
-     * greatest end position is selected to implement the result {@link Result} instance returned by this method.
+     * The match result represents a combination of all match operations. If succeeded,
+     * the match result with the
+     * greatest end position is selected to implement the result {@link Result} instance returned
+     * by this method.
      * If the result is negative, then the one which fails first is returned.
      * <p/>
-     * If several matchers the have same end position, then the result from the one with the smaller argument index is
+     * If several matchers the have same end position, then the result from the one with the
+     * smaller argument index is
      * returned.
      *
      * @param matchers the vararg array of the matchers
@@ -155,12 +172,16 @@ public final class Matchers {
     }
 
     /**
-     * Creates a matcher that matches if the examined input matches <b>any</b> of the specified matchers.
+     * Creates a matcher that matches if the examined input matches <b>any</b> of the specified
+     * matchers.
      * <p/>
-     * The match result represents a combination of any match operations. If succeeded, the match result with the
-     * greatest end position is selected to implement the result {@link Result} instance returned by this method.
+     * The match result represents a combination of any match operations. If succeeded,
+     * the match result with the
+     * greatest end position is selected to implement the result {@link Result} instance returned
+     * by this method.
      * <p/>
-     * If several matchers have the same end position, then the result from the one with the smaller argument index is
+     * If several matchers have the same end position, then the result from the one with the
+     * smaller argument index is
      * returned.
      *
      * @param matchers the vararg array of the matchers
@@ -174,7 +195,8 @@ public final class Matchers {
     /**
      * Creates a matcher that matches if input reaches the end of stream.
      * <p/>
-     * If succeeded, the {@link net.sf.expectit.Result#getBefore()} will return the entire input buffer, and
+     * If succeeded, the {@link net.sf.expectit.Result#getBefore()} will return the entire input
+     * buffer, and
      * the {@link net.sf.expectit.Result#group()} returns an empty string.
      *
      * @return the matcher
@@ -194,9 +216,11 @@ public final class Matchers {
     }
 
     /**
-     * Creates a matcher that matches if the given {@code matcher} matches the {@code number} of times.
+     * Creates a matcher that matches if the given {@code matcher} matches the {@code number} of
+     * times.
      * <p/>
-     * The match result represents a combination of all the performed match operations. If succeeded, the result
+     * The match result represents a combination of all the performed match operations. If
+     * succeeded, the result
      * with the greatest end position is returned.
      * <p/>
      *
@@ -211,13 +235,14 @@ public final class Matchers {
     }
 
     /**
-     * Matches the given matchers one by one. Every successful matches updates the internal buffer. The consequent
+     * Matches the given matchers one by one. Every successful matches updates the internal
+     * buffer. The consequent
      * match operation is performed after the previous match has succeeded.
      *
      * @param matchers the collection of matchers.
      * @return the matcher.
      */
-    public static Matcher<MultiResult> sequence(final Matcher<?> ... matchers) {
+    public static Matcher<MultiResult> sequence(final Matcher<?>... matchers) {
         checkNotEmpty(matchers);
         return new Matcher<MultiResult>() {
             @Override
@@ -251,7 +276,8 @@ public final class Matchers {
     /**
      * Creates a matcher that matches when at least one character exists in the input buffer.
      * <p/>
-     * If the result is successful, the {@link net.sf.expectit.Result#getBefore()} returns an empty string, the
+     * If the result is successful, the {@link net.sf.expectit.Result#getBefore()} returns an
+     * empty string, the
      * {@link net.sf.expectit.Result#group()} returns the entire input buffer.
      *
      * @return the result

@@ -20,6 +20,16 @@ package net.sf.expectit.ant;
  * #L%
  */
 
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.mock;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.concurrent.TimeUnit;
 import net.sf.expectit.ExpectBuilder;
 import org.apache.tools.ant.Project;
 import org.apache.tools.ant.Task;
@@ -27,17 +37,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.util.concurrent.TimeUnit;
-
-import static org.junit.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.mock;
 
 /**
  * Tests delegation from ExpectSupport instance to ExpectBuilder.

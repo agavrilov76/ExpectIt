@@ -20,6 +20,43 @@ package net.sf.expectit;
  * #L%
  */
 
+import static net.sf.expectit.Utils.LONG_TIMEOUT;
+import static net.sf.expectit.Utils.SMALL_TIMEOUT;
+import static net.sf.expectit.Utils.mockInputStream;
+import static net.sf.expectit.echo.EchoAdapters.adapt;
+import static net.sf.expectit.matcher.Matchers.contains;
+import static net.sf.expectit.matcher.Matchers.times;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.argThat;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.timeout;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.channels.ClosedByInterruptException;
+import java.nio.charset.Charset;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 import net.sf.expectit.echo.EchoOutput;
 import net.sf.expectit.filter.Filter;
 import net.sf.expectit.matcher.Matcher;
@@ -30,24 +67,6 @@ import org.mockito.ArgumentMatcher;
 import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.channels.ClosedByInterruptException;
-import java.nio.charset.Charset;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicReference;
-
-import static net.sf.expectit.Utils.*;
-import static net.sf.expectit.echo.EchoAdapters.adapt;
-import static net.sf.expectit.matcher.Matchers.contains;
-import static net.sf.expectit.matcher.Matchers.times;
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
 
 /**
  * Tests for various expect builder parameters
@@ -105,7 +124,10 @@ public class ExpectTest {
         assertEquals(((AbstractExpectImpl) expect2).getTimeout(), 10000);
         assertEquals(((AbstractExpectImpl) expect).getTimeout(), -1);
 
-        assertEquals(((AbstractExpectImpl) expect.withTimeout(3, TimeUnit.MILLISECONDS)).getTimeout(), 3);
+        assertEquals(
+                ((AbstractExpectImpl) expect.withTimeout(
+                        3,
+                        TimeUnit.MILLISECONDS)).getTimeout(), 3);
         try {
             expect.withTimeout(-10, TimeUnit.DAYS);
             Assert.fail();
@@ -183,21 +205,23 @@ public class ExpectTest {
         assertTrue(expect.expect(SMALL_TIMEOUT, contains("hello")).isSuccessful());
     }
 
-    private void configureMockInputStream(InputStream in, final byte[] bytes) throws IOException, InterruptedException {
+    private void configureMockInputStream(InputStream in, final byte[] bytes)
+            throws IOException, InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
-        when(in.read(any(byte[].class))).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                latch.countDown();
-                if (mockInputReadCalled) {
-                    return -1;
-                }
-                //noinspection SuspiciousSystemArraycopy
-                System.arraycopy(bytes, 0, invocation.getArguments()[0], 0, bytes.length);
-                mockInputReadCalled = true;
-                return bytes.length;
-            }
-        });
+        when(in.read(any(byte[].class))).then(
+                new Answer<Object>() {
+                    @Override
+                    public Object answer(InvocationOnMock invocation) throws Throwable {
+                        latch.countDown();
+                        if (mockInputReadCalled) {
+                            return -1;
+                        }
+                        //noinspection SuspiciousSystemArraycopy
+                        System.arraycopy(bytes, 0, invocation.getArguments()[0], 0, bytes.length);
+                        mockInputReadCalled = true;
+                        return bytes.length;
+                    }
+                });
         latch.await();
     }
 
@@ -214,13 +238,14 @@ public class ExpectTest {
         when(filter1.beforeAppend(anyString(), any(StringBuilder.class))).thenReturn("xxx");
         when(filter2.beforeAppend(eq("xxx"), any(StringBuilder.class))).thenReturn("yyy");
 
-        when(filter2.afterAppend(any(StringBuilder.class))).then(new Answer<Object>() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                ((StringBuilder) invocation.getArguments()[0]).append("01234");
-                return true;
-            }
-        });
+        when(filter2.afterAppend(any(StringBuilder.class))).then(
+                new Answer<Object>() {
+                    @Override
+                    public Object answer(InvocationOnMock invocation) throws Throwable {
+                        ((StringBuilder) invocation.getArguments()[0]).append("01234");
+                        return true;
+                    }
+                });
         expect = builder.build();
 
         String inputStr = "testFilter";
@@ -373,9 +398,13 @@ public class ExpectTest {
         assertFalse(expect.expectIn(0, SMALL_TIMEOUT, contains("input2")).isSuccessful());
         assertTrue(expect.expect(SMALL_TIMEOUT, contains("input1")).isSuccessful());
         assertTrue(expect.expectIn(1, SMALL_TIMEOUT, contains("input2")).isSuccessful());
-        assertFalse(expect.expect(SMALL_TIMEOUT, contains("input2"), contains("input1")).isSuccessful());
+        assertFalse(
+                expect.expect(SMALL_TIMEOUT, contains("input2"), contains("input1"))
+                        .isSuccessful());
         input1.push(inputText1);
-        assertTrue(expect.expect(SMALL_TIMEOUT, contains("input"), contains("input")).isSuccessful());
+        assertTrue(
+                expect.expect(SMALL_TIMEOUT, contains("input"), contains("input"))
+                        .isSuccessful());
     }
 
     @Test(timeout = 10000)
@@ -387,20 +416,23 @@ public class ExpectTest {
         final CountDownLatch exceptionThrown = new CountDownLatch(1);
         final AtomicReference<IOException> exceptionRef = new AtomicReference<IOException>();
 
-        Thread expectThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    started.countDown();
-                    //noinspection deprecation
-                    assertFalse(expect.expect(ExpectImpl.INFINITE_TIMEOUT, contains("a")).isSuccessful());
-                    fail();
-                } catch (IOException e) {
-                    exceptionRef.set(e);
-                    exceptionThrown.countDown();
-                }
-            }
-        });
+        Thread expectThread = new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            started.countDown();
+                            //noinspection deprecation
+                            assertFalse(
+                                    expect.expect(ExpectImpl.INFINITE_TIMEOUT, contains("a"))
+                                            .isSuccessful());
+                            fail();
+                        } catch (IOException e) {
+                            exceptionRef.set(e);
+                            exceptionThrown.countDown();
+                        }
+                    }
+                });
 
         try {
             expectThread.start();
@@ -427,7 +459,9 @@ public class ExpectTest {
             @Override
             public Void call() throws IOException {
                 //noinspection deprecation
-                assertFalse(expect.expect(ExpectImpl.INFINITE_TIMEOUT, contains("a")).isSuccessful());
+                assertFalse(
+                        expect.expect(ExpectImpl.INFINITE_TIMEOUT, contains("a"))
+                                .isSuccessful());
                 fail();
                 return null;
             }
@@ -467,7 +501,9 @@ public class ExpectTest {
                 for (int i = 0; i < iterations; i++) {
                     mockInputStream.push(inputString);
                     //noinspection deprecation
-                    assertTrue(expect.expect(ExpectImpl.INFINITE_TIMEOUT, contains(inputString)).isSuccessful());
+                    assertTrue(
+                            expect.expect(ExpectImpl.INFINITE_TIMEOUT, contains(inputString))
+                                    .isSuccessful());
                     successCounter.countDown();
                 }
                 return null;
@@ -542,12 +578,14 @@ public class ExpectTest {
         builder.withBufferSize(20);
         expect = builder.build();
         verify(mock, timeout((int) LONG_TIMEOUT).atLeastOnce())
-                .read(argThat(new ArgumentMatcher<byte[]>() {
+                .read(
+                        argThat(
+                                new ArgumentMatcher<byte[]>() {
 
-            @Override
-            public boolean matches(Object o) {
-                return o instanceof byte[] && ((byte[]) o).length == 20;
-            }
-        }));
+                                    @Override
+                                    public boolean matches(Object o) {
+                                        return o instanceof byte[] && ((byte[]) o).length == 20;
+                                    }
+                                }));
     }
 }

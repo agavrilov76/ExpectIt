@@ -20,15 +20,14 @@ package net.sf.expectit;
  * #L%
  */
 
+import static net.sf.expectit.matcher.Matchers.contains;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-
 import java.io.IOException;
 import java.util.Properties;
-
-import static net.sf.expectit.matcher.Matchers.*;
 
 /**
  * An example of interacting with the local SSH server

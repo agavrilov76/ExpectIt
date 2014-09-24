@@ -20,9 +20,12 @@ package net.sf.expectit;
  * #L%
  */
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static com.google.common.io.Resources.getResource;
+import static com.google.common.io.Resources.toByteArray;
+import static net.sf.expectit.ExpectBuilder.DEFAULT_BUFFER_SIZE;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -33,11 +36,9 @@ import java.nio.channels.WritableByteChannel;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static com.google.common.io.Resources.getResource;
-import static com.google.common.io.Resources.toByteArray;
-import static net.sf.expectit.ExpectBuilder.DEFAULT_BUFFER_SIZE;
-import static org.junit.Assert.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * A copier test.

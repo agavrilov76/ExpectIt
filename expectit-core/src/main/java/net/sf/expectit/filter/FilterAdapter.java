@@ -45,7 +45,8 @@ public class FilterAdapter implements Filter {
     }
 
     /**
-     * Called if the filter is enabled. Follows the contract of the {@link #beforeAppend(String, StringBuilder)}
+     * Called if the filter is enabled. Follows the contract of the {@link #beforeAppend(String,
+     * StringBuilder)}
      * method.
      * <p/>
      * By default returns the given string.
@@ -64,7 +65,8 @@ public class FilterAdapter implements Filter {
     }
 
     /**
-     * Called if the filter is enabled. Follows the contract of the {@link #afterAppend(StringBuilder)} method.
+     * Called if the filter is enabled. Follows the contract of the {@link #afterAppend
+     * (StringBuilder)} method.
      *
      * @param buffer the input buffer
      * @return the result, the default implementation returns false.

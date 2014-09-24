@@ -24,18 +24,22 @@ import java.util.List;
 
 /**
  * A representation of the result of multiple match operations.
- * <p>The result of the one operation is selected by implementation to represent all the other operations
+ * <p>The result of the one operation is selected by implementation to represent all the other
+ * operations
  * and fulfill the contract of the {@code Result} super interface.
  * <p/>
  * <p>For example, the result can represent a combination of
- * match operations, while the match with the greatest end position is selected to implement the super interface.
+ * match operations, while the match with the greatest end position is selected to implement the
+ * super interface.
  */
 public interface MultiResult extends Result {
     /**
-     * Returns an unmodifiable list of the result instances of all the performed match operations. The list includes
+     * Returns an unmodifiable list of the result instances of all the performed match operations
+     * . The list includes
      * the result of the one operation chosen to represent the others.
      * <p/>
-     * The order of the elements should correspond to the order in which the match operations have been performed.
+     * The order of the elements should correspond to the order in which the match operations
+     * have been performed.
      * Never returns <code>null</code>.
      *
      * @return an unmodifiable list of all the match results

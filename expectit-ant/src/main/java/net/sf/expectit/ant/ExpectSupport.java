@@ -23,7 +23,8 @@ package net.sf.expectit.ant;
 import net.sf.expectit.ant.filter.FiltersElement;
 
 /**
- * A useful interface which expect tasks should implement to implement to avoid forgetting method delegations.
+ * A useful interface which expect tasks should implement to implement to avoid forgetting method
+ * delegations.
  */
 public interface ExpectSupport {
     /**
@@ -36,7 +37,8 @@ public interface ExpectSupport {
     /**
      * Sets the global timeout for expect operations.
      *
-     * @param ms the timeout in milliseconds. -1 indicates that the timeout should be set to infinity.
+     * @param ms the timeout in milliseconds. -1 indicates that the timeout should be set to
+     *           infinity.
      * @see net.sf.expectit.ExpectBuilder#withTimeout(long, java.util.concurrent.TimeUnit)
      */
     void setExpectTimeout(long ms);
@@ -59,7 +61,8 @@ public interface ExpectSupport {
     /**
      * Sets the {@code errorOnTimeout} flag. Default is false.
      *
-     * @param errorOnTimeout - if {@code true} then an error occurs if any match operation times out, {@code false}
+     * @param errorOnTimeout - if {@code true} then an error occurs if any match operation times
+     *                       out, {@code false}
      *                       otherwise.
      * @see net.sf.expectit.ExpectBuilder#withErrorOnTimeout(boolean)
      */
@@ -74,7 +77,8 @@ public interface ExpectSupport {
     void setLineSeparator(String lineSeparator);
 
     /**
-     * Enables the echo output. If set to {@code true}, then the input and output data are logged by the Ant's task
+     * Enables the echo output. If set to {@code true}, then the input and output data are logged
+     * by the Ant's task
      * logger.
      *
      * @param echoOutput the echo output flag

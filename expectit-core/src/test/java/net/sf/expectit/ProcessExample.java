@@ -20,10 +20,12 @@ package net.sf.expectit;
  * #L%
  */
 
+import static net.sf.expectit.matcher.Matchers.contains;
+import static net.sf.expectit.matcher.Matchers.eof;
+import static net.sf.expectit.matcher.Matchers.regexp;
+
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
-import static net.sf.expectit.matcher.Matchers.*;
 
 /**
  * A process example.

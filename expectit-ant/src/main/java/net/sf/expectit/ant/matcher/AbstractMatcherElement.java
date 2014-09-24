@@ -20,11 +20,10 @@ package net.sf.expectit.ant.matcher;
  * #L%
  */
 
+import java.io.IOException;
 import net.sf.expectit.Result;
 import net.sf.expectit.matcher.Matcher;
 import org.apache.tools.ant.BuildException;
-
-import java.io.IOException;
 
 /**
  * An abstract generic matcher element.
@@ -43,7 +42,8 @@ public abstract class AbstractMatcherElement<R extends Result> extends AbstractT
     }
 
     /**
-     * Creates a matcher by calling {@link #createMatcher()} method and executes the expect operation.
+     * Creates a matcher by calling {@link #createMatcher()} method and executes the expect
+     * operation.
      */
     public final void execute() {
         try {
@@ -65,16 +65,19 @@ public abstract class AbstractMatcherElement<R extends Result> extends AbstractT
     }
 
     /**
-     * Exports the successful result of the match as a set of properties with the given prefix. The properties key/value
+     * Exports the successful result of the match as a set of properties with the given prefix.
+     * The properties key/value
      * format is as follows:
      * <ul>
      * <li>{@code prefix + ".before" = result.getBefore()}</li>
      * <li>{@code prefix + ".group" = result.group()}</li>
      * <li>{@code prefix + ".success" = true}</li>
-     * <li>{@code prefix + ".group." + &lt;number&gt; = result.group(&lt;number&gt;)}, where the {@code number}
+     * <li>{@code prefix + ".group." + &lt;number&gt; = result.group(&lt;number&gt;)},
+     * where the {@code number}
      * is between 1 and {@code result.groupCount()}</li>
      * </ul>
-     * If the {@code prefix} is {@code null}, or the {@code result} is not successful, then this method does nothing.
+     * If the {@code prefix} is {@code null}, or the {@code result} is not successful,
+     * then this method does nothing.
      *
      * @param prefix the property prefix
      * @param result the result

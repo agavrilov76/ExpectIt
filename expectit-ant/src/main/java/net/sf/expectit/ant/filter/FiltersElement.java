@@ -20,13 +20,12 @@ package net.sf.expectit.ant.filter;
  * #L%
  */
 
-import net.sf.expectit.filter.Filter;
-import org.apache.tools.ant.Task;
+import static net.sf.expectit.filter.Filters.chain;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static net.sf.expectit.filter.Filters.chain;
+import net.sf.expectit.filter.Filter;
+import org.apache.tools.ant.Task;
 
 /**
  * A container for filter elements.

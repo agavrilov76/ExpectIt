@@ -20,10 +20,9 @@ package net.sf.expectit.ant;
  * #L%
  */
 
+import java.io.IOException;
 import net.sf.expectit.echo.EchoOutput;
 import org.apache.tools.ant.Task;
-
-import java.io.IOException;
 
 /**
  * A log adapter which passes the captured input and output to the Ant logger for the given task.

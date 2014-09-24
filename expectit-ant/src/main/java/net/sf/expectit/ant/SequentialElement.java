@@ -20,14 +20,13 @@ package net.sf.expectit.ant;
  * #L%
  */
 
+import java.util.ArrayList;
+import java.util.List;
 import net.sf.expectit.Expect;
 import net.sf.expectit.ant.matcher.AbstractTaskElement;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.UnknownElement;
 import org.apache.tools.ant.taskdefs.Sequential;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A container for the expect operations and other Ant tasks.

@@ -20,9 +20,6 @@ package net.sf.expectit;
  * #L%
  */
 
-import net.sf.expectit.filter.Filter;
-import net.sf.expectit.matcher.Matcher;
-
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,6 +31,8 @@ import java.nio.channels.Selector;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import net.sf.expectit.filter.Filter;
+import net.sf.expectit.matcher.Matcher;
 
 /**
  * Represents a single inputs.
@@ -51,9 +50,10 @@ class SingleInputExpect {
     private final Pipe.SinkChannel sink;
     private final int bufferSize;
 
-    protected SingleInputExpect(InputStream input, Charset charset,
-                                Appendable echoInput, Filter filter,
-                                int bufferSize) throws IOException {
+    protected SingleInputExpect(
+            InputStream input, Charset charset,
+            Appendable echoInput, Filter filter,
+            int bufferSize) throws IOException {
         this.input = input;
         this.charset = charset;
         this.echoInput = echoInput;

@@ -20,12 +20,13 @@ package net.sf.expectit.ant.filter;
  * #L%
  */
 
-import net.sf.expectit.filter.Filter;
-
 import static net.sf.expectit.filter.Filters.replaceInString;
 
+import net.sf.expectit.filter.Filter;
+
 /**
- * An element corresponding to the {@link net.sf.expectit.filter.Filters#replaceInString(String, String)} filter.
+ * An element corresponding to the {@link net.sf.expectit.filter.Filters#replaceInString(String,
+ * String)} filter.
  */
 public class ReplaceInStringElement extends AbstractReplaceElement {
 

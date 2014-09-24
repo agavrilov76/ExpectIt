@@ -20,13 +20,14 @@ package net.sf.expectit.ant.matcher;
  * #L%
  */
 
+import static net.sf.expectit.matcher.Matchers.allOf;
+
 import net.sf.expectit.MultiResult;
 import net.sf.expectit.matcher.Matcher;
 
-import static net.sf.expectit.matcher.Matchers.allOf;
-
 /**
- * An element that corresponds to {@link net.sf.expectit.matcher.Matchers#allOf(net.sf.expectit.matcher.Matcher[])}.
+ * An element that corresponds to {@link net.sf.expectit.matcher.Matchers#allOf(net.sf.expectit
+ * .matcher.Matcher[])}.
  */
 public class AllOfElement extends AbstractMultiMatcherElement {
 
