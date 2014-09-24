@@ -30,7 +30,7 @@ import org.apache.tools.ant.BuildException;
  *
  * @param <R> the type result
  */
-public abstract class AbstractMatcherElement<R extends Result> extends AbstractTaskElement {
+abstract class AbstractMatcherElement<R extends Result> extends AbstractTaskElement {
     private Long timeout;
     private Integer input;
     private String resultPrefix;

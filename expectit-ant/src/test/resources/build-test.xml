@@ -92,11 +92,29 @@
         <expect:contains input="1" string="error" resultPrefix="result8"/>
         <fail unless="result8.success"/>
 
+        <expect:send line="echo abcdef"/>
+        <expect:exact resultPrefix="result9" string="abc"/>
+        <fail if="result9.success"/>
+
+        <expect:anyString />
+        <expect:send line="echo qwertyXqwertyDqwerty"/>
+        <expect:sequence resultPrefix="result11">
+          <expect:contains string="qwerty"/>
+          <expect:contains string="Dqwerty"/>
+        </expect:sequence>
+        <fail unless="result11.success"/>
+
+        <expect:anyString />
+        <expect:send line="echo XYZ"/>
+        <expect:exact resultPrefix="result10" string="XYZ&#10;"/>
+        <fail unless="result10.success"/>
+
         <expect:send line="exit"/>
         <expect:eof resultPrefix="resultX"/>
         <fail unless="resultX.success"/>
         <assert-equals property="resultX.group" value=""/>
         <echoproperties prefix="resultX"/>
+
       </expect:sequential>
     </expect:exec>
 

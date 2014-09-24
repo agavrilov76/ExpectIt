@@ -29,7 +29,7 @@ import net.sf.expectit.matcher.Matcher;
 /**
  * An abstract base element that represents a composite matcher.
  */
-public abstract class AbstractMultiMatcherElement extends AbstractMatcherElement<MultiResult> {
+abstract class AbstractMultiMatcherElement extends AbstractMatcherElement<MultiResult> {
     private final List<AbstractMatcherElement<Result>> tasks = new
             ArrayList<AbstractMatcherElement<Result>>();
 

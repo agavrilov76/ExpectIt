@@ -20,18 +20,30 @@ package net.sf.expectit.ant.matcher;
  * #L%
  */
 
-import static net.sf.expectit.matcher.Matchers.contains;
-
 import net.sf.expectit.Result;
 import net.sf.expectit.matcher.Matcher;
 
 /**
- * An element that corresponds to {@link net.sf.expectit.matcher.Matchers#contains(String)}.
+ * An abstract element for string based matchers.
  */
-public class ContainsElement extends AbstractStringMatcherElement {
+abstract class AbstractStringMatcherElement extends AbstractMatcherElement<Result> {
+    private String string;
 
     @Override
-    protected Matcher<Result> getResultStringMatcher(final String string) {
-        return contains(getProject().replaceProperties(string));
+    protected final Matcher<Result> createMatcher() {
+        if (string == null) {
+            throw new IllegalArgumentException("string value is required");
+        }
+        return getResultStringMatcher(string);
+    }
+
+    protected abstract Matcher<Result> getResultStringMatcher(final String string);
+    /**
+     * Sets the string for the matcher.
+     *
+     * @param string the string
+     */
+    public void setString(String string) {
+        this.string = string;
     }
 }

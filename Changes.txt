@@ -1,5 +1,6 @@
 Unreleased
 -------
+   #20 Ant task for sequence matcher
    #27 Make SimpleResult public?
    #26 Colors filter is buggy
 0.5.0

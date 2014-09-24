@@ -20,26 +20,29 @@
   -->
 
 <antlib>
-    <taskdef name="exec" classname="net.sf.expectit.ant.ExpectExec"/>
-    <taskdef name="ssh" classname="net.sf.expectit.ant.ExpectSsh" onerror="ignore"/>
-    <taskdef name="socket" classname="net.sf.expectit.ant.ExpectSocket"/>
+  <taskdef name="exec" classname="net.sf.expectit.ant.ExpectExec"/>
+  <taskdef name="ssh" classname="net.sf.expectit.ant.ExpectSsh" onerror="ignore"/>
+  <taskdef name="socket" classname="net.sf.expectit.ant.ExpectSocket"/>
 
-    <taskdef name="contains" classname="net.sf.expectit.ant.matcher.ContainsElement"/>
-    <taskdef name="allOf" classname="net.sf.expectit.ant.matcher.AllOfElement"/>
-    <taskdef name="anyString" classname="net.sf.expectit.ant.matcher.AnyStringElement"/>
-    <taskdef name="anyOf" classname="net.sf.expectit.ant.matcher.AnyOfElement"/>
-    <taskdef name="eof" classname="net.sf.expectit.ant.matcher.EofElement"/>
-    <taskdef name="times" classname="net.sf.expectit.ant.matcher.TimesElement"/>
-    <taskdef name="regexp" classname="net.sf.expectit.ant.matcher.RegexpElement"/>
-    <taskdef name="matches" classname="net.sf.expectit.ant.matcher.MatchesElement"/>
+  <taskdef name="contains" classname="net.sf.expectit.ant.matcher.ContainsElement"/>
+  <taskdef name="allOf" classname="net.sf.expectit.ant.matcher.AllOfElement"/>
+  <taskdef name="anyString" classname="net.sf.expectit.ant.matcher.AnyStringElement"/>
+  <taskdef name="anyOf" classname="net.sf.expectit.ant.matcher.AnyOfElement"/>
+  <taskdef name="eof" classname="net.sf.expectit.ant.matcher.EofElement"/>
+  <taskdef name="times" classname="net.sf.expectit.ant.matcher.TimesElement"/>
+  <taskdef name="regexp" classname="net.sf.expectit.ant.matcher.RegexpElement"/>
+  <taskdef name="matches" classname="net.sf.expectit.ant.matcher.MatchesElement"/>
+  <taskdef name="sequence" classname="net.sf.expectit.ant.matcher.SequenceElement" />
+  <taskdef name="exact" classname="net.sf.expectit.ant.matcher.ExactElement" />
 
-    <taskdef name="send" classname="net.sf.expectit.ant.SendElement"/>
-    <taskdef name="sequential" classname="net.sf.expectit.ant.SequentialElement"/>
+  <taskdef name="send" classname="net.sf.expectit.ant.SendElement"/>
+  <taskdef name="sequential" classname="net.sf.expectit.ant.SequentialElement"/>
 
-    <taskdef name="filters" classname="net.sf.expectit.ant.filter.FiltersElement"/>
-    <taskdef name="removeColors" classname="net.sf.expectit.ant.filter.RemoveColorsElement"/>
-    <taskdef name="removeNonPrintable" classname="net.sf.expectit.ant.filter.RemoveNonPrintableElement"/>
-    <taskdef name="replaceInBuffer" classname="net.sf.expectit.ant.filter.ReplaceInBufferElement"/>
-    <taskdef name="replaceInString" classname="net.sf.expectit.ant.filter.ReplaceInStringElement"/>
+  <taskdef name="filters" classname="net.sf.expectit.ant.filter.FiltersElement"/>
+  <taskdef name="removeColors" classname="net.sf.expectit.ant.filter.RemoveColorsElement"/>
+  <taskdef name="removeNonPrintable"
+           classname="net.sf.expectit.ant.filter.RemoveNonPrintableElement"/>
+  <taskdef name="replaceInBuffer" classname="net.sf.expectit.ant.filter.ReplaceInBufferElement"/>
+  <taskdef name="replaceInString" classname="net.sf.expectit.ant.filter.ReplaceInStringElement"/>
 
 </antlib>

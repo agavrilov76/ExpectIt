@@ -20,18 +20,21 @@ package net.sf.expectit.ant.matcher;
  * #L%
  */
 
-import static net.sf.expectit.matcher.Matchers.contains;
+import static net.sf.expectit.matcher.Matchers.sequence;
 
-import net.sf.expectit.Result;
+import net.sf.expectit.MultiResult;
 import net.sf.expectit.matcher.Matcher;
 
 /**
- * An element that corresponds to {@link net.sf.expectit.matcher.Matchers#contains(String)}.
+ * An element that corresponds to
+ * {@link net.sf.expectit.matcher.Matchers#sequence(net.sf.expectit.matcher.Matcher[])}.
  */
-public class ContainsElement extends AbstractStringMatcherElement {
+public class SequenceElement extends AbstractMultiMatcherElement {
 
     @Override
-    protected Matcher<Result> getResultStringMatcher(final String string) {
-        return contains(getProject().replaceProperties(string));
+    protected Matcher<MultiResult> createMatcher() {
+        return sequence(getMatchers());
     }
+
+
 }
