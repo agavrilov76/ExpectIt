@@ -12,7 +12,8 @@ It is designed to be simple, easy to use and extensible. Written from scratch. H
 * Extensible matcher framework. Support regular expressions and group operations.
 * Support multiple input streams.
 * Extensible filter framework to modify input, for example, to remove non-printable ANSI terminal characters.
-* [Custom Expect Ant Task](../..//wiki/Expect-for-Ant)
+* [Custom Expect Ant Task](../..//wiki/Expect-for-Ant).
+* Tested on Andriod.
 * Apache License.
 
 The ExpectIt project is a modern alternative to other popular 'Expect for Java' implementations, such as:
