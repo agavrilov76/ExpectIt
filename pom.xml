@@ -11,11 +11,10 @@
     <module>expectit-ant</module>
   </modules>
   <packaging>pom</packaging>
-  <name>Expectit :: Parent</name>
+  <name>ExpectIt :: Parent</name>
   <description>
     Yet another pure Java(tm) implementation of the Unix Expect tool. It designed to be simple, easy
-    to
-    use and extensible.
+    to use and extensible.
   </description>
   <url>https://github.com/Alexey1Gavrilov/expectit</url>
   <organization>
@@ -85,9 +84,7 @@
     <binariesAnalysisPhase>verify</binariesAnalysisPhase>
     <sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/
     </sonatypeOssDistMgmtSnapshotsUrl>
-
     <powermock.version>1.5.4</powermock.version>
-
   </properties>
 
   <profiles>
@@ -122,6 +119,15 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>java8</id>
+      <activation>
+        <jdk>1.8</jdk>
+      </activation>
+      <modules>
+        <module>expect-java8</module>
+      </modules>
     </profile>
   </profiles>
 
@@ -261,7 +267,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>findbugs-maven-plugin</artifactId>
-          <version>2.5.3</version>
+          <version>3.0.0</version>
           <executions>
             <execution>
               <phase>${binariesAnalysisPhase}</phase>
