@@ -85,6 +85,7 @@
     <sonatypeOssDistMgmtSnapshotsUrl>https://oss.sonatype.org/content/repositories/snapshots/
     </sonatypeOssDistMgmtSnapshotsUrl>
     <powermock.version>1.5.4</powermock.version>
+    <findbugs.version>2.5.3</findbugs.version>
   </properties>
 
   <profiles>
@@ -125,6 +126,9 @@
       <activation>
         <jdk>1.8</jdk>
       </activation>
+      <properties>
+        <findbugs.version>3.0.0</findbugs.version>
+      </properties>
       <modules>
         <module>expect-java8</module>
       </modules>
@@ -267,7 +271,7 @@
         <plugin>
           <groupId>org.codehaus.mojo</groupId>
           <artifactId>findbugs-maven-plugin</artifactId>
-          <version>3.0.0</version>
+          <version>${findbugs.version}</version>
           <executions>
             <execution>
               <phase>${binariesAnalysisPhase}</phase>
