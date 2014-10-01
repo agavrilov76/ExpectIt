@@ -5,3 +5,8 @@ jdk:
   - oraclejdk8
   - openjdk7
   - openjdk6
+ after_success:
+   - mvn clean cobertura:cobertura -DskipAnalysis
+   - mvn -N coveralls:cobertura
+ secure: "lB8woHPPDJ7mLznb/xgPNENPr6jrcRaU21DKyihgz0gc+4wFnCdE1aTQzSqfCzlnKeipmJNtgoDPCNy/UWRqzkDipMVoCL1xlhMPu07qno4FGSGovRIAUtQyhOFRnGpR975j+FLi9/Ohg+0Du/cqsYg/5uyIXoSISGQc0Ce/9A0="
+ 
