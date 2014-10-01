@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/Alexey1Gavrilov/ExpectIt.png?branch=master)](https://travis-ci.org/Alexey1Gavrilov/ExpectIt)
+[![Coverage Status](https://img.shields.io/coveralls/Alexey1Gavrilov/ExpectIt.svg)](https://coveralls.io/r/Alexey1Gavrilov/ExpectIt?branch=master)
 # Yet Another Expect for Java
 
 ## Overview
