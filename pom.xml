@@ -299,7 +299,6 @@
           <artifactId>maven-release-plugin</artifactId>
           <version>2.5</version>
           <configuration>
-            <generateBackupPoms>false</generateBackupPoms>
             <mavenExecutorId>forked-path</mavenExecutorId>
             <useReleaseProfile>false</useReleaseProfile>
             <localCheckout>true</localCheckout>
@@ -340,6 +339,7 @@
           <artifactId>coveralls-maven-plugin</artifactId>
           <version>2.2.0</version>
           <configuration>
+            <!--suppress MavenModelInspection -->
             <repoToken>${env.COVERALLS_EXPECT_IT}</repoToken>
             <sourceDirectories>
               <sourceDirectory>expectit-core/src/main/java</sourceDirectory>
