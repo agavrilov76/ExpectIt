@@ -166,6 +166,7 @@ public class ExpectTest {
     }
 
     // remove test when the deprecated method is removed
+    @Deprecated
     @Test
     public void testErrorOnTimeout() throws IOException {
         ExpectBuilder builder = new ExpectBuilder();

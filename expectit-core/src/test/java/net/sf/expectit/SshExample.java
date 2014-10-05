@@ -51,7 +51,7 @@ public class SshExample {
                 .withEchoInput(System.out)
                 .withEchoOutput(System.err)
                 .withInputFilters(removeColors(), removeNonPrintable())
-                .withErrorOnTimeout(true)
+                .withExceptionOnFailure()
                 .build();
         try {
             channel.connect();
