@@ -69,6 +69,7 @@ public class ExpectSupportTest {
         expectSupport.setExpectTimeout(400);
         expectSupport.setLineSeparator("ABC");
         expectSupport.setErrorOnTimeout(true);
+        expectSupport.setExceptionOnFailure(true);
         OutputStream output = mock(OutputStream.class);
         expectSupport.setOutput(output);
 
@@ -82,6 +83,7 @@ public class ExpectSupportTest {
         verify(builder).withEchoOutput(any(EchoOutputAdapter.class));
         verify(builder).withLineSeparator("ABC");
         verify(builder).withErrorOnTimeout(true);
+        verify(builder).withExceptionOnFailure();
         verify(builder).withTimeout(400, TimeUnit.MILLISECONDS);
 
         expectSupport.setExpectTimeout(-1);

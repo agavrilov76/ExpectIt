@@ -65,6 +65,11 @@ public class ExpectExec extends ExecTask implements ExecuteStreamHandler, Expect
     }
 
     @Override
+    public void setExceptionOnFailure(final boolean exceptionOnFailure) {
+        expectSupport.setExceptionOnFailure(exceptionOnFailure);
+    }
+
+    @Override
     public void setLineSeparator(String lineSeparator) {
         expectSupport.setLineSeparator(lineSeparator);
     }

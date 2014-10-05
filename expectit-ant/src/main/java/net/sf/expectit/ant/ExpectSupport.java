@@ -66,8 +66,17 @@ public interface ExpectSupport {
      *                       otherwise.
      * @see net.sf.expectit.ExpectBuilder#withErrorOnTimeout(boolean)
      */
+    @Deprecated
     void setErrorOnTimeout(boolean errorOnTimeout);
 
+    /**
+     * Sets the {@code exceptionOnFailure} flag. Default is false.
+     *
+     * @param exceptionOnFailure - if {@code true} then an error occurs if any match operation
+     * fails or {@code false} otherwise.
+     * @see net.sf.expectit.ExpectBuilder#withExceptionOnFailure()
+     */
+    void setExceptionOnFailure(boolean exceptionOnFailure);
     /**
      * Sets the line separator for the send element.
      *

@@ -43,16 +43,24 @@ class ExpectImpl extends AbstractExpectImpl {
     private final ExecutorService executor;
     private final String lineSeparator;
     static final int INFINITE_TIMEOUT = -1; // value representing infinite timeout
+    private final boolean exceptionOnFailure;
 
     ExpectImpl(
-            long timeout, OutputStream output, SingleInputExpect[] inputs,
-            Charset charset, Appendable echoOutput, boolean errorOnTimeout, String lineSeparator) {
+            final long timeout,
+            final OutputStream output,
+            final SingleInputExpect[] inputs,
+            final Charset charset,
+            final Appendable echoOutput,
+            final boolean errorOnTimeoutOld,
+            final String lineSeparator,
+            final boolean exceptionOnFailure) {
         super(timeout);
         this.output = output;
         this.inputs = inputs;
         this.charset = charset;
         this.echoOutput = echoOutput;
-        this.errorOnTimeout = errorOnTimeout;
+        this.errorOnTimeout = errorOnTimeoutOld;
+        this.exceptionOnFailure = exceptionOnFailure;
         this.lineSeparator = lineSeparator;
         executor = Executors.newFixedThreadPool(
                 inputs.length,
@@ -69,6 +77,11 @@ class ExpectImpl extends AbstractExpectImpl {
     public <R extends Result> R expectIn(int input, long timeoutMs, Matcher<R> matcher)
             throws IOException {
         R result = inputs[input].expect(timeoutMs, matcher);
+        if (exceptionOnFailure && !result.isSuccessful()) {
+            throw new ExpectIOException(
+                    "Expect operation fails (timeout: "
+                            + timeoutMs + " ms) for matcher: " + matcher);
+        }
         if (errorOnTimeout && !result.isSuccessful()) {
             throw new AssertionError(
                     "Expect timeout (" + timeoutMs + " ms) for matcher: " + matcher);

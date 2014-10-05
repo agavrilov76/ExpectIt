@@ -68,6 +68,11 @@ public class ExpectSocket extends Task implements ExpectSupport {
     }
 
     @Override
+    public void setExceptionOnFailure(final boolean exceptionOnFailure) {
+        expectSupport.setExceptionOnFailure(exceptionOnFailure);
+    }
+
+    @Override
     public void setLineSeparator(String lineSeparator) {
         expectSupport.setLineSeparator(lineSeparator);
     }

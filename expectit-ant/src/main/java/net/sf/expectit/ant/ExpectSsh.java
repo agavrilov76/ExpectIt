@@ -70,6 +70,11 @@ public class ExpectSsh extends SSHBase implements ExpectSupport {
     }
 
     @Override
+    public void setExceptionOnFailure(final boolean exceptionOnFailure) {
+        expectSupport.setExceptionOnFailure(exceptionOnFailure);
+    }
+
+    @Override
     public void init() {
         super.init();
         expectSupport = new ExpectSupportImpl(this);

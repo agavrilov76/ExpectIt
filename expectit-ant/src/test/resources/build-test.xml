@@ -194,7 +194,7 @@
 
   <target name="test-ssh">
     <expect:ssh host="localhost" echoOutput="true" port="${ssh.port}" username="ssh" trust="true"
-                password="secret">
+                password="secret" exceptionOnFailure="true">
       <expect:sequential>
         <expect:send line="test"/>
         <expect:contains string="test" resultPrefix="result100"/>

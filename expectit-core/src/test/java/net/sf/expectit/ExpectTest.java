@@ -165,6 +165,7 @@ public class ExpectTest {
         }
     }
 
+    // remove test when the deprecated method is removed
     @Test
     public void testErrorOnTimeout() throws IOException {
         ExpectBuilder builder = new ExpectBuilder();
@@ -182,6 +183,27 @@ public class ExpectTest {
             expect.expect(mock);
             fail();
         } catch (AssertionError ok) {
+        }
+    }
+
+    @Test
+    public void testExceptionOnFailure() throws IOException {
+        ExpectBuilder builder = new ExpectBuilder();
+        builder.withInputs(mock(InputStream.class));
+        builder.withOutput(mock(OutputStream.class));
+        builder.withTimeout(SMALL_TIMEOUT, TimeUnit.MILLISECONDS);
+        builder.withExceptionOnFailure();
+        expect = builder.build();
+
+        Matcher<?> mock = mock(Matcher.class);
+        Result result = mock(Result.class);
+        when(result.isSuccessful()).thenReturn(false);
+        when(mock.matches(anyString(), eq(false))).thenReturn(result);
+        try {
+            expect.expect(mock);
+            fail();
+        } catch (final ExpectIOException ignore) {
+            assertTrue(ignore.getMessage().contains("fail"));
         }
     }
 

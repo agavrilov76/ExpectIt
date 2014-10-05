@@ -88,6 +88,13 @@ public class ExpectSupportImpl implements Closeable, ExpectSupport {
     }
 
     @Override
+    public void setExceptionOnFailure(final boolean exceptionOnFailure) {
+        if (exceptionOnFailure) {
+            builder.withExceptionOnFailure();
+        }
+    }
+
+    @Override
     public void setLineSeparator(String lineSeparator) {
         builder.withLineSeparator(lineSeparator);
     }

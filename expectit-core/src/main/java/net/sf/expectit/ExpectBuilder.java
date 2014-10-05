@@ -48,12 +48,14 @@ public class ExpectBuilder {
     private long timeout = DEFAULT_TIMEOUT_MS;
     private EchoOutput echoOutputOld;
     private Charset charset = Charset.defaultCharset();
+    @Deprecated
     private boolean errorOnTimeout;
     private String lineSeparator = "\n";
     private Appendable echoOutput;
     private Appendable echoInput;
     private Appendable[] echoInputs;
     private int bufferSize = DEFAULT_BUFFER_SIZE;
+    private boolean exceptionOnFailure;
 
     /**
      * Default constructor.
@@ -214,9 +216,23 @@ public class ExpectBuilder {
      *
      * @param errorOnTimeout the error flag
      * @return this
+     * @deprecated This method is deprecated and will be removed. Use
+     * {@link #withExceptionOnFailure()} instead.
      */
+    @Deprecated
     public final ExpectBuilder withErrorOnTimeout(boolean errorOnTimeout) {
         this.errorOnTimeout = errorOnTimeout;
+        return this;
+    }
+
+    /**
+     * Enables throwing an {@link ExpectIOException} if an expect operation
+     * was not successful. Optional, disabled by default.
+     *
+     * @return this
+     */
+    public final ExpectBuilder withExceptionOnFailure() {
+        this.exceptionOnFailure = true;
         return this;
     }
 
@@ -263,7 +279,7 @@ public class ExpectBuilder {
      * The instance is not thread safe and intended to be used in a single thread.
      *
      * @return the instance
-     * @throws IOException                     if I/O error occurs
+     * @throws java.io.IOException                     if I/O error occurs
      * @throws java.lang.IllegalStateException if the {@code inputs} are incorrect
      */
     public final Expect build() throws IOException {
@@ -295,8 +311,14 @@ public class ExpectBuilder {
             };
         }
         ExpectImpl instance = new ExpectImpl(
-                timeout, output, inputs, charset, echoOutput,
-                errorOnTimeout, lineSeparator);
+                timeout,
+                output,
+                inputs,
+                charset,
+                echoOutput,
+                errorOnTimeout,
+                lineSeparator,
+                exceptionOnFailure);
         instance.start();
         return instance;
     }

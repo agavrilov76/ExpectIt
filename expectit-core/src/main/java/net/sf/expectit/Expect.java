@@ -86,9 +86,8 @@ public interface Expect extends Closeable {
      * Blocks until the given matcher matches against the first input stream using the default
      * timeout.
      * <p/>
-     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit
-     * .ExpectBuilder#errorOnTimeout}
-     * is set.
+     * The method throws an {@link java.lang.AssertionError} if
+     * {@link net.sf.expectit.ExpectBuilder#errorOnTimeout} is set. Deprecated.
      * <p/>
      * An instance of {@link java.io.EOFException} will be thrown if the underlying input steam,
      * the internal buffer
@@ -97,9 +96,11 @@ public interface Expect extends Closeable {
      * @param <R>     the matcher type
      * @param matcher the mather
      * @return the match result
-     * @throws java.io.IOException                          if I/O error occurs
+     * @throws ExpectIOException if the matcher does not match and the
+     * the {@link net.sf.expectit.ExpectBuilder#withExceptionOnFailure()} flag was set
      * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has
      * been interrupted
+     * @throws java.io.IOException if an I/O error occurs
      */
     <R extends Result> R expect(Matcher<R> matcher) throws IOException;
 
@@ -107,9 +108,8 @@ public interface Expect extends Closeable {
      * Blocks until all the given matchers match against the first input stream using the default
      * timeout.
      * <p/>
-     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit
-     * .ExpectBuilder#errorOnTimeout}
-     * is set.
+     * The method throws an {@link java.lang.AssertionError} if
+     * {@link net.sf.expectit.ExpectBuilder#errorOnTimeout} is set. Deprecated.
      * <p/>
      * An instance of {@link java.io.EOFException} will be thrown if the underlying input steam,
      * the internal buffer
@@ -117,18 +117,19 @@ public interface Expect extends Closeable {
      *
      * @param matchers the matchers
      * @return the match result from all the matchers
-     * @throws java.io.IOException                          if I/O error occurs
+     * @throws ExpectIOException if the matcher does not match and the
+     * the {@link net.sf.expectit.ExpectBuilder#withExceptionOnFailure()} flag was set
      * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has
      * been interrupted
+     * @throws java.io.IOException if an I/O error occurs
      */
     MultiResult expect(Matcher<?>... matchers) throws IOException;
 
     /**
      * Blocks until the given matcher matches the first input stream using the given timeout.
      * <p/>
-     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit
-     * .ExpectBuilder#errorOnTimeout}
-     * is set.
+     * The method throws an {@link java.lang.AssertionError} if
+     * {@link net.sf.expectit.ExpectBuilder#errorOnTimeout} is set. Deprecated.
      * <p/>
      * An instance of {@link java.io.EOFException} will be thrown if the underlying input stream,
      * the internal buffer
@@ -139,9 +140,11 @@ public interface Expect extends Closeable {
      *                  infinite if -1 is passed
      * @param matcher   the mather
      * @return the match result
-     * @throws java.io.IOException                          if I/O error occurs
+     * @throws ExpectIOException if the matcher does not match and the
+     * the {@link ExpectBuilder#withExceptionOnFailure()} flag was set
      * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has
      * been interrupted
+     * @throws IOException if an I/O error occurs
      * @deprecated This method is deprecated and will be removed. Use
      * {@link #withTimeout(long, java.util.concurrent.TimeUnit)} to change the timeout for the
      * expect operation.
@@ -152,9 +155,8 @@ public interface Expect extends Closeable {
     /**
      * Blocks until all the given matchers match the first input stream using the given timeout.
      * <p/>
-     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit
-     * .ExpectBuilder#errorOnTimeout}
-     * is set.
+     * The method throws an {@link java.lang.AssertionError} if
+     * {@link net.sf.expectit.ExpectBuilder#errorOnTimeout} is set. Deprecated.
      * <p/>
      * An instance of {@link java.io.EOFException} will be thrown if the underlying input steam,
      * the internal buffer
@@ -164,9 +166,11 @@ public interface Expect extends Closeable {
      *                  infinite if -1 is passed
      * @param matcher   the matchers
      * @return the match result from all the matchers
-     * @throws java.io.IOException                          if I/O error occurs
+     * @throws ExpectIOException if the matcher does not match and the
+     * the {@link net.sf.expectit.ExpectBuilder#withExceptionOnFailure()} flag was set
      * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has
      * been interrupted
+     * @throws java.io.IOException if an I/O error occurs
      * @deprecated This method is deprecated and will be removed. Use
      * {@link #withTimeout(long, java.util.concurrent.TimeUnit)} to change the timeout for the
      * expect operation.
@@ -178,9 +182,8 @@ public interface Expect extends Closeable {
      * Blocks until the given matcher matches against the given input stream using the default
      * timeout.
      * <p/>
-     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit
-     * .ExpectBuilder#errorOnTimeout}
-     * is set.
+     * The method throws an {@link java.lang.AssertionError} if
+     * {@link net.sf.expectit.ExpectBuilder#errorOnTimeout} is set. Deprecated.
      * <p/>
      * An instance of {@link java.io.EOFException} will be thrown if the underlying input steam,
      * the internal buffer
@@ -192,9 +195,11 @@ public interface Expect extends Closeable {
      *                thrown
      * @param matcher the matcher
      * @return the match result
-     * @throws java.io.IOException                          if I/O error occurs
+     * @throws ExpectIOException if the matcher does not match and the
+     * the {@link net.sf.expectit.ExpectBuilder#withExceptionOnFailure()} flag was set
      * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has
      * been interrupted
+     * @throws java.io.IOException if an I/O error occurs
      */
     <R extends Result> R expectIn(int input, Matcher<R> matcher) throws IOException;
 
@@ -202,9 +207,8 @@ public interface Expect extends Closeable {
      * Blocks until the given matcher matches against the given input stream using the given
      * timeout.
      * <p/>
-     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit
-     * .ExpectBuilder#errorOnTimeout}
-     * is set.
+     * The method throws an {@link java.lang.AssertionError} if
+     * {@link net.sf.expectit.ExpectBuilder#errorOnTimeout} is set. Deprecated.
      *
      * @param <R>       the matcher type
      * @param input     the index of the input. if the index is outside of the boundaries,
@@ -214,9 +218,11 @@ public interface Expect extends Closeable {
      *                  infinite if -1 is passed
      * @param matcher   the mather
      * @return the match result
-     * @throws java.io.IOException                          if I/O error occurs
+     * @throws ExpectIOException if the matcher does not match and the
+     * the {@link net.sf.expectit.ExpectBuilder#withExceptionOnFailure()} flag was set
      * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has
      * been interrupted
+     * @throws java.io.IOException if an I/O error occurs
      * @deprecated This method is deprecated and will be removed. Use
      * {@link #withTimeout(long, java.util.concurrent.TimeUnit)} to change the timeout for the
      * expect operation.
@@ -228,9 +234,8 @@ public interface Expect extends Closeable {
      * Blocks until all the given matchers matche against the given input stream using the given
      * timeout.
      * <p/>
-     * The method throws an {@link java.lang.AssertionError} if {@link net.sf.expectit
-     * .ExpectBuilder#errorOnTimeout}
-     * is set.
+     * The method throws an {@link java.lang.AssertionError} if
+     * {@link net.sf.expectit.ExpectBuilder#errorOnTimeout} is set. Deprecated.
      * <p/>
      * An instance of {@link java.io.EOFException} will be thrown if the underlying input steam,
      * the internal buffer
@@ -243,9 +248,11 @@ public interface Expect extends Closeable {
      *                  infinite if -1 is passed
      * @param matchers  the matchers
      * @return the match result from all the matchers
-     * @throws java.io.IOException                          if I/O error occurs
+     * @throws ExpectIOException if the matcher does not match and the
+     * the {@link net.sf.expectit.ExpectBuilder#withExceptionOnFailure()} flag was set
      * @throws java.nio.channels.ClosedByInterruptException if the thread calling this method has
      * been interrupted
+     * @throws java.io.IOException if an I/O error occurs
      * @deprecated This method is deprecated and will be removed. Use
      * {@link #withTimeout(long, java.util.concurrent.TimeUnit)} to change the timeout for the
      * expect operation.
