@@ -1,5 +1,6 @@
 Unreleased
 -------
+   #28 Replace AssertError with IOException subclass
    #20 Ant task for sequence matcher
    #27 Make SimpleResult public?
    #26 Colors filter is buggy
