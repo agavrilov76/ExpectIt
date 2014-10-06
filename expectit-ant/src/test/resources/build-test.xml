@@ -50,7 +50,7 @@
         <assert-equals property="result2.group" value="XYZ3"/>
         <assert-equals property="result2.group.1" value="Y"/>
         <assert-equals property="result2.group.2" value="3"/>
-        <assert-equals property="result2.input" value="XYZ34"/>
+        <assert-equals property="result2.input" value="XYZ34&#10;"/>
 
         <expect:send string="echo def"/>
         <expect:send line=""/>
