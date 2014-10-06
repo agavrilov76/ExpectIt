@@ -28,8 +28,8 @@ import java.util.regex.MatchResult;
 class RegexpResult extends SimpleResult {
     private final MatchResult delegate;
 
-    public RegexpResult(boolean succeeded, String before, MatchResult regexpResult) {
-        super(succeeded, before, null);
+    public RegexpResult(boolean succeeded, String input, String before, MatchResult regexpResult) {
+        super(succeeded, input, before, null);
         delegate = regexpResult;
     }
 

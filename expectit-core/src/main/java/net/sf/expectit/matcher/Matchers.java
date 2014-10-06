@@ -25,6 +25,9 @@ import java.util.regex.Pattern;
 import net.sf.expectit.MultiResult;
 import net.sf.expectit.Result;
 
+import static net.sf.expectit.matcher.SimpleResult.failure;
+import static net.sf.expectit.matcher.SimpleResult.success;
+
 
 /**
  * The matcher factory.
@@ -134,11 +137,7 @@ public final class Matchers {
             @Override
             public Result matches(String input, boolean isEof) {
                 int pos = input.indexOf(string);
-                if (pos != -1) {
-                    return new SimpleResult(true, input.substring(0, pos), string);
-                } else {
-                    return SimpleResult.NEGATIVE;
-                }
+                return pos != -1 ? success(input, input.substring(0, pos), string) : failure(input);
             }
 
             @Override
@@ -205,7 +204,7 @@ public final class Matchers {
         return new Matcher<Result>() {
             @Override
             public Result matches(String input, boolean isEof) {
-                return SimpleResult.valueOf(isEof, input, "");
+                return isEof ? success(input, input, "") : failure(input);
             }
 
             @Override
@@ -249,7 +248,7 @@ public final class Matchers {
             public MultiResult matches(String input, boolean isEof) {
                 int matchCount = 0;
                 Result[] results = new Result[matchers.length];
-                Arrays.fill(results, SimpleResult.NEGATIVE);
+                Arrays.fill(results, failure(input));
                 int beginIndex = 0;
                 for (int i = 0; i < matchers.length; i++) {
                     Result result = matchers[i].matches(input.substring(beginIndex), isEof);
@@ -260,6 +259,7 @@ public final class Matchers {
                             String group = result.group();
                             Result finalResult = new SimpleResult(
                                     true,
+                                    input,
                                     input.substring(0, beginIndex - group.length()),
                                     group);
                             return new MultiResultImpl(finalResult, Arrays.asList(results));
@@ -268,7 +268,7 @@ public final class Matchers {
                         break;
                     }
                 }
-                return new MultiResultImpl(SimpleResult.NEGATIVE, Arrays.asList(results));
+                return new MultiResultImpl(failure(input), Arrays.asList(results));
             }
 
             @Override
@@ -291,7 +291,7 @@ public final class Matchers {
         return new Matcher<Result>() {
             @Override
             public Result matches(String input, boolean isEof) {
-                return SimpleResult.valueOf(input.length() > 0, "", input);
+                return input.length() > 0 ? success(input, "", input) : failure(input);
             }
 
             @Override
@@ -326,7 +326,7 @@ public final class Matchers {
         return new Matcher<Result>() {
             @Override
             public Result matches(String input, boolean isEof) {
-                return SimpleResult.valueOf(exact.equals(input), "", input);
+                return exact.equals(input) ? success(input, "", input) : failure(input);
             }
 
             @Override

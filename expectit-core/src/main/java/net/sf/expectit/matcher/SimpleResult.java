@@ -26,26 +26,29 @@ import net.sf.expectit.Result;
  * A result of string matching.
  */
 public class SimpleResult implements Result {
-    /**
-     * A constant representing unsuccessful match.
-     */
-    public static final Result NEGATIVE = new SimpleResult(false, null, null);
-
     private final boolean succeeded;
     private final String before;
     private final String group;
+    private final String input;
 
     /**
      * Creates an instance with the initial field values.
      *
      * @param succeeded the success flag.
+     * @param input the matcher`s input string.
      * @param before    the string before match, not {@code null}.
      * @param group     the string group, not {@code null}.
      */
-    public SimpleResult(boolean succeeded, String before, String group) {
+    protected SimpleResult(boolean succeeded, String input, String before, String group) {
         this.succeeded = succeeded;
+        this.input = input;
         this.before = before;
         this.group = group;
+    }
+
+    @Override
+    public String getInput() {
+        return input;
     }
 
     @Override
@@ -111,19 +114,22 @@ public class SimpleResult implements Result {
     }
 
     /**
-     * Creates an instance with the initial field values.
-     *
-     * @param succeeded the success flag.
+     * Creates an instance of a successful result type.
+     * @param input the matcher`s input string.
      * @param before    the string before match, not {@code null}.
      * @param group     the string group, not {@code null}.
-     * @return the instance. if {@code succeeded} is false, returns the
-     * {@link net.sf.expectit.matcher.SimpleResult#NEGATIVE} constant.
+     * @return the result object.
      */
-    public static Result valueOf(boolean succeeded, String before, String group) {
-        if (succeeded) {
-            return new SimpleResult(true, before, group);
-        } else {
-            return NEGATIVE;
-        }
+    public static Result success(String input, String before, String group) {
+        return new SimpleResult(true, input, before, group);
+    }
+
+    /**
+     * Creates an instance of an unsuccessful match.
+     * @param input    the input string.
+     * @return the result object.
+     */
+    public static Result failure(String input) {
+        return new SimpleResult(false, input, null, null);
     }
 }

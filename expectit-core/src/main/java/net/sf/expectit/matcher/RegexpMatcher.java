@@ -58,9 +58,9 @@ class RegexpMatcher implements Matcher<Result> {
             result = matcher.matches();
         }
         if (result) {
-            return new RegexpResult(true, input.substring(0, matcher.start()), matcher);
+            return new RegexpResult(true, input, input.substring(0, matcher.start()), matcher);
         } else {
-            return SimpleResult.NEGATIVE;
+            return SimpleResult.failure(input);
         }
     }
 

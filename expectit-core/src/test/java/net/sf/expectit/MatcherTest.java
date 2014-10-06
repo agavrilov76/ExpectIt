@@ -33,10 +33,7 @@ import static net.sf.expectit.matcher.Matchers.matches;
 import static net.sf.expectit.matcher.Matchers.regexp;
 import static net.sf.expectit.matcher.Matchers.sequence;
 import static net.sf.expectit.matcher.Matchers.times;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
@@ -172,10 +169,14 @@ public class MatcherTest {
         assertEquals(result.group(0), "1b2c");
         checkIndexOutOfBound(result, 1);
         assertTrue(input.getBuffer().toString().startsWith("3_"));
+        assertEquals(result.getInput(), result.getBefore()
+                + result.group(0)
+                + input.getBuffer().toString());
 
         result = input.expect(SMALL_TIMEOUT, regexp("a.z.c"));
         assertFalse(result.isSuccessful());
         checkIllegalState(result);
+        assertEquals(result.getInput(), "3_");
 
         mock.push(text);
         result = input.expect(LONG_TIMEOUT, regexp("3_([^_]*)c3"));
@@ -309,6 +310,8 @@ public class MatcherTest {
         assertTrue(result.isSuccessful());
         assertEquals(result.start(), 2);
         assertEquals(result.end(), 3);
+        assertTrue(result.getInput().equals(result.getResults().get(0).getInput()));
+        assertEquals(result.getInput(), "a1b2c3_");
 
         mock.push(text);
         result = input.expect(LONG_TIMEOUT, anyOf(contains("x"), contains("b"), contains("zzz")));
@@ -453,6 +456,8 @@ public class MatcherTest {
         assertEquals(result.getBefore(), "2c3_a1b2");
         assertEquals(result.getResults().get(0).getBefore(), "2c");
         assertEquals(result.getResults().get(1).getBefore(), "_a1b2");
+        assertEquals(result.getInput(), "2c3_a1b2c3_");
+        assertEquals(result.getResults().get(1).getInput(), "_a1b2c3_");
     }
 
     @Test
@@ -505,6 +510,7 @@ public class MatcherTest {
             fail();
         } catch (IllegalStateException ignore) {
         }
+        assertNotNull(result.getInput());
     }
 
     /**

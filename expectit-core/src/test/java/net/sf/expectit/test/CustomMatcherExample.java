@@ -24,6 +24,9 @@ import net.sf.expectit.Result;
 import net.sf.expectit.matcher.Matcher;
 import net.sf.expectit.matcher.SimpleResult;
 
+import static net.sf.expectit.matcher.SimpleResult.failure;
+import static net.sf.expectit.matcher.SimpleResult.success;
+
 /**
  * An example of a custom matcher in a third-party package.
  */
@@ -37,7 +40,7 @@ public class CustomMatcherExample {
 
         @Override
         public Result matches(final String input, final boolean isEof) {
-            return SimpleResult.valueOf(input.equals(exact), "", input);
+            return input.equals(exact) ? success(input, "", input) : failure(input);
         }
     }
 

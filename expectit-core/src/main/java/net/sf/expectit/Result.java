@@ -29,6 +29,11 @@ import java.util.regex.MatchResult;
  */
 public interface Result extends MatchResult {
     /**
+     * Gets latest input string passed to the matcher before it returns.
+     * @return the input string.
+     */
+    String getInput();
+    /**
      * Indicates whether the match was successful or not.
      *
      * @return {@code true} if the match succeeded, or {@code false} otherwise.

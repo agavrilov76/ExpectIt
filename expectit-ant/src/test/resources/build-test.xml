@@ -50,13 +50,14 @@
         <assert-equals property="result2.group" value="XYZ3"/>
         <assert-equals property="result2.group.1" value="Y"/>
         <assert-equals property="result2.group.2" value="3"/>
-
+        <assert-equals property="result2.input" value="XYZ34"/>
 
         <expect:send string="echo def"/>
         <expect:send line=""/>
 
         <expect:anyString/>
         <expect:contains string="abcd" resultPrefix="result2n"/>
+        <assert-equals property="result2n.input" value="def&#10;"/>
         <fail if="result2n.success"/>
 
         <expect:send line="echo hi!"/>
@@ -200,6 +201,7 @@
         <expect:contains string="test" resultPrefix="result100"/>
       </expect:sequential>
     </expect:ssh>
+    <assert-equals property="result100.input" value="test&#10;"/>
     <fail unless="result100.success"/>
   </target>
 

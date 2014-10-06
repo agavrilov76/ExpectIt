@@ -83,9 +83,14 @@ abstract class AbstractMatcherElement<R extends Result> extends AbstractTaskElem
      * @param result the result
      */
     protected void exportSuccessfulResult(String prefix, R result) {
-        if (!result.isSuccessful() || prefix == null) {
+        if (prefix == null) {
             return;
         }
+        setPropertyIfNoNull(prefix, "input", result.getInput());
+        if (!result.isSuccessful()) {
+            return;
+        }
+        setPropertyIfNoNull(prefix, "input", result.getInput());
         setPropertyIfNoNull(prefix, "before", result.getBefore());
         setPropertyIfNoNull(prefix, "group", result.group());
         setPropertyIfNoNull(prefix, "success", "true");

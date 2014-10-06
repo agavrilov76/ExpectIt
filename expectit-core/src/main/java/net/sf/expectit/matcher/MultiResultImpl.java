@@ -40,6 +40,11 @@ class MultiResultImpl implements MultiResult {
     }
 
     @Override
+    public String getInput() {
+        return delegate.getInput();
+    }
+
+    @Override
     public boolean isSuccessful() {
         return delegate.isSuccessful();
     }
