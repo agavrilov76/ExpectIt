@@ -57,7 +57,7 @@ public class SshJExample {
                 .withEchoInput(System.out)
                 .withEchoOutput(System.err)
                 .withInputFilters(removeColors(), removeNonPrintable())
-                .withExceptionOnFailure()
+                .withErrorOnTimeout(true)
                 .build();
         try {
             expect.expect(contains("[RETURN]"));

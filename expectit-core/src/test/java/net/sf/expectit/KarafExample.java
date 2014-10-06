@@ -55,7 +55,7 @@ public class KarafExample {
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
                         //.withEchoOutput(adapt(System.out))
                 .withInputFilters(filter)
-                .withExceptionOnFailure()
+                .withErrorOnTimeout(true)
                 .build();
         channel.connect();
         try {

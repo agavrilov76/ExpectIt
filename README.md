@@ -96,7 +96,7 @@ Here is an example of interacting with a spawn process:
                 .withInputs(process.getInputStream())
                 .withOutput(process.getOutputStream())
                 .withTimeout(1, TimeUnit.SECONDS)
-                .withExceptionOnFailure()
+                .withErrorOnTimeout(true)
                 .build();
         // try-with-resources is omitted for simplicity
         expect.sendLine("ls -lh");
@@ -134,7 +134,7 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
                 .withEchoOutput(System.out)
                 .withEchoInput(System.err)
         //        .withInputFilters(removeColors(), removeNonPrintable())
-                .withExceptionOnFailure()
+                .withErrorOnTimeout(true)
                 .build();
         // try-with-resources is omitted for simplicity
         channel.connect();

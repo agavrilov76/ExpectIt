@@ -40,7 +40,7 @@ public class ProcessExample {
                 .withTimeout(1, TimeUnit.SECONDS)
                 .withEchoInput(System.out)
                 .withEchoOutput(System.err)
-                .withExceptionOnFailure()
+                .withErrorOnTimeout(true)
                 .build();
         System.out.println("PWD:" + expect.sendLine("pwd").expect(contains("\n")).getBefore());
         // try-with-resources is omitted for simplicity
