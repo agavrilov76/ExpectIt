@@ -33,6 +33,7 @@ public interface Result extends MatchResult {
      * @return the input string.
      */
     String getInput();
+
     /**
      * Indicates whether the match was successful or not.
      *

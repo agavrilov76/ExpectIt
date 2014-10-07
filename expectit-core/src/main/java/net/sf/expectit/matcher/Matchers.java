@@ -20,13 +20,13 @@ package net.sf.expectit.matcher;
  * #L%
  */
 
+import static net.sf.expectit.matcher.SimpleResult.failure;
+import static net.sf.expectit.matcher.SimpleResult.success;
+
 import java.util.Arrays;
 import java.util.regex.Pattern;
 import net.sf.expectit.MultiResult;
 import net.sf.expectit.Result;
-
-import static net.sf.expectit.matcher.SimpleResult.failure;
-import static net.sf.expectit.matcher.SimpleResult.success;
 
 
 /**

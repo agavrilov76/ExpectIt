@@ -20,12 +20,11 @@ package net.sf.expectit.test;
  * #L%
  */
 
-import net.sf.expectit.Result;
-import net.sf.expectit.matcher.Matcher;
-import net.sf.expectit.matcher.SimpleResult;
-
 import static net.sf.expectit.matcher.SimpleResult.failure;
 import static net.sf.expectit.matcher.SimpleResult.success;
+
+import net.sf.expectit.Result;
+import net.sf.expectit.matcher.Matcher;
 
 /**
  * An example of a custom matcher in a third-party package.

@@ -116,8 +116,8 @@ public class SimpleResult implements Result {
     /**
      * Creates an instance of a successful result type.
      * @param input the matcher`s input string.
-     * @param before    the string before match, not {@code null}.
-     * @param group     the string group, not {@code null}.
+     * @param before the string before match, not {@code null}.
+     * @param group the string group, not {@code null}.
      * @return the result object.
      */
     public static Result success(String input, String before, String group) {
@@ -126,7 +126,7 @@ public class SimpleResult implements Result {
 
     /**
      * Creates an instance of an unsuccessful match.
-     * @param input    the input string.
+     * @param input the input string.
      * @return the result object.
      */
     public static Result failure(String input) {
