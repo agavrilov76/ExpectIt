@@ -38,7 +38,7 @@ public class Java8Example {
                 .build()) {
             Result result = expect.expect((input, isEof) -> isEof
                     ? success(input, input, "")
-                    : failure(input));
+                    : failure(input, false));
             System.out.println(result.getBefore());
         }
     }

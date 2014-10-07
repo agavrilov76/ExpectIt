@@ -110,6 +110,11 @@
         <expect:exact resultPrefix="result10" string="XYZ&#10;"/>
         <fail unless="result10.success"/>
 
+        <expect:send line="echo ABC"/>
+        <expect:startsWith resultPrefix="result11" string="AB"/>
+        <fail unless="result11.success"/>
+        <assert-equals property="result11.group" value="AB"/>
+
         <expect:send line="exit"/>
         <expect:eof resultPrefix="resultX"/>
         <fail unless="resultX.success"/>

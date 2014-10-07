@@ -1,4 +1,4 @@
-package net.sf.expectit.test;
+package net.sf.expectit.ant.matcher;
 
 /*
  * #%L
@@ -20,30 +20,19 @@ package net.sf.expectit.test;
  * #L%
  */
 
-import static net.sf.expectit.matcher.SimpleResult.failure;
-import static net.sf.expectit.matcher.SimpleResult.success;
+import static net.sf.expectit.matcher.Matchers.startsWith;
 
 import net.sf.expectit.Result;
 import net.sf.expectit.matcher.Matcher;
 
 /**
- * An example of a custom matcher in a third-party package.
+ * An element that corresponds to
+ * {@link net.sf.expectit.matcher.Matchers#startsWith(String)}.
  */
-public class CustomMatcherExample {
-    public static class ExactMatcher implements Matcher<Result> {
-        private final String exact;
+public class StartsWithElement extends AbstractStringMatcherElement {
 
-        public ExactMatcher(final String exact) {
-            this.exact = exact;
-        }
-
-        @Override
-        public Result matches(final String input, final boolean isEof) {
-            return input.equals(exact) ? success(input, "", input) : failure(input, false);
-        }
-    }
-
-    public static void main(String[] args) {
-        new ExactMatcher("thing");
+    @Override
+    protected Matcher<Result> getResultStringMatcher(final String prefix) {
+        return startsWith(getProject().replaceProperties(prefix));
     }
 }

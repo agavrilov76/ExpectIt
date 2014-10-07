@@ -34,6 +34,7 @@
   <taskdef name="matches" classname="net.sf.expectit.ant.matcher.MatchesElement"/>
   <taskdef name="sequence" classname="net.sf.expectit.ant.matcher.SequenceElement" />
   <taskdef name="exact" classname="net.sf.expectit.ant.matcher.ExactElement" />
+  <taskdef name="startsWith" classname="net.sf.expectit.ant.matcher.StartsWithElement" />
 
   <taskdef name="send" classname="net.sf.expectit.ant.SendElement"/>
   <taskdef name="sequential" classname="net.sf.expectit.ant.SequentialElement"/>

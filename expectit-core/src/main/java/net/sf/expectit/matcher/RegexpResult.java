@@ -29,7 +29,7 @@ class RegexpResult extends SimpleResult {
     private final MatchResult delegate;
 
     RegexpResult(boolean succeeded, String input, String before, MatchResult regexpResult) {
-        super(succeeded, input, before, null);
+        super(succeeded, input, before, null, false);
         delegate = regexpResult;
     }
 

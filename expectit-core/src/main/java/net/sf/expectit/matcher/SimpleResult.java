@@ -30,20 +30,27 @@ public class SimpleResult implements Result {
     private final String before;
     private final String group;
     private final String input;
+    private final boolean canStopMatching;
 
     /**
      * Creates an instance with the initial field values.
-     *
-     * @param succeeded the success flag.
+     *  @param succeeded the success flag.
      * @param input the matcher`s input string.
      * @param before    the string before match, not {@code null}.
      * @param group     the string group, not {@code null}.
+     * @param canStopMatching
      */
-    protected SimpleResult(boolean succeeded, String input, String before, String group) {
+    protected SimpleResult(
+            final boolean succeeded,
+            final String input,
+            final String before,
+            final String group,
+            final boolean canStopMatching) {
         this.succeeded = succeeded;
         this.input = input;
         this.before = before;
         this.group = group;
+        this.canStopMatching = canStopMatching;
     }
 
     @Override
@@ -60,6 +67,11 @@ public class SimpleResult implements Result {
     public String getBefore() {
         checkSucceeded();
         return before;
+    }
+
+    @Override
+    public boolean canStopMatching() {
+        return canStopMatching;
     }
 
     @Override
@@ -115,21 +127,23 @@ public class SimpleResult implements Result {
 
     /**
      * Creates an instance of a successful result type.
+     * The {@link net.sf.expectit.Result#canStopMatching()} is always set to {@code true}.
      * @param input the matcher`s input string.
      * @param before the string before match, not {@code null}.
      * @param group the string group, not {@code null}.
      * @return the result object.
      */
     public static Result success(String input, String before, String group) {
-        return new SimpleResult(true, input, before, group);
+        return new SimpleResult(true, input, before, group, true);
     }
 
     /**
      * Creates an instance of an unsuccessful match.
      * @param input the input string.
+     * @param canStopMatching indicates whether matching operation can be stopped.
      * @return the result object.
      */
-    public static Result failure(String input) {
-        return new SimpleResult(false, input, null, null);
+    public static Result failure(String input, boolean canStopMatching) {
+        return new SimpleResult(false, input, null, null, canStopMatching);
     }
 }

@@ -29,7 +29,8 @@ import java.util.regex.MatchResult;
  */
 public interface Result extends MatchResult {
     /**
-     * Gets latest input string passed to the matcher before it returns.
+     * Gets latest input string passed to the matcher before it returns. The input represents the
+     * state of the internal buffer.
      * @return the input string.
      */
     String getInput();
@@ -50,4 +51,13 @@ public interface Result extends MatchResult {
      * @throws java.lang.IllegalStateException if the match operation failed
      */
     String getBefore();
+
+    /**
+     * Indicates that the matching operation won't have a different result at any point
+     * in the future and there is no need to wait for the successful match. The process can
+     * stop matching and return the program control to the user.
+     *
+     * @return the flag.
+     */
+    boolean canStopMatching();
 }

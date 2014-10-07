@@ -60,7 +60,7 @@ class RegexpMatcher implements Matcher<Result> {
         if (result) {
             return new RegexpResult(true, input, input.substring(0, matcher.start()), matcher);
         } else {
-            return SimpleResult.failure(input);
+            return SimpleResult.failure(input, false);
         }
     }
 

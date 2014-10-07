@@ -85,7 +85,8 @@ class SingleInputExpect {
             source.register(selector, SelectionKey.OP_READ);
             R result = matcher.matches(buffer.toString(), copierFuture.isDone());
 
-            while (!result.isSuccessful() && (isInfiniteTimeout || timeElapsed > 0)) {
+            while (!(result.isSuccessful() || result.canStopMatching())
+                    && (isInfiniteTimeout || timeElapsed > 0)) {
                 int keys = isInfiniteTimeout ? selector.select() : selector.select(timeElapsed);
                 // if thread was interrupted the selector returns immediately
                 // and keep the thread status, so we need to check it

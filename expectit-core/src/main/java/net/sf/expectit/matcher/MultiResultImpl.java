@@ -33,10 +33,12 @@ import net.sf.expectit.Result;
 class MultiResultImpl implements MultiResult {
     private final List<Result> results;
     private final Result delegate;
+    private final boolean canStopMatching;
 
-    public MultiResultImpl(Result delegate, List<Result> results) {
+    MultiResultImpl(Result delegate, List<Result> results) {
         this.delegate = delegate;
         this.results = results;
+        this.canStopMatching = canStopMatching(results);
     }
 
     @Override
@@ -52,6 +54,11 @@ class MultiResultImpl implements MultiResult {
     @Override
     public String getBefore() {
         return delegate.getBefore();
+    }
+
+    @Override
+    public boolean canStopMatching() {
+        return canStopMatching;
     }
 
     @Override
@@ -92,5 +99,16 @@ class MultiResultImpl implements MultiResult {
     @Override
     public List<Result> getResults() {
         return Collections.unmodifiableList(results);
+    }
+
+    static boolean canStopMatching(List<Result> results) {
+        boolean canStopMatching = false;
+        for (Result r : results) {
+            if (!r.canStopMatching()) {
+                return false;
+            }
+            canStopMatching = true;
+        }
+        return canStopMatching;
     }
 }

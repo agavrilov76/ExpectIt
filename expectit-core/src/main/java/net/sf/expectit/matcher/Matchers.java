@@ -24,6 +24,7 @@ import static net.sf.expectit.matcher.SimpleResult.failure;
 import static net.sf.expectit.matcher.SimpleResult.success;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Pattern;
 import net.sf.expectit.MultiResult;
 import net.sf.expectit.Result;
@@ -137,7 +138,9 @@ public final class Matchers {
             @Override
             public Result matches(String input, boolean isEof) {
                 int pos = input.indexOf(string);
-                return pos != -1 ? success(input, input.substring(0, pos), string) : failure(input);
+                return pos != -1
+                        ? success(input, input.substring(0, pos), string)
+                        : failure(input, false);
             }
 
             @Override
@@ -204,7 +207,7 @@ public final class Matchers {
         return new Matcher<Result>() {
             @Override
             public Result matches(String input, boolean isEof) {
-                return isEof ? success(input, input, "") : failure(input);
+                return isEof ? success(input, input, "") : failure(input, false);
             }
 
             @Override
@@ -248,7 +251,7 @@ public final class Matchers {
             public MultiResult matches(String input, boolean isEof) {
                 int matchCount = 0;
                 Result[] results = new Result[matchers.length];
-                Arrays.fill(results, failure(input));
+                Arrays.fill(results, failure(input, false));
                 int beginIndex = 0;
                 for (int i = 0; i < matchers.length; i++) {
                     Result result = matchers[i].matches(input.substring(beginIndex), isEof);
@@ -261,14 +264,17 @@ public final class Matchers {
                                     true,
                                     input,
                                     input.substring(0, beginIndex - group.length()),
-                                    group);
+                                    group,
+                                    result.canStopMatching());
                             return new MultiResultImpl(finalResult, Arrays.asList(results));
                         }
                     } else {
                         break;
                     }
                 }
-                return new MultiResultImpl(failure(input), Arrays.asList(results));
+                final List<Result> resultList = Arrays.asList(results);
+                boolean canStopMatching = MultiResultImpl.canStopMatching(resultList);
+                return new MultiResultImpl(failure(input, canStopMatching), resultList);
             }
 
             @Override
@@ -291,7 +297,7 @@ public final class Matchers {
         return new Matcher<Result>() {
             @Override
             public Result matches(String input, boolean isEof) {
-                return input.length() > 0 ? success(input, "", input) : failure(input);
+                return input.length() > 0 ? success(input, "", input) : failure(input, false);
             }
 
             @Override
@@ -326,12 +332,39 @@ public final class Matchers {
         return new Matcher<Result>() {
             @Override
             public Result matches(String input, boolean isEof) {
-                return exact.equals(input) ? success(input, "", input) : failure(input);
+                return exact.equals(input)
+                        ? success(input, "", input)
+                        : failure(input, input.length() > exact.length());
             }
 
             @Override
             public String toString() {
                 return "exact";
+            }
+        };
+    }
+
+    /**
+     * Creates a matcher that matches when the input buffer starts with the given string.
+     * <p/>
+     * If the result is successful, the {@link net.sf.expectit.Result#getBefore()} returns an
+     * empty string, the {@link net.sf.expectit.Result#group()} returns the given string.
+     *
+     * @param prefix the prefix string to match.
+     * @return the result.
+     */
+    public static Matcher<Result> startsWith(final String prefix) {
+        return new Matcher<Result>() {
+            @Override
+            public Result matches(String input, boolean isEof) {
+                return input.startsWith(prefix)
+                        ? success(input, "", prefix)
+                        : failure(input, input.length() > prefix.length());
+            }
+
+            @Override
+            public String toString() {
+                return "startsWith";
             }
         };
     }

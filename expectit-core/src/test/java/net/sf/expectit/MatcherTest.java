@@ -32,6 +32,7 @@ import static net.sf.expectit.matcher.Matchers.exact;
 import static net.sf.expectit.matcher.Matchers.matches;
 import static net.sf.expectit.matcher.Matchers.regexp;
 import static net.sf.expectit.matcher.Matchers.sequence;
+import static net.sf.expectit.matcher.Matchers.startsWith;
 import static net.sf.expectit.matcher.Matchers.times;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -198,6 +199,7 @@ public class MatcherTest {
         // sanity check for Pattern instance
         result = input.expect(LONG_TIMEOUT, regexp(Pattern.compile("a(.*)")));
         assertTrue(result.isSuccessful());
+        assertFalse(result.canStopMatching());
     }
 
     /**
@@ -335,6 +337,13 @@ public class MatcherTest {
         assertTrue(result.isSuccessful());
         assertTrue(result.getResults().get(0) instanceof MultiResult);
         assertEquals(result.getResults().size(), 2);
+
+        // test canStopMatching
+        mock.push(text);
+        result = input.expect(SMALL_TIMEOUT, anyOf(startsWith("a")));
+        assertTrue(result.canStopMatching());
+        result = input.expect(SMALL_TIMEOUT, anyOf(startsWith("a"), startsWith(text + text)));
+        assertFalse(result.canStopMatching());
     }
 
     @Test
@@ -560,15 +569,37 @@ public class MatcherTest {
         }
     }
 
-    @Test
+    @Test (timeout = 5000)
     public void testExact() throws IOException, InterruptedException {
         Result result = input.expect(SMALL_TIMEOUT, exact("a1"));
         assertFalse(result.isSuccessful());
         result = input.expect(SMALL_TIMEOUT, exact(text));
         assertTrue(result.isSuccessful());
+        assertTrue(result.canStopMatching());
         assertEquals(result.getBefore(), "");
         assertEquals(result.groupCount(), 0);
         assertEquals(result.group(), text);
         assertFalse(input.expect(SMALL_TIMEOUT, exact(text)).isSuccessful());
+
+        mock.push("XZY");
+        result = input.expect(LONG_TIMEOUT * 100, exact("x"));
+        assertFalse(result.isSuccessful());
+        assertTrue(result.canStopMatching());
+    }
+
+    @Test
+    public void testStartsWith() throws IOException, InterruptedException {
+        Result result = input.expect(SMALL_TIMEOUT, startsWith("YZ"));
+        assertFalse(result.isSuccessful());
+        final String substring = text.substring(0, 2);
+        result = input.expect(SMALL_TIMEOUT, startsWith(substring));
+        assertTrue(result.isSuccessful());
+        assertEquals(result.getBefore(), "");
+        assertEquals(result.groupCount(), 0);
+        assertTrue(result.canStopMatching());
+        assertEquals(result.group(), substring);
+        final Result result2 = input.expect(SMALL_TIMEOUT, startsWith(text + text));
+        assertFalse(result2.isSuccessful());
+        assertFalse(result2.canStopMatching());
     }
 }

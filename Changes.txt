@@ -1,9 +1,12 @@
-Unreleased
+0.6.0
 -------
+   #29 Fail fast ability for matchers
+   #31 Match result should contain the reference to the input buffer
    #28 Replace AssertError with IOException subclass
    #20 Ant task for sequence matcher
    #27 Make SimpleResult public?
    #26 Colors filter is buggy
+
 0.5.0
 -------
     #17 times matcher is not working as expected
@@ -18,10 +21,12 @@ Unreleased
     #6 ability to change the timeout after the first command (reported by davecramer)
     #5 Ability to set infinitive timeout (requested by jtorr...@gmail.com)
     #4 Provide EchoOutput adapters that handle input and output separately.
+
 0.3.1
 ----------
     #8 Bug: Resource leak (reported by neilgierman)
-    #7 Improvement: fixed checkstyle (by DmitryMiltsov) 
+    #7 Improvement: fixed checkstyle (by DmitryMiltsov)
+
 0.3.0
 ----------
     #2: times matcher doesn't match if input buffer already contains matching string
