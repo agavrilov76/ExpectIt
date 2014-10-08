@@ -1,3 +1,6 @@
+Unreleased
+-------
+
 0.6.0
 -------
    #29 Fail fast ability for matchers
