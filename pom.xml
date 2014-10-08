@@ -86,6 +86,7 @@
     </sonatypeOssDistMgmtSnapshotsUrl>
     <powermock.version>1.5.4</powermock.version>
     <findbugs.version>2.5.3</findbugs.version>
+    <javadoc-plugin.version>2.9.1</javadoc-plugin.version>
   </properties>
 
   <profiles>
@@ -132,6 +133,19 @@
       <modules>
         <module>expect-java8</module>
       </modules>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <version>${javadoc-plugin.version}</version>
+              <configuration>
+                <additionalparam>-Xdoclint:none</additionalparam>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
     </profile>
   </profiles>
 
@@ -218,7 +232,7 @@
         </plugin>
         <plugin>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>2.9.1</version>
+          <version>${javadoc-plugin.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-surefire-plugin</artifactId>
