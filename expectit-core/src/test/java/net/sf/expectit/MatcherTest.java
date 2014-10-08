@@ -363,6 +363,9 @@ public class MatcherTest {
 
         Matcher<?> e = Matchers.eof();
         assertEquals(allOf(c, e).toString(), "allOf(contains('xyz'),eof)");
+        assertEquals(startsWith("XXX").toString(), "startsWith('XXX')");
+        assertEquals(
+                sequence(startsWith("TTT"), eof()).toString(), "sequence(startsWith('TTT'),eof)");
     }
 
     @Test

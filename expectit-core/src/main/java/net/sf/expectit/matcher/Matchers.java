@@ -339,7 +339,7 @@ public final class Matchers {
 
             @Override
             public String toString() {
-                return "exact";
+                return generateToString("exact", exact);
             }
         };
     }
@@ -364,7 +364,7 @@ public final class Matchers {
 
             @Override
             public String toString() {
-                return "startsWith";
+                return generateToString("startsWith", prefix);
             }
         };
     }
