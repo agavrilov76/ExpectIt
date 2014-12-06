@@ -146,4 +146,14 @@ public class SimpleResult implements Result {
     public static Result failure(String input, boolean canStopMatching) {
         return new SimpleResult(false, input, null, null, canStopMatching);
     }
+
+    @Override
+    public String toString() {
+        return "SimpleResult{"
+                + "succeeded=" + succeeded
+                + ", before='" + before + '\''
+                + ", group='" + group + '\''
+                + ", input='" + input + '\''
+                + ", canStopMatching=" + canStopMatching + '}';
+    }
 }

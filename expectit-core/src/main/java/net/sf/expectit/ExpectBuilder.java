@@ -158,6 +158,10 @@ public class ExpectBuilder {
      * parameters does not correspond to the number of the input streams. That is,
      * if {@code otherInputs}
      * is specified, the number of them must be equal to the number of inputs minus 1.
+     * <p/>
+     * The byte data received from the input streams is converted to strings using the
+     * builder's charset. See {@link ExpectBuilder#withCharset(java.nio.charset.Charset)} for
+     * more information.
      *
      * @param firstInput  where to echo the received data for the first input. If {@code
      *                    otherInputs} are empty, then

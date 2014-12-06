@@ -20,6 +20,8 @@ package net.sf.expectit;
  * #L%
  */
 
+import static net.sf.expectit.Utils.toDebugString;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -27,11 +29,15 @@ import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
 import java.util.concurrent.Callable;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Performs copy from an input stream to a WritableByteChannel.
  */
 class InputStreamCopier implements Callable<Object> {
+    private static final Logger LOG = Logger.getLogger(InputStreamCopier.class.getName());
+
     private final InputStream from;
     private final WritableByteChannel to;
     private final int bufferSize;
@@ -58,6 +64,13 @@ class InputStreamCopier implements Callable<Object> {
         try {
             while ((bytesRead = from.read(buffer)) != -1) {
                 to.write(ByteBuffer.wrap(buffer, 0, bytesRead));
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.fine(
+                            String.format(
+                                    "Received from %s: %s",
+                                    from,
+                                    toDebugString(buffer, bytesRead, charset)));
+                }
                 if (echo != null) {
                     printEcho(buffer, bytesRead);
                 }

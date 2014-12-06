@@ -63,7 +63,7 @@ public class ResourceLeakTest {
             ByteArrayInputStream input = new ByteArrayInputStream(string.getBytes());
             Expect expect = new ExpectBuilder()
                     .withInputs(input)
-                    .withTimeout(Utils.SMALL_TIMEOUT, TimeUnit.MILLISECONDS)
+                    .withTimeout(TestUtils.SMALL_TIMEOUT, TimeUnit.MILLISECONDS)
                     .build();
             expect.expect(contains(i + "d"));
             // close input and the expect instance

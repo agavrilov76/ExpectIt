@@ -20,8 +20,8 @@ package net.sf.expectit;
  * #L%
  */
 
-import static net.sf.expectit.Utils.LONG_TIMEOUT;
-import static net.sf.expectit.Utils.SMALL_TIMEOUT;
+import static net.sf.expectit.TestUtils.LONG_TIMEOUT;
+import static net.sf.expectit.TestUtils.SMALL_TIMEOUT;
 import static net.sf.expectit.filter.Filters.removeNonPrintable;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.eof;

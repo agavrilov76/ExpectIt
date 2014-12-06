@@ -20,9 +20,9 @@ package net.sf.expectit;
  * #L%
  */
 
-import static net.sf.expectit.Utils.LONG_TIMEOUT;
-import static net.sf.expectit.Utils.SMALL_TIMEOUT;
-import static net.sf.expectit.Utils.mockInputStream;
+import static net.sf.expectit.TestUtils.LONG_TIMEOUT;
+import static net.sf.expectit.TestUtils.SMALL_TIMEOUT;
+import static net.sf.expectit.TestUtils.mockInputStream;
 import static net.sf.expectit.echo.EchoAdapters.adapt;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.times;
@@ -40,7 +40,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 import java.io.EOFException;

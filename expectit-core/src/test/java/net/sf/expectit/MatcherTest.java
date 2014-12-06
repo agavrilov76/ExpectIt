@@ -21,8 +21,8 @@ package net.sf.expectit;
  */
 
 import static net.sf.expectit.ExpectBuilder.DEFAULT_BUFFER_SIZE;
-import static net.sf.expectit.Utils.LONG_TIMEOUT;
-import static net.sf.expectit.Utils.SMALL_TIMEOUT;
+import static net.sf.expectit.TestUtils.LONG_TIMEOUT;
+import static net.sf.expectit.TestUtils.SMALL_TIMEOUT;
 import static net.sf.expectit.matcher.Matchers.allOf;
 import static net.sf.expectit.matcher.Matchers.anyOf;
 import static net.sf.expectit.matcher.Matchers.anyString;
@@ -73,7 +73,7 @@ public class MatcherTest {
      */
     @Before
     public void setup() throws Exception {
-        mock = Utils.mockInputStream(text);
+        mock = TestUtils.mockInputStream(text);
         input = new SingleInputExpect(
                 mock.getStream(),
                 Charset.defaultCharset(), null, null, DEFAULT_BUFFER_SIZE);
@@ -376,7 +376,7 @@ public class MatcherTest {
         input.expect(SMALL_TIMEOUT, times(3, contains("_")));
         // make sure the buffer is cleaned
         assertTrue(input.expect(SMALL_TIMEOUT, matches(".*")).isSuccessful());
-        mock.push(Utils.EOF);
+        mock.push(TestUtils.EOF);
         try {
             // now the buffer is empty
             input.expect(SMALL_TIMEOUT, contains("xxx"));
@@ -391,7 +391,7 @@ public class MatcherTest {
     @Test
     public void testEofMultiMatcher1() throws IOException, InterruptedException {
         assertTrue(input.expect(SMALL_TIMEOUT, contains("a1")).isSuccessful());
-        mock.push(Utils.EOF);
+        mock.push(TestUtils.EOF);
         MultiResult result = input.expect(SMALL_TIMEOUT, allOf(contains("b"), eof()));
         assertTrue(result.isSuccessful());
         assertFalse(result.getBefore().isEmpty());
@@ -401,7 +401,7 @@ public class MatcherTest {
     @Test
     public void testEofMultiMatcher2() throws IOException, InterruptedException {
         assertTrue(input.expect(SMALL_TIMEOUT, contains("a1")).isSuccessful());
-        mock.push(Utils.EOF);
+        mock.push(TestUtils.EOF);
         MultiResult result = input.expect(SMALL_TIMEOUT, anyOf(contains("wrong"), eof()));
         assertTrue(result.isSuccessful());
         assertFalse(result.getBefore().isEmpty());

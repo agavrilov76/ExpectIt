@@ -111,4 +111,12 @@ class MultiResultImpl implements MultiResult {
         }
         return canStopMatching;
     }
+
+    @Override
+    public String toString() {
+        return "MultiResultImpl{"
+                + "results=" + results
+                + ", delegate=" + delegate
+                + ", canStopMatching=" + canStopMatching + '}';
+    }
 }

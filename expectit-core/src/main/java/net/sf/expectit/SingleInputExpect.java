@@ -20,6 +20,8 @@ package net.sf.expectit;
  * #L%
  */
 
+import static net.sf.expectit.Utils.toDebugString;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,6 +33,8 @@ import java.nio.channels.Selector;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.sf.expectit.filter.Filter;
 import net.sf.expectit.matcher.Matcher;
 
@@ -38,6 +42,8 @@ import net.sf.expectit.matcher.Matcher;
  * Represents a single inputs.
  */
 class SingleInputExpect {
+    private static final Logger LOG = Logger.getLogger(SingleInputExpect.class.getName());
+
     public static final int BUFFER_SIZE = 1024;
 
     private final InputStream input;
@@ -51,9 +57,11 @@ class SingleInputExpect {
     private final int bufferSize;
 
     protected SingleInputExpect(
-            InputStream input, Charset charset,
-            Appendable echoInput, Filter filter,
-            int bufferSize) throws IOException {
+            final InputStream input,
+            final Charset charset,
+            final Appendable echoInput,
+            final Filter filter,
+            final int bufferSize) throws IOException {
         this.input = input;
         this.charset = charset;
         this.echoInput = echoInput;
@@ -67,6 +75,19 @@ class SingleInputExpect {
     }
 
     public void start(ExecutorService executor) {
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine(
+                    String.format(
+                            "Starting expect thread: input=%s, charset=%s, echoInput=%s, "
+                                    + "filter=%s, bufferSize=%d",
+                            input,
+                            charset,
+                            echoInput,
+                            filter,
+                            bufferSize
+                    )
+            );
+        }
         copierFuture = executor.submit(
                 new InputStreamCopier(
                         sink,
@@ -90,13 +111,20 @@ class SingleInputExpect {
         try {
             source.register(selector, SelectionKey.OP_READ);
             R result = matcher.matches(buffer.toString(), copierFuture.isDone());
-
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.fine(
+                        String.format(
+                                "Initial matcher %s result: %s",
+                                toDebugString(matcher),
+                                toDebugString(result)));
+            }
             while (!(result.isSuccessful() || result.canStopMatching())
                     && (isInfiniteTimeout || timeElapsed > 0)) {
                 int keys = isInfiniteTimeout ? selector.select() : selector.select(timeElapsed);
                 // if thread was interrupted the selector returns immediately
                 // and keep the thread status, so we need to check it
                 if (Thread.currentThread().isInterrupted()) {
+                    LOG.fine("Thread was interrupted");
                     throw new ClosedByInterruptException();
                 }
 
@@ -105,6 +133,7 @@ class SingleInputExpect {
                 }
 
                 if (keys == 0) {
+                    LOG.fine("Selector returns 0 key");
                     continue;
                 }
 
@@ -118,6 +147,14 @@ class SingleInputExpect {
                 }
 
                 result = matcher.matches(buffer.toString(), len == -1);
+                if (LOG.isLoggable(Level.FINE)) {
+                    LOG.fine(
+                            String.format(
+                                    "Matcher %s result: %s. Operation time: %d ms",
+                                    toDebugString(matcher),
+                                    toDebugString(result),
+                                    timeoutMs - timeElapsed));
+                }
             }
 
             if (result.isSuccessful()) {
@@ -132,19 +169,29 @@ class SingleInputExpect {
     }
 
     private void processString(String string) throws IOException {
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine("Processing string: " + toDebugString(string));
+        }
         if (filter != null) {
+            if (LOG.isLoggable(Level.FINE)) {
+                LOG.fine("Before append filter: " + toDebugString(filter));
+            }
             string = filter.beforeAppend(string, buffer);
         }
 
         if (string != null) {
             buffer.append(string);
             if (filter != null) {
+                LOG.fine("After append filter: " + toDebugString(filter));
                 filter.afterAppend(buffer);
             }
         }
     }
 
     public void stop() throws IOException {
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine("Releasing resources for input: " + this.input);
+        }
         if (copierFuture != null) {
             copierFuture.cancel(true);
         }

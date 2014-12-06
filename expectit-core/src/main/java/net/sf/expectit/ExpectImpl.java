@@ -21,6 +21,7 @@ package net.sf.expectit;
  */
 
 import static net.sf.expectit.ExpectBuilder.validateDuration;
+import static net.sf.expectit.Utils.toDebugString;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -28,6 +29,8 @@ import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.sf.expectit.matcher.Matcher;
 
 /**
@@ -35,10 +38,13 @@ import net.sf.expectit.matcher.Matcher;
  * objects.
  */
 class ExpectImpl extends AbstractExpectImpl {
+    private static final Logger LOG = Logger.getLogger(ExpectImpl.class.getName());
+
     private final OutputStream output;
     private final SingleInputExpect[] inputs;
     private final Charset charset;
     private final Appendable echoOutput;
+    @Deprecated
     private final boolean errorOnTimeout;
     private final ExecutorService executor;
     private final String lineSeparator;
@@ -76,6 +82,14 @@ class ExpectImpl extends AbstractExpectImpl {
     @Override
     public <R extends Result> R expectIn(int input, long timeoutMs, Matcher<R> matcher)
             throws IOException {
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine(
+                    String.format(
+                            "Expect matcher '%s' with timeout %d (ms) in input #%d",
+                            toDebugString(matcher),
+                            timeoutMs,
+                            input));
+        }
         R result = inputs[input].expect(timeoutMs, matcher);
         if (exceptionOnFailure && !result.isSuccessful()) {
             throw new ExpectIOException(
@@ -126,6 +140,9 @@ class ExpectImpl extends AbstractExpectImpl {
     }
 
     private void writeBytes(byte[] bytes) throws IOException {
+        if (LOG.isLoggable(Level.FINE)) {
+            LOG.fine("Writing bytes: " + toDebugString(bytes, bytes.length, charset));
+        }
         output.write(bytes);
         output.flush();
     }

@@ -34,21 +34,21 @@ import org.mockito.stubbing.Answer;
 /**
  * Constants and method used in all the tests.
  */
-public final class Utils {
+public final class TestUtils {
     public static final String EOF = "EOF";
 
-    private Utils() {
+    private TestUtils() {
     }
 
     /**
      * A small timeout used for the tests that block until an expect operation finishes.
      */
-    public static final long SMALL_TIMEOUT = Long.getLong(Utils.class.getName(), 200);
+    public static final long SMALL_TIMEOUT = Long.getLong(TestUtils.class.getName(), 200);
 
     /**
      * A long timeout which should cause tests to fail.
      */
-    public static final long LONG_TIMEOUT = Long.getLong(Utils.class.getName(), 1000);
+    public static final long LONG_TIMEOUT = Long.getLong(TestUtils.class.getName(), 1000);
 
     /**
      * Creates a mock stream that pumps the given text every period of milliseconds.
