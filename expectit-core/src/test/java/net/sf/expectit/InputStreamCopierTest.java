@@ -26,13 +26,18 @@ import static net.sf.expectit.ExpectBuilder.DEFAULT_BUFFER_SIZE;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
+import com.google.common.base.Charsets;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
+import java.nio.charset.Charset;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -66,7 +71,9 @@ public class InputStreamCopierTest {
 
     @Test
     public void testCopy() throws IOException, ExecutionException, InterruptedException {
-        executor.submit(new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE)).get();
+        final InputStreamCopier copier =
+                new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, null, null);
+        executor.submit(copier).get();
         assertArrayEquals(toByteArray(resource), sink.toByteArray());
     }
 
@@ -74,11 +81,43 @@ public class InputStreamCopierTest {
     public void testClosedStream() throws IOException, ExecutionException, InterruptedException {
         input.close();
         try {
-            executor.submit(new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE)).get();
+            final InputStreamCopier copier =
+                    new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, null, null);
+            executor.submit(copier).get();
             fail();
         } catch (ExecutionException e) {
             assertTrue(e.getCause() instanceof IOException);
         }
     }
 
+    @Test
+    public void testEcho() throws ExecutionException, InterruptedException, IOException {
+        final Appendable echo = mock(Appendable.class);
+        final InputStreamCopier copier =
+                new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, echo, null);
+        executor.submit(copier).get();
+        final String string = new String(toByteArray(resource));
+        verify(echo).append(string);
+    }
+
+    @Test
+    public void testEcho2() throws ExecutionException, InterruptedException, IOException {
+        final Appendable echo = mock(Appendable.class);
+        final Charset utf16 = Charsets.UTF_16;
+        final InputStreamCopier copier =
+                new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, echo, utf16);
+        executor.submit(copier).get();
+        final String string = new String(toByteArray(resource), utf16);
+        verify(echo).append(string);
+    }
+
+    @Test
+    public void testEcho3() throws ExecutionException, InterruptedException, IOException {
+        final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        final PrintStream echo = new PrintStream(bytes);
+        final InputStreamCopier copier =
+                new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, echo, null);
+        executor.submit(copier).get();
+        assertArrayEquals(toByteArray(resource), bytes.toByteArray());
+    }
 }

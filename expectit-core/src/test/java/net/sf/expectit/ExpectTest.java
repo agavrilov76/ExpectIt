@@ -282,7 +282,8 @@ public class ExpectTest {
         verify(filter1).afterAppend(argThat(new StringBuilderArgumentMatcher("yy01234")));
         verify(filter2).afterAppend(any(StringBuilder.class));
         verify(filter3, never()).afterAppend(any(StringBuilder.class));
-        assertEquals("yyy", echo.toString());
+        // filters are not applied for the echo stream
+        assertEquals("testFilter", echo.toString());
     }
 
     @SuppressWarnings("deprecation")
@@ -324,16 +325,15 @@ public class ExpectTest {
 
         reset(echo);
         input.push(inputText);
+        input2.push(inputText2);
+        input.waitUntilReady();
+        input2.waitUntilReady();
         //noinspection deprecation
         assertTrue(expect.expect(LONG_TIMEOUT, times(2, contains(inputText))).isSuccessful());
         //noinspection deprecation
         assertTrue(expect.expectIn(1, SMALL_TIMEOUT, contains(inputText2)).isSuccessful());
-        try {
-            verify(echo, Mockito.times(2)).onReceive(0, inputText);
-        } catch (AssertionError ignore) {
-            verify(echo, Mockito.times(1)).onReceive(0, inputText + inputText);
-        }
-        verify(echo).onReceive(eq(1), anyString());
+        verify(echo, Mockito.times(1)).onReceive(0, inputText);
+        verify(echo).onReceive(eq(1), eq(inputText2));
     }
 
     @Test
@@ -393,7 +393,7 @@ public class ExpectTest {
         //noinspection deprecation
         assertTrue(expect.expectIn(1, LONG_TIMEOUT, contains(inputText2)).isSuccessful());
         verify(in2).append(inputText2);
-        verifyNoMoreInteractions(in1);
+        verify(in1).append(inputText);
 
         try {
             builder.withEchoInput(in1, in2, in1);

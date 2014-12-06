@@ -67,7 +67,13 @@ class SingleInputExpect {
     }
 
     public void start(ExecutorService executor) {
-        copierFuture = executor.submit(new InputStreamCopier(sink, input, bufferSize));
+        copierFuture = executor.submit(
+                new InputStreamCopier(
+                        sink,
+                        input,
+                        bufferSize,
+                        echoInput,
+                        charset));
     }
 
     public <R extends Result> R expect(long timeoutMs, Matcher<R> matcher) throws IOException {
@@ -131,9 +137,6 @@ class SingleInputExpect {
         }
 
         if (string != null) {
-            if (echoInput != null) {
-                echoInput.append(string);
-            }
             buffer.append(string);
             if (filter != null) {
                 filter.afterAppend(buffer);

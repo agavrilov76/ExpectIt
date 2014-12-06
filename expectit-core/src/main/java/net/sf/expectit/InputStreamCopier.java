@@ -20,9 +20,12 @@ package net.sf.expectit;
  * #L%
  */
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
+import java.nio.charset.Charset;
 import java.util.concurrent.Callable;
 
 /**
@@ -32,11 +35,20 @@ class InputStreamCopier implements Callable<Object> {
     private final InputStream from;
     private final WritableByteChannel to;
     private final int bufferSize;
+    private final Appendable echo;
+    private final Charset charset;
 
-    InputStreamCopier(WritableByteChannel to, InputStream from, int bufferSize) {
+    InputStreamCopier(
+            final WritableByteChannel to,
+            final InputStream from,
+            final int bufferSize,
+            final Appendable echo,
+            final Charset charset) {
         this.from = from;
         this.to = to;
         this.bufferSize = bufferSize;
+        this.echo = echo;
+        this.charset = charset;
     }
 
     @Override
@@ -46,11 +58,26 @@ class InputStreamCopier implements Callable<Object> {
         try {
             while ((bytesRead = from.read(buffer)) != -1) {
                 to.write(ByteBuffer.wrap(buffer, 0, bytesRead));
+                if (echo != null) {
+                    printEcho(buffer, bytesRead);
+                }
             }
         } finally {
             to.close();
         }
         return null;
+    }
+
+    private void printEcho(final byte[] buffer, final int bytesRead) throws IOException {
+        if (charset == null) {
+            if (echo instanceof OutputStream) {
+                ((OutputStream) echo).write(buffer, 0, bytesRead);
+            } else {
+                echo.append(new String(buffer, 0, bytesRead, Charset.defaultCharset()));
+            }
+        } else {
+            echo.append(new String(buffer, 0, bytesRead, charset));
+        }
     }
 
 }
