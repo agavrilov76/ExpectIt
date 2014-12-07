@@ -24,17 +24,29 @@ import java.io.IOException;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.junit.Test;
 
 /**
  * An example of logging debug information.
  */
 public class LoggingExample {
     public static void main(String[] args) throws IOException {
+        enableLogging();
+        SocketExample.main(args);
+    }
+
+    static ConsoleHandler enableLogging() {
         final Logger logger = Logger.getLogger("net.sf.expectit");
         final ConsoleHandler handler = new ConsoleHandler();
         handler.setLevel(Level.FINE);
         logger.addHandler(handler);
         logger.setLevel(Level.FINE);
-        SocketExample.main(args);
+        return handler;
+    }
+
+    static void disableLogging(ConsoleHandler handler) {
+        final Logger logger = Logger.getLogger("net.sf.expectit");
+        handler.setLevel(Level.INFO);
+        logger.setLevel(Level.INFO);
     }
 }

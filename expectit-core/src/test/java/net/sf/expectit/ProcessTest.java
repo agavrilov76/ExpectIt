@@ -35,6 +35,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.ConsoleHandler;
 import org.junit.After;
 import org.junit.Assume;
 import org.junit.Before;
@@ -42,13 +43,14 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Convert to integration test
+ * Convert to integration test?
  */
 public class ProcessTest {
 
     public static final String BIN_SH = "/bin/sh";
     private Expect expect;
     private Process process;
+    private ConsoleHandler handler;
 
     @BeforeClass
     public static void ignoreOnWindows() {
@@ -57,6 +59,7 @@ public class ProcessTest {
 
     @Before
     public void setup() throws IOException {
+        handler = LoggingExample.enableLogging();
         ProcessBuilder builder = new ProcessBuilder(BIN_SH);
         try {
             process = builder.start();
@@ -79,6 +82,7 @@ public class ProcessTest {
         if (expect != null) {
             expect.close();
         }
+        LoggingExample.disableLogging(handler);
     }
 
     @Test

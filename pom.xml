@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.sf.expectit</groupId>
   <artifactId>expectit-parent</artifactId>
-  <version>0.6.2-SNAPSHOT</version>
+  <version>0.7.0-SNAPSHOT</version>
   <modules>
     <module>expectit-core</module>
     <module>expectit-ant</module>
