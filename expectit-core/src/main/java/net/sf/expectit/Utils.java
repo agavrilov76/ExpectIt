@@ -7,7 +7,7 @@ import java.nio.charset.Charset;
  */
 final class Utils {
 
-    private static final int MAX_STRING_LENGTH = 200;
+    static final int MAX_STRING_LENGTH = 200;
 
     private Utils() {
     }
@@ -20,6 +20,9 @@ final class Utils {
     }
 
     static String toDebugString(final String string) {
+        if (string == null) {
+            return "null";
+        }
         final StringBuilder builder = new StringBuilder(string.length());
         for (int i = 0; i < string.length(); i++) {
             final char c = string.charAt(i);
@@ -40,9 +43,6 @@ final class Utils {
     }
 
     static String toDebugString(final Object object) {
-        if (object == null) {
-            return "null";
-        }
-        return toDebugString(object.toString());
+        return toDebugString(String.valueOf(object));
     }
 }
