@@ -36,7 +36,7 @@ Add the following Maven dependency to your project:
     <dependency>
         <groupId>net.sf.expectit</groupId>
         <artifactId>expectit-core</artifactId>
-        <version>0.6.0</version>
+        <version>0.6.1</version>
     </dependency>
 ```
 You can also download the ``expectit-core.jar`` file from the release project page at
