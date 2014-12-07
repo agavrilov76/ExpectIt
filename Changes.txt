@@ -1,6 +1,12 @@
 Unreleased
 -------
 
+0.6.1
+-------
+  #23 Add comprehensive logging via java.util.logging
+  #33 Echo should be printed even if expect method is not called
+      (requested by jmpllu)
+
 0.6.0
 -------
    #29 Fail fast ability for matchers
