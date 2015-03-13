@@ -127,6 +127,7 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
         session.setConfig(config);
         session.connect();
         Channel channel = session.openChannel("shell");
+        channel.connect();
 
         Expect expect = new ExpectBuilder()
                 .withOutput(channel.getOutputStream())
@@ -136,21 +137,21 @@ Note: you will to add [the jsch library](http://www.jcraft.com/jsch/) to your pr
         //        .withInputFilters(removeColors(), removeNonPrintable())
                 .withExceptionOnFailure()
                 .build();
-        // try-with-resources is omitted for simplicity
-        channel.connect();
-        expect.expect(contains("[RETURN]"));
-        expect.sendLine();
-        String ipAddress = expect.expect(regexp("Trying (.*)\\.\\.\\.")).group(1);
-        System.out.println("Captured IP: " + ipAddress);
-        expect.expect(contains("login:"));
-        expect.sendLine("new");
-        expect.expect(contains("(Y/N)"));
-        expect.send("N");
-        expect.expect(regexp(": $"));
-        // finally is omitted
-        channel.disconnect();
-        session.disconnect();
-        expect.close();
+        try {
+            expect.expect(contains("[RETURN]"));
+            expect.sendLine();
+            String ipAddress = expect.expect(regexp("Trying (.*)\\.\\.\\.")).group(1);
+            System.out.println("Captured IP: " + ipAddress);
+            expect.expect(contains("login:"));
+            expect.sendLine("new");
+            expect.expect(contains("(Y/N)"));
+            expect.send("N");
+            expect.expect(regexp(": $"));
+        } finally {
+            expect.close();
+            channel.disconnect();
+            session.disconnect();
+        }
 ```
 Note that SSH servers normally echo the received commands. The echo can be disabled by sending the `stty -echo` command. [This](expectit-core/src/test/java/net/sf/expectit/SshLocalhostNoEchoExample.java) is an example of capturing the result of the `pwd` command when the command echo is switched off.
 

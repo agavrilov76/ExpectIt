@@ -77,9 +77,9 @@ public class SshJExample {
             expect.expect(contains("[RETURN]"));
             expect.sendLine();
         } finally {
+            expect.close();
             session.close();
             ssh.close();
-            expect.close();
         }
     }
 }

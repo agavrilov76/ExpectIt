@@ -42,13 +42,13 @@ public class SshLocalhostNoEchoExample {
         session.setConfig(config);
         session.connect();
         Channel channel = session.openChannel("shell");
+        channel.connect();
 
         Expect expect = new ExpectBuilder()
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
                 .build();
         try {
-            channel.connect();
             expect.expect(contains("$"));
             expect.sendLine("stty -echo");
             expect.expect(contains("$"));
@@ -56,9 +56,9 @@ public class SshLocalhostNoEchoExample {
             System.out.println("pwd1:" + expect.expect(contains("\n")).getBefore());
             expect.sendLine("exit");
         } finally {
+            expect.close();
             channel.disconnect();
             session.disconnect();
-            expect.close();
         }
     }
 }

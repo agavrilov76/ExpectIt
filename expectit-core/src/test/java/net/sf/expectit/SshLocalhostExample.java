@@ -44,13 +44,13 @@ public class SshLocalhostExample {
         session.setConfig(config);
         session.connect();
         Channel channel = session.openChannel("shell");
+        channel.connect();
 
         Expect expect = new ExpectBuilder()
                 .withOutput(channel.getOutputStream())
                 .withInputs(channel.getInputStream(), channel.getExtInputStream())
                 .build();
         try {
-            channel.connect();
             expect.expect(contains("$"));
             expect.sendLine("pwd");
             System.out.println(
@@ -69,9 +69,9 @@ public class SshLocalhostExample {
             System.out.println(expect.expect(regexp(".*\\$")).getBefore().trim());
             expect.sendLine("exit");
         } finally {
+            expect.close();
             channel.disconnect();
             session.disconnect();
-            expect.close();
         }
     }
 }
