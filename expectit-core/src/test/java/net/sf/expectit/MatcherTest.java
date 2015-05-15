@@ -76,7 +76,11 @@ public class MatcherTest {
         mock = TestUtils.mockInputStream(text);
         input = new SingleInputExpect(
                 mock.getStream(),
-                Charset.defaultCharset(), null, null, DEFAULT_BUFFER_SIZE);
+                Charset.defaultCharset(),
+                null,
+                null,
+                DEFAULT_BUFFER_SIZE,
+                false);
         executor = Executors.newSingleThreadExecutor();
         input.start(executor);
         mock.waitUntilReady();

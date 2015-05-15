@@ -428,6 +428,21 @@ public class ExpectTest {
         assertTrue(stringWriter2.toString().isEmpty());
     }
 
+    @Test
+    public void testEchoOutputAutoFlush2() throws Exception {
+        ExpectBuilder builder = new ExpectBuilder();
+        builder.withAutoFlushEchoInputs(true);
+        MockInputStream input1 = mockInputStream("abc");
+        builder.withInputs(input1.getStream());
+        final StringWriter stringWriter1 = new StringWriter();
+        final BufferedWriter echo1 = new BufferedWriter(stringWriter1);
+        builder.withEchoInput(echo1);
+        expect = builder.build();
+        input1.waitUntilReady();
+        assertTrue(expect.expect(contains("ab")).isSuccessful());
+
+        assertThat(stringWriter1.toString(), is("abc"));
+    }
 
     @SuppressWarnings("deprecation")
     @Test(timeout = 5000)

@@ -56,6 +56,7 @@ public class ExpectBuilder {
     private Appendable[] echoInputs;
     private int bufferSize = DEFAULT_BUFFER_SIZE;
     private boolean exceptionOnFailure;
+    private boolean autoFlushEchoInput;
 
     /**
      * Default constructor.
@@ -273,6 +274,18 @@ public class ExpectBuilder {
     }
 
     /**
+     * Enables automatic flushing of the echo inputs after each successful match operation
+     * if the given echo object(s) implements {@link java.io.Flushable} interface.
+     *
+     * @param autoFlushEchoInput the auto flushing flag
+     * @return this
+     */
+    public final ExpectBuilder withAutoFlushEchoInputs(boolean autoFlushEchoInput) {
+        this.autoFlushEchoInput = autoFlushEchoInput;
+        return this;
+    }
+
+    /**
      * Creates a ready to use {@link Expect} instance.
      * <p/>
      * This method creates an instance and starts background threads that receive input data
@@ -301,8 +314,12 @@ public class ExpectBuilder {
         SingleInputExpect[] inputs = new SingleInputExpect[this.inputs.length];
         for (int i = 0; i < inputs.length; i++) {
             inputs[i] = new SingleInputExpect(
-                    this.inputs[i], charset,
-                    getEchoInputForIndex(i), filter, bufferSize);
+                    this.inputs[i],
+                    charset,
+                    getEchoInputForIndex(i),
+                    filter,
+                    bufferSize,
+                    autoFlushEchoInput);
         }
 
         if (echoOutputOld != null) {

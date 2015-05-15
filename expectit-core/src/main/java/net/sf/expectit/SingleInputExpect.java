@@ -23,6 +23,7 @@ package net.sf.expectit;
 import static net.sf.expectit.Utils.toDebugString;
 
 import java.io.EOFException;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -55,18 +56,21 @@ class SingleInputExpect {
     private final Pipe.SourceChannel source;
     private final Pipe.SinkChannel sink;
     private final int bufferSize;
+    private final boolean autoFlushEcho;
 
     protected SingleInputExpect(
             final InputStream input,
             final Charset charset,
             final Appendable echoInput,
             final Filter filter,
-            final int bufferSize) throws IOException {
+            final int bufferSize,
+            final boolean autoFlushEcho) throws IOException {
         this.input = input;
         this.charset = charset;
         this.echoInput = echoInput;
         this.filter = filter;
         this.bufferSize = bufferSize;
+        this.autoFlushEcho = autoFlushEcho;
         Pipe pipe = Pipe.open();
         source = pipe.source();
         sink = pipe.sink();
@@ -159,6 +163,9 @@ class SingleInputExpect {
 
             if (result.isSuccessful()) {
                 buffer.delete(0, result.end());
+                if (autoFlushEcho && echoInput instanceof Flushable) {
+                    ((Flushable) echoInput).flush();
+                }
             } else if (copierFuture.isDone() && buffer.length() == 0) {
                 throw new EOFException("Input closed");
             }
