@@ -1,5 +1,7 @@
 Unreleased
 -------
+  #35 Add ‘autoFlush' option to flush echo input after successful match
+      (thanks to azure.vastav at gmail)
 
 0.6.1
 -------
