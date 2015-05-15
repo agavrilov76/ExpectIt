@@ -26,9 +26,11 @@ import static net.sf.expectit.TestUtils.mockInputStream;
 import static net.sf.expectit.echo.EchoAdapters.adapt;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.times;
+import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -42,10 +44,13 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.io.BufferedWriter;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.charset.Charset;
 import java.util.concurrent.Callable;
@@ -400,6 +405,27 @@ public class ExpectTest {
             fail();
         } catch (IllegalArgumentException ignore) {
         }
+    }
+
+    @Test
+    public void testEchoOutputAutoFlush() throws Exception {
+        ExpectBuilder builder = new ExpectBuilder();
+        MockInputStream input1 = mockInputStream("abc");
+        MockInputStream input2 = mockInputStream("def");
+        builder.withInputs(input1.getStream(), input2.getStream());
+        final StringWriter stringWriter1 = new StringWriter();
+        final StringWriter stringWriter2 = new StringWriter();
+        final PrintWriter echo1 = new PrintWriter(stringWriter1, true);
+        final BufferedWriter echo2 = new BufferedWriter(stringWriter2);
+        builder.withEchoInput(echo1, echo2);
+        expect = builder.build();
+        input1.waitUntilReady();
+        input2.waitUntilReady();
+        assertTrue(expect.expectIn(0, contains("ab")).isSuccessful());
+        assertTrue(expect.expectIn(1, contains("def")).isSuccessful());
+
+        assertThat(stringWriter1.toString(), is("abc"));
+        assertTrue(stringWriter2.toString().isEmpty());
     }
 
 
