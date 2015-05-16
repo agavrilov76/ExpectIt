@@ -49,7 +49,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.charset.Charset;
@@ -415,7 +414,7 @@ public class ExpectTest {
         builder.withInputs(input1.getStream(), input2.getStream());
         final StringWriter stringWriter1 = new StringWriter();
         final StringWriter stringWriter2 = new StringWriter();
-        final PrintWriter echo1 = new PrintWriter(stringWriter1, true);
+        final BufferedWriter echo1 = new BufferedWriter(stringWriter1);
         final BufferedWriter echo2 = new BufferedWriter(stringWriter2);
         builder.withEchoInput(echo1, echo2);
         expect = builder.build();
@@ -423,7 +422,7 @@ public class ExpectTest {
         input2.waitUntilReady();
         assertTrue(expect.expectIn(0, contains("ab")).isSuccessful());
         assertTrue(expect.expectIn(1, contains("def")).isSuccessful());
-
+        echo1.flush();
         assertThat(stringWriter1.toString(), is("abc"));
         assertTrue(stringWriter2.toString().isEmpty());
     }
