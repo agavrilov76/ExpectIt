@@ -92,9 +92,10 @@ class ExpectImpl extends AbstractExpectImpl {
         }
         R result = inputs[input].expect(timeoutMs, matcher);
         if (exceptionOnFailure && !result.isSuccessful()) {
+            final String inputBuffer = inputs[input].getBuffer().toString();
             throw new ExpectIOException(
                     "Expect operation fails (timeout: "
-                            + timeoutMs + " ms) for matcher: " + matcher);
+                            + timeoutMs + " ms) for matcher: " + matcher, inputBuffer);
         }
         if (errorOnTimeout && !result.isSuccessful()) {
             throw new AssertionError(

@@ -26,11 +26,22 @@ import java.io.IOException;
  * An exception which occurs if an expect operation has failed.
  */
 public class ExpectIOException extends IOException {
+    private final String inputBuffer;
     /**
      * Creates a new exception instance with the given error message.
      * @param message the message.
+     * @param inputBuffer the input string buffer.
      */
-    public ExpectIOException(final String message) {
+    public ExpectIOException(final String message, final String inputBuffer) {
         super(message);
+        this.inputBuffer = inputBuffer;
+    }
+
+    /**
+     * Retrieves the input data buffer when the exception occurs.
+     * @return the input string buffer.
+     */
+    public String getInputBuffer() {
+        return inputBuffer;
     }
 }

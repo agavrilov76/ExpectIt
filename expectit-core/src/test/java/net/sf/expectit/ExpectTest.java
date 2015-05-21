@@ -191,9 +191,10 @@ public class ExpectTest {
     }
 
     @Test
-    public void testExceptionOnFailure() throws IOException {
+    public void testExceptionOnFailure() throws Exception {
         ExpectBuilder builder = new ExpectBuilder();
-        builder.withInputs(mock(InputStream.class));
+        MockInputStream input = mockInputStream("abc");
+        builder.withInputs(input.getStream());
         builder.withOutput(mock(OutputStream.class));
         builder.withTimeout(SMALL_TIMEOUT, TimeUnit.MILLISECONDS);
         builder.withExceptionOnFailure();
@@ -208,6 +209,7 @@ public class ExpectTest {
             fail();
         } catch (final ExpectIOException ignore) {
             assertTrue(ignore.getMessage().contains("fail"));
+            assertThat(ignore.getInputBuffer(), is("abc"));
         }
     }
 
