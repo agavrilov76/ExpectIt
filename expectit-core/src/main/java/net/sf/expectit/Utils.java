@@ -20,6 +20,8 @@ package net.sf.expectit;
  * #L%
  */
 
+import java.io.Flushable;
+import java.io.IOException;
 import java.nio.charset.Charset;
 
 /**
@@ -64,5 +66,11 @@ final class Utils {
 
     static String toDebugString(final Object object) {
         return toDebugString(String.valueOf(object));
+    }
+
+    static void flushAppendable(final Appendable appendable) throws IOException {
+        if (appendable instanceof Flushable) {
+            ((Flushable) appendable).flush();
+        }
     }
 }

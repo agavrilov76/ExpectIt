@@ -45,6 +45,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.BufferedWriter;
+import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -419,6 +420,8 @@ public class ExpectTest {
         final BufferedWriter echo1 = new BufferedWriter(stringWriter1);
         final BufferedWriter echo2 = new BufferedWriter(stringWriter2);
         builder.withEchoInput(echo1, echo2);
+        final StringWriter echoOutput = mock(StringWriter.class);
+        builder.withEchoOutput(echoOutput);
         expect = builder.build();
         input1.waitUntilReady();
         input2.waitUntilReady();
@@ -427,22 +430,33 @@ public class ExpectTest {
         echo1.flush();
         assertThat(stringWriter1.toString(), is("abc"));
         assertTrue(stringWriter2.toString().isEmpty());
+        verify(echoOutput, never()).flush();
+        expect.close();
+        verify(echoOutput).flush();
     }
 
     @Test
     public void testEchoOutputAutoFlush2() throws Exception {
         ExpectBuilder builder = new ExpectBuilder();
-        builder.withAutoFlushEchoInputs(true);
+        builder.withAutoFlushEcho(true);
         MockInputStream input1 = mockInputStream("abc");
         builder.withInputs(input1.getStream());
+        final StringWriter echoOutput = mock(StringWriter.class);
+        builder.withEchoOutput(echoOutput);
         final StringWriter stringWriter1 = new StringWriter();
         final BufferedWriter echo1 = new BufferedWriter(stringWriter1);
+        builder.withOutput(new ByteArrayOutputStream());
         builder.withEchoInput(echo1);
         expect = builder.build();
+        expect.sendLine("xyz");
         input1.waitUntilReady();
         assertTrue(expect.expect(contains("ab")).isSuccessful());
 
         assertThat(stringWriter1.toString(), is("abc"));
+        verify(echoOutput).flush();
+        reset(echoOutput);
+        expect.close();
+        verify(echoOutput, never()).flush();
     }
 
     @SuppressWarnings("deprecation")

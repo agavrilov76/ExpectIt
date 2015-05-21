@@ -23,7 +23,6 @@ package net.sf.expectit;
 import static net.sf.expectit.Utils.toDebugString;
 
 import java.io.EOFException;
-import java.io.Flushable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -160,12 +159,11 @@ class SingleInputExpect {
                                     timeoutMs - timeElapsed));
                 }
             }
-
+            if (autoFlushEcho) {
+                Utils.flushAppendable(echoInput);
+            }
             if (result.isSuccessful()) {
                 buffer.delete(0, result.end());
-                if (autoFlushEcho && echoInput instanceof Flushable) {
-                    ((Flushable) echoInput).flush();
-                }
             } else if (copierFuture.isDone() && buffer.length() == 0) {
                 throw new EOFException("Input closed");
             }
@@ -196,6 +194,7 @@ class SingleInputExpect {
     }
 
     public void stop() throws IOException {
+        Utils.flushAppendable(echoInput);
         if (LOG.isLoggable(Level.FINE)) {
             LOG.fine("Releasing resources for input: " + this.input);
         }

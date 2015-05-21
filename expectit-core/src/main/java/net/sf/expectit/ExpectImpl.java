@@ -40,6 +40,8 @@ import net.sf.expectit.matcher.Matcher;
 class ExpectImpl extends AbstractExpectImpl {
     private static final Logger LOG = Logger.getLogger(ExpectImpl.class.getName());
 
+    static final int INFINITE_TIMEOUT = -1; // value representing infinite timeout
+
     private final OutputStream output;
     private final SingleInputExpect[] inputs;
     private final Charset charset;
@@ -48,8 +50,8 @@ class ExpectImpl extends AbstractExpectImpl {
     private final boolean errorOnTimeout;
     private final ExecutorService executor;
     private final String lineSeparator;
-    static final int INFINITE_TIMEOUT = -1; // value representing infinite timeout
     private final boolean exceptionOnFailure;
+    private final boolean autoFlushEcho;
 
     ExpectImpl(
             final long timeout,
@@ -59,7 +61,8 @@ class ExpectImpl extends AbstractExpectImpl {
             final Appendable echoOutput,
             final boolean errorOnTimeoutOld,
             final String lineSeparator,
-            final boolean exceptionOnFailure) {
+            final boolean exceptionOnFailure,
+            final boolean autoFlushEcho) {
         super(timeout);
         this.output = output;
         this.inputs = inputs;
@@ -68,6 +71,7 @@ class ExpectImpl extends AbstractExpectImpl {
         this.errorOnTimeout = errorOnTimeoutOld;
         this.exceptionOnFailure = exceptionOnFailure;
         this.lineSeparator = lineSeparator;
+        this.autoFlushEcho = autoFlushEcho;
         executor = Executors.newFixedThreadPool(
                 inputs.length,
                 new NamedExecutorThreadFactory("expect-"));
@@ -151,11 +155,17 @@ class ExpectImpl extends AbstractExpectImpl {
     private void echoString(String string) throws IOException {
         if (echoOutput != null) {
             echoOutput.append(string);
+            if (autoFlushEcho) {
+                Utils.flushAppendable(echoOutput);
+            }
         }
     }
 
     @Override
     public void close() throws IOException {
+        if (!autoFlushEcho) {
+            Utils.flushAppendable(echoOutput);
+        }
         for (SingleInputExpect input : inputs) {
             input.stop();
         }
