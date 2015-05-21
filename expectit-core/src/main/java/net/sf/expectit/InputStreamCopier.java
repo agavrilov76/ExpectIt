@@ -43,18 +43,21 @@ class InputStreamCopier implements Callable<Object> {
     private final int bufferSize;
     private final Appendable echo;
     private final Charset charset;
+    private final boolean autoFlushEcho;
 
     InputStreamCopier(
             final WritableByteChannel to,
             final InputStream from,
             final int bufferSize,
             final Appendable echo,
-            final Charset charset) {
+            final Charset charset,
+            final boolean autoFlushEcho) {
         this.from = from;
         this.to = to;
         this.bufferSize = bufferSize;
         this.echo = echo;
         this.charset = charset;
+        this.autoFlushEcho = autoFlushEcho;
     }
 
     @Override
@@ -90,6 +93,9 @@ class InputStreamCopier implements Callable<Object> {
             }
         } else {
             echo.append(new String(buffer, 0, bytesRead, charset));
+        }
+        if (autoFlushEcho) {
+            Utils.flushAppendable(echo);
         }
     }
 

@@ -34,6 +34,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.io.StringWriter;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
@@ -72,7 +73,7 @@ public class InputStreamCopierTest {
     @Test
     public void testCopy() throws IOException, ExecutionException, InterruptedException {
         final InputStreamCopier copier =
-                new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, null, null);
+                new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, null, null, false);
         executor.submit(copier).get();
         assertArrayEquals(toByteArray(resource), sink.toByteArray());
     }
@@ -82,7 +83,7 @@ public class InputStreamCopierTest {
         input.close();
         try {
             final InputStreamCopier copier =
-                    new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, null, null);
+                    new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, null, null, false);
             executor.submit(copier).get();
             fail();
         } catch (ExecutionException e) {
@@ -92,12 +93,13 @@ public class InputStreamCopierTest {
 
     @Test
     public void testEcho() throws ExecutionException, InterruptedException, IOException {
-        final Appendable echo = mock(Appendable.class);
+        final StringWriter echo = mock(StringWriter.class);
         final InputStreamCopier copier =
-                new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, echo, null);
+                new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, echo, null, true);
         executor.submit(copier).get();
         final String string = new String(toByteArray(resource));
         verify(echo).append(string);
+        verify(echo).flush();
     }
 
     @Test
@@ -105,7 +107,7 @@ public class InputStreamCopierTest {
         final Appendable echo = mock(Appendable.class);
         final Charset utf16 = Charsets.UTF_16;
         final InputStreamCopier copier =
-                new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, echo, utf16);
+                new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, echo, utf16, false);
         executor.submit(copier).get();
         final String string = new String(toByteArray(resource), utf16);
         verify(echo).append(string);
@@ -116,7 +118,7 @@ public class InputStreamCopierTest {
         final ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         final PrintStream echo = new PrintStream(bytes);
         final InputStreamCopier copier =
-                new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, echo, null);
+                new InputStreamCopier(channel, input, DEFAULT_BUFFER_SIZE, echo, null, false);
         executor.submit(copier).get();
         assertArrayEquals(toByteArray(resource), bytes.toByteArray());
     }

@@ -97,7 +97,8 @@ class SingleInputExpect {
                         input,
                         bufferSize,
                         echoInput,
-                        charset));
+                        charset,
+                        autoFlushEcho));
     }
 
     public <R extends Result> R expect(long timeoutMs, Matcher<R> matcher) throws IOException {
@@ -157,9 +158,6 @@ class SingleInputExpect {
                                     toDebugString(matcher),
                                     toDebugString(result),
                                     timeoutMs - timeElapsed));
-                }
-                if (autoFlushEcho) {
-                    Utils.flushAppendable(echoInput);
                 }
             }
             if (result.isSuccessful()) {
