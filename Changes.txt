@@ -1,6 +1,8 @@
 Unreleased
 -------
-  #35 Add ‘autoFlush' option to flush echo input after successful match
+  #35 Add ‘autoFlush' option to flush echo input
+      (thanks to azure.vastav at gmail)
+  #36 Expose expect input buffer if ExpectIOException is thrown
       (thanks to azure.vastav at gmail)
 
 0.6.1
