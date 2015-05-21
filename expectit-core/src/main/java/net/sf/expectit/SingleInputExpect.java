@@ -192,7 +192,6 @@ class SingleInputExpect {
     }
 
     public void stop() throws IOException {
-        Utils.flushAppendable(echoInput);
         if (LOG.isLoggable(Level.FINE)) {
             LOG.fine("Releasing resources for input: " + this.input);
         }
@@ -201,6 +200,9 @@ class SingleInputExpect {
         }
         sink.close();
         source.close();
+        if (autoFlushEcho) {
+            Utils.flushAppendable(echoInput);
+        }
     }
 
     StringBuilder getBuffer() {

@@ -163,12 +163,12 @@ class ExpectImpl extends AbstractExpectImpl {
 
     @Override
     public void close() throws IOException {
-        if (!autoFlushEcho) {
-            Utils.flushAppendable(echoOutput);
-        }
         for (SingleInputExpect input : inputs) {
             input.stop();
         }
         executor.shutdown();
+        if (autoFlushEcho) {
+            Utils.flushAppendable(echoOutput);
+        }
     }
 }

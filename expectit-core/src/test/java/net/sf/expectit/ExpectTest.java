@@ -39,6 +39,7 @@ import static org.mockito.Mockito.argThat;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.only;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
@@ -432,7 +433,7 @@ public class ExpectTest {
         assertTrue(stringWriter2.toString().isEmpty());
         verify(echoOutput, never()).flush();
         expect.close();
-        verify(echoOutput).flush();
+        verify(echoOutput, never()).flush();
     }
 
     @Test
@@ -456,7 +457,7 @@ public class ExpectTest {
         verify(echoOutput).flush();
         reset(echoOutput);
         expect.close();
-        verify(echoOutput, never()).flush();
+        verify(echoOutput, only()).flush();
     }
 
     @SuppressWarnings("deprecation")
