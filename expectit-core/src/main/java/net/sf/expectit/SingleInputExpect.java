@@ -158,9 +158,9 @@ class SingleInputExpect {
                                     toDebugString(result),
                                     timeoutMs - timeElapsed));
                 }
-            }
-            if (autoFlushEcho) {
-                Utils.flushAppendable(echoInput);
+                if (autoFlushEcho) {
+                    Utils.flushAppendable(echoInput);
+                }
             }
             if (result.isSuccessful()) {
                 buffer.delete(0, result.end());
