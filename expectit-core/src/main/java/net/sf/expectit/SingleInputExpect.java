@@ -58,6 +58,8 @@ class SingleInputExpect {
     private final boolean autoFlushEcho;
 
     protected SingleInputExpect(
+            final Pipe.SourceChannel source,
+            final Pipe.SinkChannel sink,
             final InputStream input,
             final Charset charset,
             final Appendable echoInput,
@@ -70,9 +72,8 @@ class SingleInputExpect {
         this.filter = filter;
         this.bufferSize = bufferSize;
         this.autoFlushEcho = autoFlushEcho;
-        Pipe pipe = Pipe.open();
-        source = pipe.source();
-        sink = pipe.sink();
+        this.source = source;
+        this.sink = sink;
         source.configureBlocking(false);
         buffer = new StringBuilder();
     }

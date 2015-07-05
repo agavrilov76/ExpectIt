@@ -45,6 +45,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -74,7 +75,10 @@ public class MatcherTest {
     @Before
     public void setup() throws Exception {
         mock = TestUtils.mockInputStream(text);
+        final Pipe pipe = Pipe.open();
         input = new SingleInputExpect(
+                pipe.source(),
+                pipe.sink(),
                 mock.getStream(),
                 Charset.defaultCharset(),
                 null,

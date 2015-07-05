@@ -65,6 +65,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import net.sf.expectit.echo.EchoOutput;
 import net.sf.expectit.filter.Filter;
 import net.sf.expectit.matcher.Matcher;
+import net.sf.expectit.matcher.Matchers;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -666,5 +667,22 @@ public class ExpectTest {
                                         return o instanceof byte[] && ((byte[]) o).length == 20;
                                     }
                                 }));
+    }
+
+    @Test
+    public void testCombineInputs() throws Exception {
+        ExpectBuilder builder = new ExpectBuilder();
+        String inputText1 = "abc";
+        String inputText2 = "def";
+        MockInputStream input1 = mockInputStream(inputText1);
+        MockInputStream input2 = mockInputStream(inputText2);
+        builder.withInputs(input1.getStream(), input2.getStream());
+        builder.withCombineInputs(true);
+        builder.withTimeout(SMALL_TIMEOUT, TimeUnit.MILLISECONDS);
+        expect = builder.build();
+        input1.waitUntilReady();
+        input2.waitUntilReady();
+        assertTrue(expect.expect(Matchers.allOf(contains("def"), contains("abc"))).isSuccessful());
+        assertFalse(expect.expectIn(1, contains("def")).isSuccessful());
     }
 }

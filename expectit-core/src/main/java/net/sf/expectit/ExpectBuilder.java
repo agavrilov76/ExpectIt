@@ -23,6 +23,7 @@ package net.sf.expectit;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 import net.sf.expectit.echo.EchoOutput;
@@ -57,6 +58,7 @@ public class ExpectBuilder {
     private int bufferSize = DEFAULT_BUFFER_SIZE;
     private boolean exceptionOnFailure;
     private boolean autoFlushEcho;
+    private boolean combineInputs;
 
     /**
      * Default constructor.
@@ -286,6 +288,19 @@ public class ExpectBuilder {
     }
 
     /**
+     * Combines input streaming data into one input. Data from all the inputs can be expected in
+     * the first input. Useful if you want to perform match operation on data that is coming from
+     * two input streams.
+     *
+     * @param combineInputs the combine inputs flag.
+     * @return this.
+     */
+    public final ExpectBuilder withCombineInputs(boolean combineInputs) {
+        this.combineInputs = combineInputs;
+        return this;
+    }
+
+    /**
      * Creates a ready to use {@link Expect} instance.
      * <p/>
      * This method creates an instance and starts background threads that receive input data
@@ -312,8 +327,18 @@ public class ExpectBuilder {
         }
 
         SingleInputExpect[] inputs = new SingleInputExpect[this.inputs.length];
+        Pipe pipe = null;
+        Pipe.SourceChannel source = null;
+        Pipe.SinkChannel sink = null;
         for (int i = 0; i < inputs.length; i++) {
+            if (!combineInputs || pipe == null) {
+                pipe = Pipe.open();
+                source = pipe.source();
+                sink = pipe.sink();
+            }
             inputs[i] = new SingleInputExpect(
+                    source,
+                    sink,
                     this.inputs[i],
                     charset,
                     getEchoInputForIndex(i),
