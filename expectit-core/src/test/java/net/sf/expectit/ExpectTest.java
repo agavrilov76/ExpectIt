@@ -314,7 +314,8 @@ public class ExpectTest {
     @Test
     public void expectEchoOutput() throws Exception {
         ExpectBuilder builder = new ExpectBuilder();
-        EchoOutput echo = mock(EchoOutput.class);
+        final EchoOutput echoMock = mock(EchoOutput.class);
+        final EchoOutput echo = new MockedSyncEchoOutput(echoMock);
         String inputText = "input";
         MockInputStream input = mockInputStream(inputText);
         String inputText2 = "number2";
@@ -329,9 +330,9 @@ public class ExpectTest {
         String sentText = "sentText";
         expect.sendLine(sentText);
         String sentTextLine = sentText + "\n";
-        verify(echo).onSend(sentTextLine);
+        verify(echoMock).onSend(sentTextLine);
 
-        reset(echo);
+        reset(echoMock);
         input.push(inputText);
         input2.push(inputText2);
         input.waitUntilReady();
@@ -340,8 +341,8 @@ public class ExpectTest {
         assertTrue(expect.expect(LONG_TIMEOUT, times(2, contains(inputText))).isSuccessful());
         //noinspection deprecation
         assertTrue(expect.expectIn(1, SMALL_TIMEOUT, contains(inputText2)).isSuccessful());
-        verify(echo, Mockito.times(1)).onReceive(0, inputText);
-        verify(echo).onReceive(eq(1), eq(inputText2));
+        verify(echoMock, Mockito.times(1)).onReceive(0, inputText);
+        verify(echoMock).onReceive(eq(1), eq(inputText2));
     }
 
     @Test
@@ -684,5 +685,22 @@ public class ExpectTest {
         input2.waitUntilReady();
         assertTrue(expect.expect(Matchers.allOf(contains("def"), contains("abc"))).isSuccessful());
         assertFalse(expect.expectIn(1, contains("def")).isSuccessful());
+    }
+
+    private static class MockedSyncEchoOutput implements EchoOutput {
+        private final EchoOutput echoMock;
+
+        public MockedSyncEchoOutput(final EchoOutput echoMock) {this.echoMock = echoMock;}
+
+        @Override
+        synchronized public void onReceive(final int input, final String string) throws
+                IOException {
+            echoMock.onReceive(input, string);
+        }
+
+        @Override
+        synchronized public void onSend(final String string) throws IOException {
+            echoMock.onSend(string);
+        }
     }
 }
