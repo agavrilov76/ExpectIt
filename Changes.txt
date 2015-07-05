@@ -1,5 +1,8 @@
 Unreleased
 -------
+
+0.7.0
+-------
   #35 Add ‘autoFlush' option to flush echo input
       (thanks to azure.vastav at gmail)
   #36 Expose expect input buffer if ExpectIOException is thrown
