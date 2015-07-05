@@ -4,6 +4,7 @@ Unreleased
       (thanks to azure.vastav at gmail)
   #36 Expose expect input buffer if ExpectIOException is thrown
       (thanks to azure.vastav at gmail)
+  #30 Ability to combine input streams into one
 
 0.6.1
 -------
