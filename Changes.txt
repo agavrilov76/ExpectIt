@@ -1,5 +1,6 @@
 Unreleased
 -------
+ #21 Add interact support
 
 0.7.0
 -------
