@@ -20,6 +20,7 @@ package net.sf.expectit.java8;
  * #L%
  */
 
+import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.SimpleResult.failure;
 import static net.sf.expectit.matcher.SimpleResult.success;
 
@@ -36,10 +37,17 @@ public class Java8Example {
         try (final Expect expect = new ExpectBuilder()
                 .withInputs(System.in)
                 .build()) {
-            Result result = expect.expect((input, isEof) -> isEof
+/*            Result result = expect.expect((input, isEof) -> isEof
                     ? success(input, input, "")
                     : failure(input, false));
-            System.out.println(result.getBefore());
+            System.out.println(result.getBefore());*/
+
+            expect.interact()
+                    .when(contains("abc")).then(r -> System.out.println("A"))
+                    .when(contains("xyz")).then(r -> System.err.println("B"))
+                    .until(contains("exit"));
+            System.out.println("DONE!");
         }
+        System.in.close();
     }
 }

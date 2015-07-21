@@ -22,6 +22,7 @@ package net.sf.expectit;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
+import net.sf.expectit.interact.InteractBuilder;
 import net.sf.expectit.matcher.Matcher;
 
 /**
@@ -74,5 +75,20 @@ class ExpectTimeoutAdapter extends AbstractExpectImpl {
     @Override
     public void close() throws IOException {
         delegate.close();
+    }
+
+    @Override
+    public InteractBuilder interact() {
+        return interactWith(0);
+    }
+
+    @Override
+    public InteractBuilder interactWith(final int input) {
+        return delegate.interactWithInternal(this, input);
+    }
+
+    @Override
+    SingleInputExpect[] getInputs() {
+        return delegate.getInputs();
     }
 }

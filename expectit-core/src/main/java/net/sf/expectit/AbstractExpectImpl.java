@@ -72,4 +72,6 @@ abstract class AbstractExpectImpl implements Expect {
     public MultiResult expect(long timeoutMs, Matcher<?>... matchers) throws IOException {
         return expectIn(0, timeoutMs, matchers);
     }
+
+    abstract SingleInputExpect[] getInputs();
 }

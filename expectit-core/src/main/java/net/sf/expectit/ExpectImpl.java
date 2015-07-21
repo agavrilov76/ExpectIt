@@ -31,6 +31,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.sf.expectit.interact.InteractBuilder;
 import net.sf.expectit.matcher.Matcher;
 
 /**
@@ -171,4 +172,24 @@ class ExpectImpl extends AbstractExpectImpl {
             Utils.flushAppendable(echoOutput);
         }
     }
+
+    @Override
+    public InteractBuilder interact() {
+        return interactWith(0);
+    }
+
+    @Override
+    public InteractBuilder interactWith(final int input) {
+        return interactWithInternal(this, input);
+    }
+
+    InteractBuilder interactWithInternal(final AbstractExpectImpl expect, final int input) {
+        if (input >= inputs.length || input < 0) {
+            throw new IllegalArgumentException("Input index is out of bounds: " + input);
+        }
+        return new InteractBuilderImpl(expect, input);
+    }
+
+    @Override
+    SingleInputExpect[] getInputs() { return inputs; }
 }
