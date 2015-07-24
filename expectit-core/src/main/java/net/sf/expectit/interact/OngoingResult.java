@@ -28,7 +28,8 @@ import net.sf.expectit.Result;
  */
 public interface OngoingResult<R extends Result> {
     /**
-     * Sets the action if the interact matcher matches.
+     * Sets the action if the interact matcher matches. The action are performed in the order they
+     * are declared.
      * @param action the action to perform.
      * @return the parent interact builder.
      */

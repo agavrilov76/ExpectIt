@@ -33,16 +33,17 @@ public interface InteractBuilder {
      *
      * @param matcher the matcher.
      * @param <R> the result type.
-     * @return the result builder.
+     * @return the ongoing result builder.
      */
     <R extends Result> OngoingResult<R> when(Matcher<R> matcher);
 
     /**
      * Enters the interact loop and sets the matching predicate for the exit condition.
+     * If the exit condition is not satisfied, and no 'when' conditions match the method returns.
      *
      * @param matcher the matcher.
      * @param <R> the result type.
-     * @return the result builder.
+     * @return the matching result of the until expression.
      * @throws IOException if I/O error occurs during matching.
      */
     <R extends Result> R until(Matcher<R> matcher) throws IOException;

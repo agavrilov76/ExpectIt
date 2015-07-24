@@ -25,6 +25,7 @@ import static net.sf.expectit.matcher.Matchers.anyOf;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 import net.sf.expectit.interact.Action;
 import net.sf.expectit.interact.InteractBuilder;
 import net.sf.expectit.interact.OngoingResult;
@@ -32,6 +33,8 @@ import net.sf.expectit.matcher.Matcher;
 import net.sf.expectit.matcher.SimpleResult;
 
 class InteractBuilderImpl implements InteractBuilder {
+    private static final Logger LOG = Logger.getLogger(SingleInputExpect.class.getName());
+
     private final AbstractExpectImpl expect;
     private final int input;
 
@@ -58,6 +61,7 @@ class InteractBuilderImpl implements InteractBuilder {
         };
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <R extends Result> R until(final Matcher<R> matcher) throws IOException {
         final Matcher<?>[] array = new Matcher[matchers.size() + 1];
@@ -71,6 +75,7 @@ class InteractBuilderImpl implements InteractBuilder {
             final MultiResult multiResult = expect.expectIn(input, anyOf(array));
             final String inputBuffer = expect.getInputs()[this.input].getBuffer().toString();
             if (System.currentTimeMillis() - time > expect.getTimeout()) {
+                LOG.fine("Until matching operation timeout");
                 return (R) SimpleResult.failure(inputBuffer, true);
             }
             final InternalResult untilResult = (InternalResult) multiResult.getResults().get(0);
@@ -79,10 +84,12 @@ class InteractBuilderImpl implements InteractBuilder {
                 final Result result = multiResult.getResults().get(i + 1);
                 if (result.isSuccessful() && untilResult.getResult().end() > result.end()) {
                     matched = true;
+                    LOG.fine("Condition #" + i + " matched: " + result);
                     actions.get(i).apply(result);
                 }
             }
             if (!matched && untilResult.isSuccessful()) {
+                LOG.fine("Until condition is successful");
                 return (R) untilResult.getResult();
             }
         }
