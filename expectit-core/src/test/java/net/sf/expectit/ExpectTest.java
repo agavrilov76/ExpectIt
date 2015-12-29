@@ -340,8 +340,8 @@ public class ExpectTest {
         assertTrue(expect.expect(LONG_TIMEOUT, times(2, contains(inputText))).isSuccessful());
         //noinspection deprecation
         assertTrue(expect.expectIn(1, SMALL_TIMEOUT, contains(inputText2)).isSuccessful());
-        verify(echoMock, Mockito.times(2)).onReceive(0, inputText);
-        verify(echoMock, Mockito.times(2)).onReceive(1, inputText2);
+        verify(echoMock, Mockito.timeout((int) SMALL_TIMEOUT).times(2)).onReceive(0, inputText);
+        verify(echoMock, Mockito.timeout((int) SMALL_TIMEOUT).times(2)).onReceive(1, inputText2);
     }
 
     @Test
