@@ -402,7 +402,6 @@ public class ExpectTest {
         input2.waitUntilReady();
         //noinspection deprecation
         assertTrue(expect.expectIn(1, LONG_TIMEOUT, contains(inputText2)).isSuccessful());
-        expect.close();
         verify(in2, Mockito.timeout((int) SMALL_TIMEOUT)).append(inputText2);
         verify(in1, Mockito.timeout((int) SMALL_TIMEOUT)).append(inputText);
 
