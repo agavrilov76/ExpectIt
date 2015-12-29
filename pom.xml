@@ -186,6 +186,13 @@
       </dependency>
 
       <dependency>
+        <groupId>com.jayway.awaitility</groupId>
+        <artifactId>awaitility</artifactId>
+        <version>1.7.0</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
         <groupId>org.apache.ant</groupId>
         <artifactId>ant-jsch</artifactId>
         <version>1.9.3</version>

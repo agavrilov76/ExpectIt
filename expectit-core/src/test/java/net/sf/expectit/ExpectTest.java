@@ -45,6 +45,7 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.jayway.awaitility.Awaitility;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -383,9 +384,10 @@ public class ExpectTest {
         assertTrue(expect.expectIn(1, SMALL_TIMEOUT, contains(inputText2)).isSuccessful());
 
         try {
-            verify(in1, Mockito.times(2)).append(inputText);
+            verify(in1, Mockito.timeout((int) SMALL_TIMEOUT).times(2)).append(inputText);
         } catch (AssertionError ignore) {
-            verify(in1, Mockito.times(1)).append(inputText + inputText);
+            verify(in1, Mockito.timeout((int) SMALL_TIMEOUT).times(1))
+                    .append(inputText + inputText);
         }
 
         reset(in1);
@@ -454,12 +456,19 @@ public class ExpectTest {
         expect.sendLine("xyz");
         input1.waitUntilReady();
         assertTrue(expect.expect(contains("ab")).isSuccessful());
+        Awaitility.await()
+                .atMost(LONG_TIMEOUT, TimeUnit.MILLISECONDS)
+                .until(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        return "abc".equals(stringWriter1.toString());
+                    }
+                });
 
         verify(echoOutput).flush();
         reset(echoOutput);
         expect.close();
         verify(echoOutput, only()).flush();
-        assertThat(stringWriter1.toString(), is("abc"));
     }
 
     @SuppressWarnings("deprecation")
