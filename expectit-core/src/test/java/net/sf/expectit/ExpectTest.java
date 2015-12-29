@@ -692,14 +692,18 @@ public class ExpectTest {
         public MockedSyncEchoOutput(final EchoOutput echoMock) {this.echoMock = echoMock;}
 
         @Override
-        synchronized public void onReceive(final int input, final String string) throws
+        public void onReceive(final int input, final String string) throws
                 IOException {
-            echoMock.onReceive(input, string);
+            synchronized (echoMock) {
+                echoMock.onReceive(input, string);
+            }
         }
 
         @Override
-        synchronized public void onSend(final String string) throws IOException {
-            echoMock.onSend(string);
+        public void onSend(final String string) throws IOException {
+            synchronized (echoMock) {
+                echoMock.onSend(string);
+            }
         }
     }
 }
