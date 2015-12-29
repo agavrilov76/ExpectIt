@@ -67,14 +67,14 @@ class InputStreamCopier implements Callable<Object> {
         try {
             while ((bytesRead = from.read(buffer)) != -1) {
                 to.write(ByteBuffer.wrap(buffer, 0, bytesRead));
-                if (LOG.isLoggable(Level.FINE)) {
+                if (LOG.isLoggable(Level.FINE) && bytesRead > 0) {
                     LOG.fine(
                             String.format(
                                     "Received from %s: %s",
                                     from,
                                     toDebugString(buffer, bytesRead, charset)));
                 }
-                if (echo != null) {
+                if (echo != null && bytesRead > 0) {
                     printEcho(buffer, bytesRead);
                 }
             }

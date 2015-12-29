@@ -123,6 +123,7 @@ public class ExpectTest {
                 .withTimeout(3, TimeUnit.DAYS).build();
         assertEquals(((AbstractExpectImpl) expect).getTimeout(), TimeUnit.DAYS.toMillis(3));
         assertEquals(((AbstractExpectImpl) expect).getTimeout(), 259200000);
+        expect.close();
         expect = new ExpectBuilder().withInputs(mock(InputStream.class))
                 .withInfiniteTimeout().build();
         assertEquals(((AbstractExpectImpl) expect).getTimeout(), -1);
