@@ -1,6 +1,11 @@
 Unreleased
 -------
 
+0.8.1
+-------
+ Fix interact loop
+ Finally fixed intermittent test failure on Travis
+
 0.8.0
 -------
  #21 Add interact support
