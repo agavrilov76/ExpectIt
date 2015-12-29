@@ -400,6 +400,7 @@ public class ExpectTest {
         input2.waitUntilReady();
         //noinspection deprecation
         assertTrue(expect.expectIn(1, LONG_TIMEOUT, contains(inputText2)).isSuccessful());
+        expect.close();
         verify(in2).append(inputText2);
         verify(in1).append(inputText);
 
@@ -454,11 +455,11 @@ public class ExpectTest {
         input1.waitUntilReady();
         assertTrue(expect.expect(contains("ab")).isSuccessful());
 
-        assertThat(stringWriter1.toString(), is("abc"));
         verify(echoOutput).flush();
         reset(echoOutput);
         expect.close();
         verify(echoOutput, only()).flush();
+        assertThat(stringWriter1.toString(), is("abc"));
     }
 
     @SuppressWarnings("deprecation")
