@@ -82,7 +82,9 @@ class InteractBuilderImpl implements InteractBuilder {
             boolean matched = false;
             for (int i = 0; i < multiResult.getResults().size() - 1; i++) {
                 final Result result = multiResult.getResults().get(i + 1);
-                if (result.isSuccessful() && untilResult.getResult().end() > result.end()) {
+                if (result.isSuccessful()
+                        && (!untilResult.isSuccessful()
+                                || untilResult.getResult().end() > result.end())) {
                     matched = true;
                     LOG.fine("Condition #" + i + " matched: " + result);
                     actions.get(i).apply(result);

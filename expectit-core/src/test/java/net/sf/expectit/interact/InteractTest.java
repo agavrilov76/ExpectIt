@@ -25,12 +25,14 @@ import static junit.framework.Assert.fail;
 import static net.sf.expectit.TestUtils.SMALL_TIMEOUT;
 import static net.sf.expectit.TestUtils.mockInputStream;
 import static net.sf.expectit.matcher.Matchers.allOf;
+import static net.sf.expectit.matcher.Matchers.anyOf;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -148,5 +150,40 @@ public class InteractTest {
         final Result r = expect.interact().when(contains("y")).then(action).until(contains("x"));
         assertTrue(r.isSuccessful());
         verifyNoMoreInteractions(action);
+    }
+
+    @Test
+    public void testRealWorld() throws Exception {
+        final MockInputStream input = mockInputStream("password");
+        expect = new ExpectBuilder()
+                .withTimeout(SMALL_TIMEOUT, TimeUnit.MILLISECONDS)
+                .withExceptionOnFailure()
+                .withInputs(input.getStream())
+                .build();
+        input.waitUntilReady();
+        final Action<Result> action1 = new Action<Result>() {
+            @Override
+            public void apply(final Result result) {
+                try {
+                    input.push("exit");
+                } catch (final InterruptedException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        };
+        final Action<Result> action2 = new Action<Result>() {
+            @Override
+            public void apply(final Result result) {
+                try {
+                    input.push("#");
+                } catch (final InterruptedException e) {
+                    throw new IllegalStateException(e);
+                }
+            }
+        };
+        expect.interact()
+                .when(contains("#")).then(action1)
+                .when(contains("assword")).then(action2)
+                .until(contains("exit"));
     }
 }
