@@ -215,6 +215,8 @@ Note that you may need to add static import of the filter factory methods in you
 * [Capture the command result from SSH session](expectit-core/src/test/java/net/sf/expectit/SshLocalhostExample.java)
 * [Disable SSH server echo](expectit-core/src/test/java/net/sf/expectit/SshLocalhostNoEchoExample.java)
 * [Interact loop example with Java 8](expect-java8/src/main/java/net/sf/expectit/java8/Java8Example.java)
+* [Telnet client example](expectit-core/src/test/java/net/sf/expectit/TelnetExample.java)
+
  
 ## Questions
 
