@@ -220,7 +220,8 @@ Note that you may need to add static import of the filter factory methods in you
  
 ## Questions
 
-If you have any questions about the library please post your message to this [Google group](https://groups.google.com/forum/#!forum/java-expectit).
+If you have any questions about the library please post a message to this [Google group](https://groups.google.com/forum/#!forum/java-expectit). You can also ask a question on [stackoverflow](https://stackoverflow.com/) with
+hash tag [expectit](https://stackoverflow.com/questions/tagged/expectit).
 
 ## License
 
