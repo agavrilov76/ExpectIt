@@ -262,7 +262,7 @@ public class ExpectTest {
     public void testFilters() throws IOException, InterruptedException {
         ExpectBuilder builder = new ExpectBuilder();
         InputStream in = mock(InputStream.class);
-        StringBuilder echo = new StringBuilder();
+        Appendable echo = mock(Appendable.class);
         builder.withInputs(in).withEchoOutput(adapt(echo));
         Filter filter1 = mock(Filter.class);
         Filter filter2 = mock(Filter.class);
@@ -293,7 +293,7 @@ public class ExpectTest {
         verify(filter2).afterAppend(any(StringBuilder.class));
         verify(filter3, never()).afterAppend(any(StringBuilder.class));
         // filters are not applied for the echo stream
-        assertEquals("testFilter", echo.toString());
+        verify(echo, timeout((int) SMALL_TIMEOUT)).append("testFilter");
     }
 
     @SuppressWarnings("deprecation")
