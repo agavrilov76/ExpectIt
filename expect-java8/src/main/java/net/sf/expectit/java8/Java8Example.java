@@ -21,13 +21,10 @@ package net.sf.expectit.java8;
  */
 
 import static net.sf.expectit.matcher.Matchers.contains;
-import static net.sf.expectit.matcher.SimpleResult.failure;
-import static net.sf.expectit.matcher.SimpleResult.success;
 
 import java.io.IOException;
 import net.sf.expectit.Expect;
 import net.sf.expectit.ExpectBuilder;
-import net.sf.expectit.Result;
 
 /**
  * An example of using a lambda as a matcher.
@@ -45,6 +42,7 @@ public class Java8Example {
             expect.interact()
                     .when(contains("abc")).then(r -> System.out.println("A"))
                     .when(contains("xyz")).then(r -> System.err.println("B"))
+                    .when(contains("xyz")).then((r) -> expect.sendLine())
                     .until(contains("exit"));
             System.out.println("DONE!");
         }

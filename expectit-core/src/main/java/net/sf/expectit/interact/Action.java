@@ -20,6 +20,7 @@ package net.sf.expectit.interact;
  * #L%
  */
 
+import java.io.IOException;
 import net.sf.expectit.Result;
 
 /**
@@ -32,6 +33,7 @@ public interface Action<R extends Result> {
      * The method is called when the interact condition matches.
      *
      * @param result the matching result.
+     * @throws IOException if I/O error occurs.
      */
-    void apply(R result);
+    void apply(R result) throws IOException;
 }
