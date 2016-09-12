@@ -1,5 +1,6 @@
 Unreleased
 -------
+ Make Action method throw IOException
 
 0.8.1
 -------
