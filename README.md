@@ -12,7 +12,7 @@ It is designed to be simple, easy to use and extensible. Written from scratch. H
 * NIO based implementation using pipes and non-blocking API.
 * Extensible matcher framework. Support regular expressions and group operations.
 * Support multiple input streams.
-* [Support 'interact' loop.](expect-java8/src/main/java/net/sf/expectit/java8/Java8Example.java).
+* [Support 'interact' loop](expect-java8/src/main/java/net/sf/expectit/java8/Java8Example.java).
 * Extensible filter framework to modify input, for example, to remove non-printable ANSI terminal characters.
 * [Custom Expect Ant Task](../..//wiki/Expect-for-Ant).
 * Tested on Andriod.
