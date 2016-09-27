@@ -33,6 +33,7 @@ public class Java8Example {
     public static void main(String[] args) throws IOException {
         try (final Expect expect = new ExpectBuilder()
                 .withInputs(System.in)
+                .withOutput(System.out)
                 .build()) {
 /*            Result result = expect.expect((input, isEof) -> isEof
                     ? success(input, input, "")
@@ -42,7 +43,13 @@ public class Java8Example {
             expect.interact()
                     .when(contains("abc")).then(r -> System.out.println("A"))
                     .when(contains("xyz")).then(r -> System.err.println("B"))
-                    .when(contains("xyz")).then((r) -> expect.sendLine())
+                    .when(contains("def")).then((r) -> {
+                expect.sendLine("hello");
+                expect.interact()
+                        .when(contains("rbc")).then(r2 -> System.err.println("C"))
+                        .until(contains("klm"));
+
+            })
                     .until(contains("exit"));
             System.out.println("DONE!");
         }
