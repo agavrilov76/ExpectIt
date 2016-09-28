@@ -47,6 +47,7 @@ class ExpectTimeoutAdapter extends AbstractExpectImpl {
         return delegate.withTimeout(duration, unit);
     }
 
+    @Deprecated
     @Override
     public Expect withInfiniteTimeout() {
         return delegate.withInfiniteTimeout();

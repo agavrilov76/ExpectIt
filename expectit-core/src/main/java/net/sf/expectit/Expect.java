@@ -281,7 +281,10 @@ public interface Expect extends Closeable {
      * and the returned one, will share the same configuration except the default timeout value.
      *
      * @return an Expect instance with a new default timeout.
+     * @deprecated use {@link #withTimeout(long, TimeUnit)} with Long.MAX_VALUE, TimeUnit.DAYS
+     * instead.
      */
+    @Deprecated
     Expect withInfiniteTimeout();
 
     /**

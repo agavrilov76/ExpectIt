@@ -115,6 +115,7 @@ class ExpectImpl extends AbstractExpectImpl {
         return new ExpectTimeoutAdapter(this, unit.toMillis(duration));
     }
 
+    @Deprecated
     @Override
     public Expect withInfiniteTimeout() {
         return new ExpectTimeoutAdapter(this, -1);

@@ -21,8 +21,10 @@ package net.sf.expectit.java8;
  */
 
 import static net.sf.expectit.matcher.Matchers.contains;
+import static net.sf.expectit.matcher.Matchers.regexp;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 import net.sf.expectit.Expect;
 import net.sf.expectit.ExpectBuilder;
 
