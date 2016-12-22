@@ -695,6 +695,27 @@ public class ExpectTest {
         assertFalse(expect.expectIn(1, contains("def")).isSuccessful());
     }
 
+    @Test
+    public void testExternalExecutor() throws Exception {
+        ExpectBuilder builder = new ExpectBuilder();
+        String inputText1 = "abc";
+        String inputText2 = "def";
+        MockInputStream input1 = mockInputStream(inputText1);
+        MockInputStream input2 = mockInputStream(inputText2);
+        builder.withInputs(input1.getStream(), input2.getStream());
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
+        builder.withExecutor(executorService);
+        builder.withTimeout(SMALL_TIMEOUT, TimeUnit.MILLISECONDS);
+        expect = builder.build();
+        input1.waitUntilReady();
+        input2.waitUntilReady();
+        assertTrue(expect.expect(contains("abc")).isSuccessful());
+        assertTrue(expect.expectIn(1, contains("def")).isSuccessful());
+        expect.close();
+        assertFalse(executorService.isShutdown());
+    }
+
+
     private static class MockedSyncEchoOutput implements EchoOutput {
         private final EchoOutput echoMock;
 

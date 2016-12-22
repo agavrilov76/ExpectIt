@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import net.sf.expectit.echo.EchoOutput;
 import net.sf.expectit.filter.Filter;
@@ -59,6 +60,7 @@ public class ExpectBuilder {
     private boolean exceptionOnFailure;
     private boolean autoFlushEcho;
     private boolean combineInputs;
+    private ExecutorService executor;
 
     /**
      * Default constructor.
@@ -301,6 +303,22 @@ public class ExpectBuilder {
     }
 
     /**
+     * Set the executor used to create internal thread. If not specified, an executor with the
+     * number of threads corresponding to the number of inputs will be created internally.<br/>
+     * <b>IMPORTANT!</b> Make sure that the given executor has the number of threads greater or
+     * equal than the number of input streams. <br/>
+     * If the executor is passed form outside it won't be shutdown when the Expect instance is
+     * closed.
+     *
+     * @param executor the executor service to use.
+     * @return this.
+     */
+    public final ExpectBuilder withExecutor(ExecutorService executor) {
+        this.executor = executor;
+        return this;
+    }
+
+    /**
      * Creates a ready to use {@link Expect} instance.
      * <p/>
      * This method creates an instance and starts background threads that receive input data
@@ -365,7 +383,8 @@ public class ExpectBuilder {
                 errorOnTimeout,
                 lineSeparator,
                 exceptionOnFailure,
-                autoFlushEcho);
+                autoFlushEcho,
+                executor);
         instance.start();
         return instance;
     }

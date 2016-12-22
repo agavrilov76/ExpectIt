@@ -53,6 +53,7 @@ class ExpectImpl extends AbstractExpectImpl {
     private final String lineSeparator;
     private final boolean exceptionOnFailure;
     private final boolean autoFlushEcho;
+    private final boolean useInternalExecutor;
 
     ExpectImpl(
             final long timeout,
@@ -63,7 +64,8 @@ class ExpectImpl extends AbstractExpectImpl {
             final boolean errorOnTimeoutOld,
             final String lineSeparator,
             final boolean exceptionOnFailure,
-            final boolean autoFlushEcho) {
+            final boolean autoFlushEcho,
+            final ExecutorService executor) {
         super(timeout);
         this.output = output;
         this.inputs = inputs;
@@ -73,9 +75,12 @@ class ExpectImpl extends AbstractExpectImpl {
         this.exceptionOnFailure = exceptionOnFailure;
         this.lineSeparator = lineSeparator;
         this.autoFlushEcho = autoFlushEcho;
-        executor = Executors.newFixedThreadPool(
-                inputs.length,
-                new NamedExecutorThreadFactory("expect-"));
+        this.executor = executor == null
+                ? Executors.newFixedThreadPool(
+                        inputs.length,
+                        new NamedExecutorThreadFactory("expect-"))
+                : executor;
+        this.useInternalExecutor = executor == null;
     }
 
     void start() {
@@ -168,7 +173,10 @@ class ExpectImpl extends AbstractExpectImpl {
         for (SingleInputExpect input : inputs) {
             input.stop();
         }
-        executor.shutdown();
+
+        if (useInternalExecutor) {
+            executor.shutdown();
+        }
         if (autoFlushEcho) {
             Utils.flushAppendable(echoOutput);
         }
