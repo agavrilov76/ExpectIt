@@ -1,5 +1,8 @@
 Unreleased
 -------
+
+0.8.2
+-------
  Make Action method throw IOException
  #40 Ability to configure customer executor
 
