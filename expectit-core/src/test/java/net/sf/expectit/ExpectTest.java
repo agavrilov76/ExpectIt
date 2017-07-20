@@ -739,35 +739,4 @@ public class ExpectTest {
             }
         }
     }
-
-
-    @Test (timeout = 1000, expected = EOFException.class)
-    public void testEOF() throws IOException, InterruptedException {
-        final ServerSocket serverSocket = new ServerSocket(0);
-        final Thread serverThread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    final Socket socket = serverSocket.accept();
-                    socket.getOutputStream().close();
-                    serverSocket.close();
-                } catch (final IOException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
-        serverThread.start();
-        final Socket client = new Socket(
-                serverSocket.getInetAddress(),
-                serverSocket.getLocalPort());
-        final InputStream inputStream = client.getInputStream();
-        expect = new ExpectBuilder()
-                .withInputs(inputStream)
-                .build();
-        try {
-            expect.withTimeout(3000, TimeUnit.MILLISECONDS).expect(regexp("abc"));
-        } finally {
-            serverThread.join();
-        }
-    }
 }
