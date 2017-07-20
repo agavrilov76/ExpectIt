@@ -106,7 +106,7 @@ public class ProcessTest {
     public void testHugeInput() throws IOException {
         File f = File.createTempFile("test", ".txt");
         StringBuilder builder = new StringBuilder();
-        int size = 10000;
+        int size = 1000;
         for (int i = 0; i < size; i++) {
             builder.append(UUID.randomUUID().toString());
         }
