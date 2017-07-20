@@ -301,7 +301,13 @@ public class ExpectTest {
     public void testIOException() throws IOException, InterruptedException {
         ExpectBuilder builder = new ExpectBuilder();
         InputStream in = mock(InputStream.class);
-        when(in.read(any(byte[].class))).thenThrow(new EOFException(""));
+        when(in.read(any(byte[].class))).then(new Answer<Object>() {
+            @Override
+            public Object answer(final InvocationOnMock invocation) throws Throwable {
+                Thread.sleep(SMALL_TIMEOUT);
+                throw new EOFException("");
+            }
+        });
         builder.withInputs(in);
         expect = builder.build();
 
