@@ -25,6 +25,7 @@ import static net.sf.expectit.TestUtils.SMALL_TIMEOUT;
 import static net.sf.expectit.TestUtils.mockInputStream;
 import static net.sf.expectit.echo.EchoAdapters.adapt;
 import static net.sf.expectit.matcher.Matchers.contains;
+import static net.sf.expectit.matcher.Matchers.regexp;
 import static net.sf.expectit.matcher.Matchers.times;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
@@ -53,6 +54,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.nio.channels.ClosedByInterruptException;
 import java.nio.charset.Charset;
 import java.util.concurrent.Callable;
@@ -734,6 +737,37 @@ public class ExpectTest {
             synchronized (echoMock) {
                 echoMock.onSend(string);
             }
+        }
+    }
+
+
+    @Test (timeout = 1000, expected = EOFException.class)
+    public void testEOF() throws IOException, InterruptedException {
+        final ServerSocket serverSocket = new ServerSocket(0);
+        final Thread serverThread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    final Socket socket = serverSocket.accept();
+                    socket.getOutputStream().close();
+                    serverSocket.close();
+                } catch (final IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+        serverThread.start();
+        final Socket client = new Socket(
+                serverSocket.getInetAddress(),
+                serverSocket.getLocalPort());
+        final InputStream inputStream = client.getInputStream();
+        expect = new ExpectBuilder()
+                .withInputs(inputStream)
+                .build();
+        try {
+            expect.withTimeout(3000, TimeUnit.MILLISECONDS).expect(regexp("abc"));
+        } finally {
+            serverThread.join();
         }
     }
 }

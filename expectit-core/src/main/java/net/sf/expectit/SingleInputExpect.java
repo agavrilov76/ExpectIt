@@ -151,7 +151,8 @@ class SingleInputExpect {
                     byteBuffer.clear();
                 }
 
-                result = matcher.matches(buffer.toString(), len == -1);
+                final boolean isEof = len == -1;
+                result = matcher.matches(buffer.toString(), isEof);
                 if (LOG.isLoggable(Level.FINE)) {
                     LOG.fine(
                             String.format(
@@ -159,6 +160,9 @@ class SingleInputExpect {
                                     toDebugString(matcher),
                                     toDebugString(result),
                                     timeoutMs - timeElapsed));
+                }
+                if (isEof) {
+                    break;
                 }
             }
             if (result.isSuccessful()) {
