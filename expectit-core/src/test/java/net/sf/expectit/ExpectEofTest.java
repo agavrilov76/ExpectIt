@@ -61,9 +61,7 @@ public class ExpectEofTest {
             }
         };
         serverThread.start();
-        final Socket client = new Socket(
-                serverSocket.getInetAddress(),
-                serverSocket.getLocalPort());
+        final Socket client = new Socket("localhost", serverSocket.getLocalPort());
         final InputStream inputStream = client.getInputStream();
         expect = new ExpectBuilder()
                 .withInputs(inputStream)
