@@ -1,5 +1,6 @@
 Unreleased
 -------
+ #42 Fix thight loop when input stream is at eof
 
 0.8.2
 -------
