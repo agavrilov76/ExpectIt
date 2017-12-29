@@ -196,11 +196,11 @@ public final class Filters {
      * Note! Use this with caution. The filter prevents matching of the last chunk of data received
      * from the input stream which doesn't end with the line separator.
      *
-     * @param lineSeparator the separator string used to detect line boundaries
+     * @param lineSeparators the separator strings used to detect line boundaries
      * @return the filter
      */
-    public static Filter lineBuffer(final String lineSeparator) {
-        return new BufferedFilter(lineSeparator);
+    public static Filter lineBuffer(final String ... lineSeparators) {
+        return new BufferedFilter(lineSeparators);
     }
 
 }

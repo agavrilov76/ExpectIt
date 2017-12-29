@@ -22,12 +22,13 @@ public class LineBufferExample {
                 .withInputs(pipedInputStream)
                 .withTimeout(30, TimeUnit.SECONDS)
                 .withExceptionOnFailure()
-                .withInputFilters(Filters.lineBuffer("\n"), myFilter())
+                .withInputFilters(Filters.lineBuffer("\n", "XYZ"), myFilter(), myFilter2())
                 .build();
 
         System.out.println("Writing data to output");
         for (int i = 0; i < 500; i++) {
             pipedOutputStream.write("removeSome text hereremove\n".getBytes());
+            pipedOutputStream.write("removeSome text hereremoveXYZ".getBytes());
         }
         pipedOutputStream.write("done\n".getBytes());
 
@@ -41,9 +42,15 @@ public class LineBufferExample {
         System.out.println(r.getBefore());
 
         System.out.println("Done");
+
+        expect.close();
     }
 
     private static Filter myFilter() {
         return Filters.replaceInString("remove", "");
+    }
+
+    private static Filter myFilter2() {
+        return Filters.replaceInString("XYZ", ". ");
     }
 }
