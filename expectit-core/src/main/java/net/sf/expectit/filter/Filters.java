@@ -203,4 +203,19 @@ public final class Filters {
         return new BufferedFilter(lineSeparators);
     }
 
+    /**
+     * Removes the escape sequence from the data stream which starting and ends with the given
+     * strings.
+     * @param startingWith the beginning of the sequence, for example, '\x1b\['
+     * @param endingWith the ending of the sequence, for example, 'm'
+     * @param pattern the regex which matches the sequence
+     * @return the filter
+     */
+    public static Filter removeEscapeSequence(
+            final char startingWith,
+            final String endingWith,
+            final Pattern pattern) {
+        return new EscapeSequenceFilter(startingWith, endingWith, pattern);
+    }
+
 }
