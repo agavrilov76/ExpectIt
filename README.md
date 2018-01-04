@@ -205,6 +205,13 @@ regular expressions. Here is an example:
 ```
 Note that you may need to add static import of the filter factory methods in your code.
 
+Please be careful about the order you declare filters in.  
+Filters are called in the order they were declared in.
+
+For example, `removeNonPrintable()` removes `\e` (`\033` or `\x1B`), which is the ESC character.  
+ANSI color sequences however uses `\e` as part of the color sequence.  
+So if you declare the `removeNonPrintable()` filter before the `removeColors()` filter, `removeColors()` filter will NOT work.  
+
 ## More examples
 
 * [Socket Example: parsing HTTP response](expectit-core/src/test/java/net/sf/expectit/SocketExample.java)
