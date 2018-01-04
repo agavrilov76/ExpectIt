@@ -183,7 +183,7 @@ occurs.
 Filters are defined at the time an ``net.sf.expectit.Expect`` instance is being created and they can
 be disabled and re-enabled while working with the Expect instance.
 
-The library comes with the filters for removing ANSI escape terminal and non-printable characters.
+The library comes with the filters for non-printable characters, ANSI color sequences, or all VT100 control sequences.
 There are also more general ``replaceInString`` and ``replaceInBuffer`` filters used to modify the input buffer using
 regular expressions. Here is an example:
 
@@ -203,7 +203,7 @@ regular expressions. Here is an example:
             .build();
 
 ```
-Note that you may need to add static import of the filter factory methods in your code.
+Note that you may need to add static import of the `BuiltinFilter` factory methods in your code.
 
 Please be careful about the order you declare filters in.  
 Filters are called in the order they were declared in.

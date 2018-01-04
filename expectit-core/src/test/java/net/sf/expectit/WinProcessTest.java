@@ -22,7 +22,7 @@ package net.sf.expectit;
 
 import static net.sf.expectit.TestUtils.LONG_TIMEOUT;
 import static net.sf.expectit.TestUtils.SMALL_TIMEOUT;
-import static net.sf.expectit.filter.Filters.removeNonPrintable;
+import static net.sf.expectit.filter.BuiltinFilters.removeNonPrintable;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.eof;
 import static org.junit.Assert.assertFalse;

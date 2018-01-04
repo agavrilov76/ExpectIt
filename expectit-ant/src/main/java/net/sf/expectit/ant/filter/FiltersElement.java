@@ -20,7 +20,7 @@ package net.sf.expectit.ant.filter;
  * #L%
  */
 
-import static net.sf.expectit.filter.Filters.chain;
+import static net.sf.expectit.filter.FilterChain.chain;
 
 import java.util.ArrayList;
 import java.util.List;

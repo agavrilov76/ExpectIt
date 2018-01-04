@@ -20,12 +20,12 @@ package net.sf.expectit.ant.filter;
  * #L%
  */
 
-import static net.sf.expectit.filter.Filters.removeColors;
+import static net.sf.expectit.filter.BuiltinFilters.removeColors;
 
 import net.sf.expectit.filter.Filter;
 
 /**
- * An element corresponding to the {@link net.sf.expectit.filter.Filters#removeColors()} filter.
+ * An element corresponding to the {@link net.sf.expectit.filter.BuiltinFilters#removeColors()} filter.
  */
 public class RemoveColorsElement extends AbstractFilterElement {
 
