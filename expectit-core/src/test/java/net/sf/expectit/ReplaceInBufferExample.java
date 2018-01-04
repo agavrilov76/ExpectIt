@@ -8,7 +8,7 @@ import net.sf.expectit.filter.Filter;
 import net.sf.expectit.filter.Filters;
 import net.sf.expectit.matcher.Matchers;
 
-public class LineBufferExample {
+public class ReplaceInBufferExample {
 
     public static void main(String[] args) throws IOException {
         PipedInputStream pipedInputStream = new PipedInputStream();
@@ -22,13 +22,12 @@ public class LineBufferExample {
                 .withInputs(pipedInputStream)
                 .withTimeout(30, TimeUnit.SECONDS)
                 .withExceptionOnFailure()
-                .withInputFilters(Filters.lineBuffer("\n", "XYZ"), myFilter(), myFilter2())
+                .withInputFilters(myFilter())
                 .build();
 
         System.out.println("Writing data to output");
-        for (int i = 0; i < 500; i++) {
+        for (int i = 0; i < 1500; i++) {
             pipedOutputStream.write("removeSome text hereremove\n".getBytes());
-            pipedOutputStream.write("removeSome text hereremoveXYZ".getBytes());
         }
         pipedOutputStream.write("done\n".getBytes());
 
@@ -47,10 +46,7 @@ public class LineBufferExample {
     }
 
     private static Filter myFilter() {
-        return Filters.replaceInString("remove", "");
+        return Filters.replaceInBuffer("remove", "");
     }
 
-    private static Filter myFilter2() {
-        return Filters.replaceInString("XYZ", ". ");
-    }
 }

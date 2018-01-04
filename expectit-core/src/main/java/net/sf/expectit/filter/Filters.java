@@ -45,6 +45,8 @@ public final class Filters {
     public static final Pattern NON_PRINTABLE_PATTERN = Pattern.compile(
             "[\\x00\\x08\\x0B\\x0C\\x0E-\\x1F]");
 
+    private static final int DEFAULT_FILTER_OVERLAP = 80;
+
     private Filters() {
     }
 
@@ -56,7 +58,7 @@ public final class Filters {
      * @return the filter
      */
     public static Filter removeNonPrintable() {
-        return replaceInString(NON_PRINTABLE_PATTERN, "");
+        return replaceInBuffer(NON_PRINTABLE_PATTERN, "");
     }
 
     /**
@@ -100,7 +102,7 @@ public final class Filters {
      * @return the filter
      */
     public static Filter removeColors() {
-        return replaceInString(COLORS_PATTERN, "");
+        return replaceInBuffer(COLORS_PATTERN, "");
     }
 
     /**
@@ -113,7 +115,50 @@ public final class Filters {
      * @return the filter
      */
     public static Filter replaceInBuffer(final String regexp, final String replacement) {
-        return replaceInBuffer(Pattern.compile(regexp), replacement);
+        return replaceInBuffer(Pattern.compile(regexp), replacement, DEFAULT_FILTER_OVERLAP);
+    }
+
+    /**
+     * Creates a filter which replaces every substring in the input buffer that matches the given
+     * regular expression
+     * and replaces it with given replacement.
+     * <p/>
+     * The method just calls {@link String#replaceAll(String, String)} for the entire buffer
+     * contents every time new
+     * data arrives,
+     *
+     * @param regexp      the regular expression
+     * @param replacement the string to be substituted for each match
+     * @param overlap     the number of characters prepended to the matching string from the
+     *                    previous data chunk before match
+     * @return the filter
+     */
+    static Filter replaceInBuffer(
+            final Pattern regexp,
+            final String replacement,
+            final int overlap) {
+        return new FilterAdapter() {
+            private String string;
+
+            @Override
+            protected String doBeforeAppend(String string, StringBuilder buffer) {
+                this.string = string;
+                return string;
+            }
+
+            @Override
+            protected boolean doAfterAppend(StringBuilder buffer) {
+                int pos = string == null
+                        ? 0
+                        : Math.max(0, buffer.length() - string.length() - overlap);
+
+                final Matcher matcher = regexp.matcher(buffer.substring(pos));
+                final String str = matcher.replaceAll(replacement);
+                buffer.replace(pos, buffer.length(), str);
+
+                return false;
+            }
+        };
     }
 
     /**
@@ -130,15 +175,7 @@ public final class Filters {
      * @return the filter
      */
     public static Filter replaceInBuffer(final Pattern regexp, final String replacement) {
-        return new FilterAdapter() {
-            @Override
-            protected boolean doAfterAppend(StringBuilder buffer) {
-                Matcher matcher = regexp.matcher(buffer);
-                String str = matcher.replaceAll(replacement);
-                buffer.replace(0, buffer.length(), str);
-                return false;
-            }
-        };
+        return replaceInBuffer(regexp, replacement, DEFAULT_FILTER_OVERLAP);
     }
 
     /**
@@ -187,20 +224,4 @@ public final class Filters {
             }
         };
     }
-
-    /**
-     * Split the input character data stream into a list of strings and pass only complete lines for
-     * further processing. The last part of the input that is not ended with the line separator
-     * if stored in the internal buffer and pre-pended to the filter output at the next call.
-     * <p/>
-     * Note! Use this with caution. The filter prevents matching of the last chunk of data received
-     * from the input stream which doesn't end with the line separator.
-     *
-     * @param lineSeparators the separator strings used to detect line boundaries
-     * @return the filter
-     */
-    public static Filter lineBuffer(final String ... lineSeparators) {
-        return new BufferedFilter(lineSeparators);
-    }
-
 }

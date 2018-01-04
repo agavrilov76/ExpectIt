@@ -1,4 +1,4 @@
-package net.sf.expectit;
+package net.sf.expectit.filter;
 
 /*
  * #%L
@@ -20,17 +20,18 @@ package net.sf.expectit;
  * #L%
  */
 
+import static net.sf.expectit.TestUtils.mockInputStream;
 import static net.sf.expectit.filter.Filters.chain;
-import static net.sf.expectit.filter.Filters.removeColors;
-import static net.sf.expectit.filter.Filters.removeNonPrintable;
 import static net.sf.expectit.filter.Filters.replaceInBuffer;
 import static net.sf.expectit.filter.Filters.replaceInString;
+import static net.sf.expectit.matcher.Matchers.contains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.regex.Pattern;
-import net.sf.expectit.filter.Filter;
+import net.sf.expectit.Expect;
+import net.sf.expectit.ExpectBuilder;
 import org.junit.Test;
 
 /**
@@ -39,19 +40,24 @@ import org.junit.Test;
 public class FilterTest {
 
     @Test
-    public void testNonPrintable() {
-        assertTrue(
-                removeNonPrintable().beforeAppend("\u0000\u0008", new StringBuilder())
-                        .isEmpty());
+    public void testNonPrintable() throws Exception {
+        Expect expect = new ExpectBuilder()
+                .withInputs(mockInputStream("\u0000\u0008x").getStream())
+                .withInputFilters(Filters.removeNonPrintable())
+                .build();
+        assertEquals(expect.expect(contains("x")).getBefore(), "");
+        expect.close();
     }
 
     @Test
-    public void testNoColors() {
+    public void testNoColors() throws Exception {
         String str = "abc\u001b[31m\u001B[7mdef\u001B[01;31m\u001B[KX\u001B[m\u001B[K";
-        StringBuilder buffer = new StringBuilder(str);
-        assertFalse(removeColors().afterAppend(buffer));
-        assertEquals(buffer.toString(), str);
-        assertEquals("abcdefX", removeColors().beforeAppend(str, new StringBuilder()));
+        Expect expect = new ExpectBuilder()
+                .withInputs(mockInputStream(str + "x").getStream())
+                .withInputFilters(Filters.removeColors())
+                .build();
+        assertEquals(expect.expect(contains("x")).getBefore(), "abcdefX");
+        expect.close();
     }
 
     @Test
@@ -81,6 +87,20 @@ public class FilterTest {
 
         filter2.afterAppend(b2);
         assertEquals(b2.toString(), "5");
+    }
+
+    @Test
+    public void testReplaceInBufferWithOverlap() {
+        final Filter filter = replaceInBuffer(Pattern.compile("xy"), "", 2);
+        StringBuilder b = new StringBuilder("abx");
+        filter.beforeAppend("abx", b);
+        filter.afterAppend(b);
+
+        StringBuilder b2 = new StringBuilder("abxyc");
+        filter.beforeAppend("yc", b2);
+        filter.afterAppend(b2);
+
+        assertEquals(b2.toString(), "abc");
     }
 
     @Test
