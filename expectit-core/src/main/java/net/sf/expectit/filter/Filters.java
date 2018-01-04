@@ -73,6 +73,8 @@ public final class Filters {
      * String)} but takes the regular expression
      * as string.
      *
+     * TODO: update after redesign
+     *
      * @param regexp      the regular expression
      * @param replacement the string to be substituted for each match
      * @return the filter
@@ -89,6 +91,8 @@ public final class Filters {
      * The method just calls {@link String#replaceAll(String, String)} for the entire buffer
      * contents every time new
      * data arrives,
+     *
+     * TODO: update after redesign
      *
      * @param regexp      the regular expression
      * @param replacement the string to be substituted for each match
@@ -132,6 +136,8 @@ public final class Filters {
      * The method just calls {@link String#replaceAll(String, String)} for the entire buffer
      * contents every time new
      * data arrives,
+     *
+     * TODO: update after redesign
      *
      * @param regexp      the regular expression
      * @param replacement the string to be substituted for each match

@@ -25,7 +25,7 @@ import static net.sf.expectit.filter.BuiltinFilters.removeNonPrintable;
 import net.sf.expectit.filter.Filter;
 
 /**
- * An element corresponding to the {@link net.sf.expectit.filter.Filters#removeNonPrintable()}
+ * An element corresponding to the {@link net.sf.expectit.filter.BuiltinFilters#removeNonPrintable()}
  * filter.
  */
 public class RemoveNonPrintableElement extends AbstractFilterElement {

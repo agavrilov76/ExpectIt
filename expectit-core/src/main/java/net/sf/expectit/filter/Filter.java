@@ -37,7 +37,7 @@ public interface Filter {
      *
      * @param string a chunk of input data read from the input stream. Can not be {@code null}.
      *               If the filter
-     *               works in the {@link Filters#chain(Filter...)}, then the string is the result
+     *               works in the {@link FilterChain#chain(Filter...)}, then the string is the result
      *               of preceding filter
      * @param buffer the reference to the input buffer. Can be used to modify the entire buffer
      *               contents.

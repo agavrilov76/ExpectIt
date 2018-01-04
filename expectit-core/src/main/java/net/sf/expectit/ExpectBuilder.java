@@ -205,7 +205,7 @@ public class ExpectBuilder {
      * @param filter      the filter
      * @param moreFilters more filter to apply. if specified then all the filters are combined
      *                    using the
-     *                    {@link Filters#chain(Filter...)} method.s
+     *                    {@link FilterChain#chain(Filter...)} method.s
      * @return this
      */
     public final ExpectBuilder withInputFilters(Filter filter, Filter... moreFilters) {
