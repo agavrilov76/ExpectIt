@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import net.sf.expectit.echo.EchoOutput;
 import net.sf.expectit.filter.Filter;
+import net.sf.expectit.filter.FilterChain;
 import net.sf.expectit.filter.Filters;
 
 /**
@@ -214,7 +215,7 @@ public class ExpectBuilder {
             Filter[] filters = new Filter[moreFilters.length + 1];
             filters[0] = filter;
             System.arraycopy(moreFilters, 0, filters, 1, moreFilters.length);
-            this.filter = Filters.chain(filters);
+            this.filter = FilterChain.chain(filters);
         }
         return this;
     }

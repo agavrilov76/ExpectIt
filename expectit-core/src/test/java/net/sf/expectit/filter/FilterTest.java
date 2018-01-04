@@ -21,7 +21,7 @@ package net.sf.expectit.filter;
  */
 
 import static net.sf.expectit.TestUtils.mockInputStream;
-import static net.sf.expectit.filter.Filters.chain;
+import static net.sf.expectit.filter.FilterChain.chain;
 import static net.sf.expectit.filter.Filters.replaceInBuffer;
 import static net.sf.expectit.filter.Filters.replaceInString;
 import static net.sf.expectit.matcher.Matchers.contains;
@@ -43,7 +43,7 @@ public class FilterTest {
     public void testNonPrintable() throws Exception {
         Expect expect = new ExpectBuilder()
                 .withInputs(mockInputStream("\u0000\u0008x").getStream())
-                .withInputFilters(Filters.removeNonPrintable())
+                .withInputFilters(BuiltinFilters.removeNonPrintable())
                 .build();
         assertEquals(expect.expect(contains("x")).getBefore(), "");
         expect.close();
@@ -54,7 +54,7 @@ public class FilterTest {
         String str = "abc\u001b[31m\u001B[7mdef\u001B[01;31m\u001B[KX\u001B[m\u001B[K";
         Expect expect = new ExpectBuilder()
                 .withInputs(mockInputStream(str + "x").getStream())
-                .withInputFilters(Filters.removeColors())
+                .withInputFilters(BuiltinFilters.removeColors())
                 .build();
         assertEquals(expect.expect(contains("x")).getBefore(), "abcdefX");
         expect.close();

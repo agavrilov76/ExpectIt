@@ -20,7 +20,7 @@ package net.sf.expectit.ant.filter;
  * #L%
  */
 
-import static net.sf.expectit.filter.Filters.removeNonPrintable;
+import static net.sf.expectit.filter.BuiltinFilters.removeNonPrintable;
 
 import net.sf.expectit.filter.Filter;
 

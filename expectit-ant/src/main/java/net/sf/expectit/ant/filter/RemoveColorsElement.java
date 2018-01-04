@@ -20,7 +20,7 @@ package net.sf.expectit.ant.filter;
  * #L%
  */
 
-import static net.sf.expectit.filter.Filters.removeColors;
+import static net.sf.expectit.filter.BuiltinFilters.removeColors;
 
 import net.sf.expectit.filter.Filter;
 

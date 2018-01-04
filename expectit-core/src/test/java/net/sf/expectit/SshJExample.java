@@ -22,8 +22,8 @@ package net.sf.expectit;
 
 
 import static net.schmizz.sshj.connection.channel.direct.Session.Shell;
-import static net.sf.expectit.filter.Filters.removeColors;
-import static net.sf.expectit.filter.Filters.removeNonPrintable;
+import static net.sf.expectit.filter.BuiltinFilters.removeColors;
+import static net.sf.expectit.filter.BuiltinFilters.removeNonPrintable;
 import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.regexp;
 
