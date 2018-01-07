@@ -92,7 +92,7 @@ public class InteractTest {
         verifyNoMoreInteractions(action3);
     }
 
-    @Test (timeout = 1000)
+    @Test (timeout = 5000)
     public void negativeTest() throws Exception {
         final MockInputStream input = mockInputStream("abcd");
         expect = new ExpectBuilder()
