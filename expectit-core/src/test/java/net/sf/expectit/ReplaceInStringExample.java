@@ -8,7 +8,7 @@ import net.sf.expectit.filter.Filter;
 import net.sf.expectit.filter.Filters;
 import net.sf.expectit.matcher.Matchers;
 
-public class ReplaceInBufferExample {
+public class ReplaceInStringExample {
 
     public static void main(String[] args) throws IOException {
         PipedInputStream pipedInputStream = new PipedInputStream();

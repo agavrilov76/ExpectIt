@@ -63,9 +63,17 @@ public class FilterTest {
     @Test
     public void testReplaceInString() {
         Filter filter = replaceInString("Z(.)f", "X$1x");
-        assertEquals(filter.beforeAppend("aaZdfhhh", null), "aaXdxhhh");
+        StringBuilder builder = new StringBuilder();
+        filter.beforeAppend("aaZdfhhh", builder);
+        filter.afterAppend(builder.append("aaZdfhhh"));
+        assertEquals(builder.toString(), "aaXdxhhh");
+
         filter = replaceInString(Pattern.compile("[a]"), "");
-        assertEquals(filter.beforeAppend("aad", null), "d");
+        builder = new StringBuilder("aad");
+        filter.beforeAppend("aad", builder);
+        filter.afterAppend(builder);
+
+        assertEquals(builder.toString(), "d");
     }
 
     @Test
@@ -91,7 +99,7 @@ public class FilterTest {
 
     @Test
     public void testReplaceInBufferWithOverlap() {
-        final Filter filter = replaceInBuffer(Pattern.compile("xy"), "", 2);
+        final Filter filter = replaceInString(Pattern.compile("xy"), "", 2);
         StringBuilder b = new StringBuilder("abx");
         filter.beforeAppend("abx", b);
         filter.afterAppend(b);
@@ -121,10 +129,16 @@ public class FilterTest {
         assertTrue(filter.isEnabled());
 
         Filter chain = chain(filter, filter2);
-        assertEquals(chain.beforeAppend("abcd", null), "bbcd");
+        final StringBuilder abcd = new StringBuilder("abcd_");
+        chain.beforeAppend("abcd", abcd);
+        chain.afterAppend(abcd);
+        assertEquals(abcd.toString(), "bbcd!");
+
+        filter2.setEnabled(false);
         abb = new StringBuilder("_abb");
+        chain.beforeAppend("", abb);
         assertFalse(chain.afterAppend(abb));
-        assertEquals(abb.toString(), "!abb");
+        assertEquals(abb.toString(), "_bbb");
 
         chain.setEnabled(false);
         assertEquals(chain.beforeAppend("abcd", null), "abcd");

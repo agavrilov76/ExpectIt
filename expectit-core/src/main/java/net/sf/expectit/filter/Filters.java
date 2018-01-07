@@ -58,7 +58,7 @@ public final class Filters {
      * @return the filter
      */
     public static Filter removeNonPrintable() {
-        return replaceInBuffer(NON_PRINTABLE_PATTERN, "");
+        return replaceInString(NON_PRINTABLE_PATTERN, "");
     }
 
     /**
@@ -70,70 +70,11 @@ public final class Filters {
      *
      * @param regexp      the regular expression
      * @param replacement the string to be substituted for each match
-     * @return the filter
-     */
-    public static Filter replaceInString(final Pattern regexp, final String replacement) {
-        return new FilterAdapter() {
-            @Override
-            protected String doBeforeAppend(String string, StringBuilder buffer) {
-                return regexp.matcher(string).replaceAll(replacement);
-            }
-        };
-    }
-
-    /**
-     * Equivalent to {@link #replaceInString(java.util.regex.Pattern,
-     * String)} but takes the regular expression
-     * as string.
-     *
-     * @param regexp      the regular expression
-     * @param replacement the string to be substituted for each match
-     * @return the filter
-     */
-    public static Filter replaceInString(final String regexp, final String replacement) {
-        return replaceInString(Pattern.compile(regexp), replacement);
-    }
-
-    /**
-     * Creates a filter which removes <a href="http://en.wikipedia
-     * .org/wiki/ANSI_escape_code#Colors">ANSI
-     * escape sequences for colors</a> in the input.
-     *
-     * @return the filter
-     */
-    public static Filter removeColors() {
-        return replaceInBuffer(COLORS_PATTERN, "");
-    }
-
-    /**
-     * Equivalent to {@link #replaceInBuffer(java.util.regex.Pattern,
-     * String)} but takes the regular expression
-     * as string.
-     *
-     * @param regexp      the regular expression
-     * @param replacement the string to be substituted for each match
-     * @return the filter
-     */
-    public static Filter replaceInBuffer(final String regexp, final String replacement) {
-        return replaceInBuffer(Pattern.compile(regexp), replacement, DEFAULT_FILTER_OVERLAP);
-    }
-
-    /**
-     * Creates a filter which replaces every substring in the input buffer that matches the given
-     * regular expression
-     * and replaces it with given replacement.
-     * <p/>
-     * The method just calls {@link String#replaceAll(String, String)} for the entire buffer
-     * contents every time new
-     * data arrives,
-     *
-     * @param regexp      the regular expression
-     * @param replacement the string to be substituted for each match
      * @param overlap     the number of characters prepended to the matching string from the
      *                    previous data chunk before match
      * @return the filter
      */
-    static Filter replaceInBuffer(
+    public static Filter replaceInString(
             final Pattern regexp,
             final String replacement,
             final int overlap) {
@@ -162,6 +103,56 @@ public final class Filters {
     }
 
     /**
+     * Equivalent to {@link #replaceInString(java.util.regex.Pattern,
+     * String)} but takes the regular expression
+     * as string and default overlap in 80 characters.
+     *
+     * @param regexp      the regular expression
+     * @param replacement the string to be substituted for each match
+     * @return the filter
+     */
+    public static Filter replaceInString(final String regexp, final String replacement) {
+        return replaceInString(Pattern.compile(regexp), replacement, DEFAULT_FILTER_OVERLAP);
+    }
+
+    /**
+     * Equivalent to {@link #replaceInString(java.util.regex.Pattern,
+     * String, int)} but takes the regular expression
+     * as string and default overlap in 80 characters.
+     *
+     * @param regexp      the regular expression
+     * @param replacement the string to be substituted for each match
+     * @return the filter
+     */
+    public static Filter replaceInString(final Pattern regexp, final String replacement) {
+        return replaceInString(regexp, replacement, DEFAULT_FILTER_OVERLAP);
+    }
+
+    /**
+     * Creates a filter which removes <a href="http://en.wikipedia
+     * .org/wiki/ANSI_escape_code#Colors">ANSI
+     * escape sequences for colors</a> in the input.
+     *
+     * @return the filter
+     */
+    public static Filter removeColors() {
+        return replaceInString(COLORS_PATTERN, "");
+    }
+
+    /**
+     * Equivalent to {@link #replaceInBuffer(java.util.regex.Pattern,
+     * String)} but takes the regular expression
+     * as string.
+     *
+     * @param regexp      the regular expression
+     * @param replacement the string to be substituted for each match
+     * @return the filter
+     */
+    public static Filter replaceInBuffer(final String regexp, final String replacement) {
+        return replaceInBuffer(Pattern.compile(regexp), replacement);
+    }
+
+    /**
      * Creates a filter which replaces every substring in the input buffer that matches the given
      * regular expression
      * and replaces it with given replacement.
@@ -175,7 +166,15 @@ public final class Filters {
      * @return the filter
      */
     public static Filter replaceInBuffer(final Pattern regexp, final String replacement) {
-        return replaceInBuffer(regexp, replacement, DEFAULT_FILTER_OVERLAP);
+        return new FilterAdapter() {
+            @Override
+            protected boolean doAfterAppend(StringBuilder buffer) {
+                Matcher matcher = regexp.matcher(buffer);
+                String str = matcher.replaceAll(replacement);
+                buffer.replace(0, buffer.length(), str);
+                return false;
+            }
+        };
     }
 
     /**
