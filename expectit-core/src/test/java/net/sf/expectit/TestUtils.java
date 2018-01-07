@@ -65,16 +65,19 @@ public final class TestUtils {
 
                     @Override
                     public Object answer(InvocationOnMock invocation) throws Throwable {
-                        latch.countDown();
-                        String take = queue.take();
-                        if (take.equals(EOF)) {
-                            return -1;
+                        try {
+                            String take = queue.take();
+                            if (take.equals(EOF)) {
+                                return -1;
+                            }
+                            byte[] bytes = take.getBytes();
+                            //noinspection MismatchedReadAndWriteOfArray
+                            byte[] dest = (byte[]) invocation.getArguments()[0];
+                            System.arraycopy(bytes, 0, dest, 0, bytes.length);
+                            return bytes.length;
+                        } finally {
+                            latch.countDown();
                         }
-                        byte[] bytes = take.getBytes();
-                        //noinspection MismatchedReadAndWriteOfArray
-                        byte[] dest = (byte[]) invocation.getArguments()[0];
-                        System.arraycopy(bytes, 0, dest, 0, bytes.length);
-                        return bytes.length;
                     }
                 });
         return new MockInputStream(mock, queue, latch);

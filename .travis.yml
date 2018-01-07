@@ -1,6 +1,6 @@
 language: java
 install: mvn -B clean
-script: "mvn install -B -DreuseForks=false -Dnet.sf.expectit.TestUtils.smallTimeout=600 -Dnet.sf.expectit.TestUtils.longTimeout=3000"
+script: "mvn install -B -DreuseForks=false -Dnet.sf.expectit.TestUtils.smallTimeout=500 -Dnet.sf.expectit.TestUtils.longTimeout=2000"
 jdk:
   - oraclejdk8
   - openjdk7
