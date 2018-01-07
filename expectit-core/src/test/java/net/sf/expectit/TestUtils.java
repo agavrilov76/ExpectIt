@@ -43,12 +43,14 @@ public final class TestUtils {
     /**
      * A small timeout used for the tests that block until an expect operation finishes.
      */
-    public static final long SMALL_TIMEOUT = Long.getLong(TestUtils.class.getName(), 300);
+    public static final long SMALL_TIMEOUT
+            = Long.getLong(TestUtils.class.getName() + ".smallTimeout", 300);
 
     /**
      * A long timeout which should cause tests to fail.
      */
-    public static final long LONG_TIMEOUT = Long.getLong(TestUtils.class.getName(), 1500);
+    public static final long LONG_TIMEOUT
+            = Long.getLong(TestUtils.class.getName() + ".longTimeout", 1500);
 
     /**
      * Creates a mock stream that pumps the given text every period of milliseconds.

@@ -1,6 +1,6 @@
 language: java
-install: mvn install -B -DskipAnalysis=true -DskipTests=true
-script: mvn install -B -DreuseForks=false
+install: mvn dependency:resolve -B
+script: mvn install -B -DreuseForks=false -Dnet.sf.expectit.TestUtils.smallTimeout=600 -Dnet.sf.expectit.TestUtils.longTimeout=3000
 jdk:
   - oraclejdk8
   - openjdk7
