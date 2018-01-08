@@ -34,9 +34,11 @@ import static net.sf.expectit.matcher.Matchers.regexp;
 import static net.sf.expectit.matcher.Matchers.sequence;
 import static net.sf.expectit.matcher.Matchers.startsWith;
 import static net.sf.expectit.matcher.Matchers.times;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Matchers.any;
@@ -49,6 +51,7 @@ import java.nio.channels.Pipe;
 import java.nio.charset.Charset;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 import net.sf.expectit.matcher.Matcher;
@@ -385,6 +388,7 @@ public class MatcherTest {
         // make sure the buffer is cleaned
         assertTrue(input.expect(SMALL_TIMEOUT, matches(".*")).isSuccessful());
         mock.push(TestUtils.EOF);
+        Thread.sleep(SMALL_TIMEOUT);
         try {
             // now the buffer is empty
             input.expect(SMALL_TIMEOUT, contains("xxx"));
