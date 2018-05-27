@@ -369,4 +369,75 @@ public final class Matchers {
         };
     }
 
+    /**
+     * Make sure that the given match don't consume the data from the internal buffer.
+     * @param matcher the matcher
+     * @return the result
+     */
+    public static Matcher<Result> nonConsuming(final Matcher<Result> matcher) {
+        return new Matcher<Result>() {
+            @Override
+            public Result matches(final String input, final boolean isEof) {
+                final Result result = matcher.matches(input, isEof);
+                return new Result() {
+                    @Override
+                    public int start() {
+                        return result.start();
+                    }
+
+                    @Override
+                    public int start(final int group) {
+                        return result.start(group);
+                    }
+
+                    @Override
+                    public int end() {
+                        return 0;
+                    }
+
+                    @Override
+                    public int end(final int group) {
+                        result.end(group);
+                        return 0;
+                    }
+
+                    @Override
+                    public String group() {
+                        return result.group();
+                    }
+
+                    @Override
+                    public String group(final int group) {
+                        return result.group(group);
+                    }
+
+                    @Override
+                    public int groupCount() {
+                        return result.groupCount();
+                    }
+
+                    @Override
+                    public String getInput() {
+                        return result.getInput();
+                    }
+
+                    @Override
+                    public boolean isSuccessful() {
+                        return result.isSuccessful();
+                    }
+
+                    @Override
+                    public String getBefore() {
+                        return result.getBefore();
+                    }
+
+                    @Override
+                    public boolean canStopMatching() {
+                        return result.canStopMatching();
+                    }
+                };
+            }
+        };
+    }
+
 }

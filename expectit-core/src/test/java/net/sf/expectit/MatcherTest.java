@@ -30,6 +30,7 @@ import static net.sf.expectit.matcher.Matchers.contains;
 import static net.sf.expectit.matcher.Matchers.eof;
 import static net.sf.expectit.matcher.Matchers.exact;
 import static net.sf.expectit.matcher.Matchers.matches;
+import static net.sf.expectit.matcher.Matchers.nonConsuming;
 import static net.sf.expectit.matcher.Matchers.regexp;
 import static net.sf.expectit.matcher.Matchers.sequence;
 import static net.sf.expectit.matcher.Matchers.startsWith;
@@ -616,5 +617,23 @@ public class MatcherTest {
         final Result result2 = input.expect(SMALL_TIMEOUT, startsWith(text + text));
         assertFalse(result2.isSuccessful());
         assertFalse(result2.canStopMatching());
+    }
+
+    @Test
+    public void testNonConsuming() throws IOException {
+        Result result = input.expect(LONG_TIMEOUT, nonConsuming(contains("b2")));
+        assertTrue(result.isSuccessful());
+        assertEquals(result.groupCount(), 0);
+        assertEquals(result.end(), 0);
+        assertEquals(result.start(), 2);
+        assertEquals(result.group(), "b2");
+        assertEquals(result.end(0), 0);
+        assertEquals(result.start(0), 2);
+        assertEquals(result.group(0), "b2");
+        assertEquals(result.getBefore(), "a1");
+        checkIndexOutOfBound(result, 1);
+
+        Result result2 = input.expect(LONG_TIMEOUT, contains("b2"));
+        assertTrue(result2.isSuccessful());
     }
 }
