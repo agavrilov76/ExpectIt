@@ -91,7 +91,7 @@ not be performed concurrently.
 Here is an example of interacting with a spawn process:
 
 ```java
-        Process process = Runtime.getRuntime().exec("/bin/sh");
+        Process process = Runtime.getRuntime().exec("/bin/sh", new String[] {"LANG=C"});
 
         Expect expect = new ExpectBuilder()
                 .withInputs(process.getInputStream())
